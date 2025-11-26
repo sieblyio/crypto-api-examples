@@ -1,6 +1,6 @@
-# Quantapi.io Examples
+# Siebly.io Crypto API Examples
 
-This repository contains example code for using the Quantapi.io SDK with various cryptocurrency exchanges.
+This repository contains example code for using the Siebly.io Crypto API with various cryptocurrency exchanges.
 
 ## Structure
 
@@ -14,5 +14,3 @@ typescript/
 ## Usage
 
 Each example file contains metadata in the comments that describe its purpose and usage.
-
-
