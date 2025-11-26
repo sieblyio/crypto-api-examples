@@ -18,6 +18,7 @@
         "typescript": "^5.2.2"
     },
     "dependencies": {
-        "binance": "^2.13.11"
+        "binance": "^3.1.5",
+        "bybit-api": "^4.4.2"
     }
 }

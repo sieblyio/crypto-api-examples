@@ -1,7 +1,4 @@
-import { MainClient } from '../../src/index';
-
-// or
-// import { MainClient } from 'binance';
+import { MainClient } from "binance";
 
 // Received after creating a new API key with a self-generated RSA public key on binance
 
@@ -13,7 +10,7 @@ lkmlkm123lkms1s12s+lkmlkm123lkms1s12s
 -----END PRIVATE KEY-----
 `;
 
-const ed25519APIKey = 'lkmlkm123lkms1s12slkmlkm123lkms1s12slkmlkm123lkms1s12s';
+const ed25519APIKey = "lkmlkm123lkms1s12slkmlkm123lkms1s12slkmlkm123lkms1s12s";
 
 const client = new MainClient({
   api_key: ed25519APIKey,
@@ -23,8 +20,8 @@ const client = new MainClient({
 
 (async () => {
   try {
-    console.log('private api call result: ', await client.getAccountInfo());
+    console.log("private api call result: ", await client.getAccountInfo());
   } catch (e) {
-    console.error('request failed: ', e);
+    console.error("request failed: ", e);
   }
 })();

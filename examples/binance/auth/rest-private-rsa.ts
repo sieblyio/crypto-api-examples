@@ -1,11 +1,8 @@
-import { MainClient } from '../../src/index';
-
-// or
-// import { MainClient } from 'binance';
+import { MainClient } from "binance";
 
 // Received after creating a new API key with a self-generated RSA public key on binance
 const api_key =
-  'SIHqWcDeRoj6gkOjLjQh1dnV1CD7IEXAMPLELVa8wu04zNTYVSmJBIHsjQjgwWqt';
+  "SIHqWcDeRoj6gkOjLjQh1dnV1CD7IEXAMPLELVa8wu04zNTYVSmJBIHsjQjgwWqt";
 
 // The self-generated RSA private key, this is never directly given to binance, but used to generate a signature
 // Note: this MUST include the "BEGIN PRIVATE KEY" header so the SDK understands this is RSA auth
@@ -71,8 +68,8 @@ const client = new MainClient({
 
 (async () => {
   try {
-    console.log('private api call result: ', await client.getBalances());
+    console.log("private api call result: ", await client.getBalances());
   } catch (e) {
-    console.error('request failed: ', e);
+    console.error("request failed: ", e);
   }
 })();
