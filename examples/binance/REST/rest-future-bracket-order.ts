@@ -1,7 +1,7 @@
-import { NewFuturesOrderParams, USDMClient } from '../../src/index';
+import { NewFuturesOrderParams, USDMClient } from "binance";
 
-const key = process.env.API_KEY_COM || 'APIKEY';
-const secret = process.env.API_SECRET_COM || 'APISECRET';
+const key = process.env.API_KEY_COM || "APIKEY";
+const secret = process.env.API_SECRET_COM || "APISECRET";
 
 const client = new USDMClient({
   api_key: key,
@@ -9,7 +9,7 @@ const client = new USDMClient({
   beautifyResponses: true,
 });
 
-const symbol = 'ETHUSDT';
+const symbol = "ETHUSDT";
 
 // submit a 1:1 bracket market buy order with market entry order
 (async () => {
@@ -17,7 +17,7 @@ const symbol = 'ETHUSDT';
     // TODO: check balance and do other validations
 
     const assetPrices = await client.getMarkPrice({
-      symbol: 'ETHUSDT',
+      symbol: "ETHUSDT",
     });
     const markPrice: number = Number(assetPrices.markPrice);
     const stopLossPrice = Number((markPrice * 99.9) / 100).toFixed(2);
@@ -29,38 +29,38 @@ const symbol = 'ETHUSDT';
     // 3. stop loss order (GTE_GTC)
 
     const entryOrder: NewFuturesOrderParams<string> = {
-      positionSide: 'BOTH',
-      quantity: '0.01',
-      reduceOnly: 'false',
-      side: 'BUY',
-      symbol: 'ETHUSDT',
-      type: 'MARKET',
+      positionSide: "BOTH",
+      quantity: "0.01",
+      reduceOnly: "false",
+      side: "BUY",
+      symbol: "ETHUSDT",
+      type: "MARKET",
     };
 
     const takeProfitOrder: NewFuturesOrderParams<string> = {
-      positionSide: 'BOTH',
-      priceProtect: 'TRUE',
-      quantity: '0.01',
-      side: 'SELL',
+      positionSide: "BOTH",
+      priceProtect: "TRUE",
+      quantity: "0.01",
+      side: "SELL",
       stopPrice: takeProfitPrice,
-      symbol: 'ETHUSDT',
-      timeInForce: 'GTE_GTC',
-      type: 'TAKE_PROFIT_MARKET',
-      workingType: 'MARK_PRICE',
-      closePosition: 'true',
+      symbol: "ETHUSDT",
+      timeInForce: "GTE_GTC",
+      type: "TAKE_PROFIT_MARKET",
+      workingType: "MARK_PRICE",
+      closePosition: "true",
     };
 
     const stopLossOrder: NewFuturesOrderParams<string> = {
-      positionSide: 'BOTH',
-      priceProtect: 'TRUE',
-      quantity: '0.01',
-      side: 'SELL',
+      positionSide: "BOTH",
+      priceProtect: "TRUE",
+      quantity: "0.01",
+      side: "SELL",
       stopPrice: stopLossPrice,
-      symbol: 'ETHUSDT',
-      timeInForce: 'GTE_GTC',
-      type: 'STOP_MARKET',
-      workingType: 'MARK_PRICE',
-      closePosition: 'true',
+      symbol: "ETHUSDT",
+      timeInForce: "GTE_GTC",
+      type: "STOP_MARKET",
+      workingType: "MARK_PRICE",
+      closePosition: "true",
     };
 
     const openedOrder = await client

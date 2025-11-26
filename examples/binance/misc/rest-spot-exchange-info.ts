@@ -1,13 +1,10 @@
 import {
-    ExchangeInfo,
-    MainClient,
-    numberInString,
-    roundToStepSize,
-    roundToTickSize,
-} from '../../src'; // from 'binance';
-
-// or
-// import { MainClient } from 'binance';
+  ExchangeInfo,
+  MainClient,
+  numberInString,
+  roundToStepSize,
+  roundToTickSize,
+} from "binance";
 
 const client = new MainClient({
   // Optional (default: false) - when true, response strings are parsed to floats (only for known keys).
@@ -15,16 +12,16 @@ const client = new MainClient({
 });
 
 interface SymbolInfo {
-  tickSize: numberInString;
-  qtyStepSize: numberInString;
-  minOrderQty: numberInString;
-  maxOrderQty: numberInString;
-  maxMarketQty: numberInString;
-  maxNumOfOrders: number;
-  minNotional: numberInString;
-  maxNotional: numberInString;
-  maxBasePrecisionDecimals: number;
-  maxQuotePrecisionDecimals: number;
+  tickSize?: numberInString;
+  qtyStepSize?: numberInString;
+  minOrderQty?: numberInString;
+  maxOrderQty?: numberInString;
+  maxMarketQty?: numberInString;
+  maxNumOfOrders?: number;
+  minNotional?: numberInString;
+  maxNotional?: numberInString;
+  maxBasePrecisionDecimals?: number;
+  maxQuotePrecisionDecimals?: number;
 }
 
 // Get full exchange info so we can cache it and use it for other functions without making request every time
@@ -37,11 +34,11 @@ async function fetchExchangeInfo() {
   }
 }
 
-const symbol = 'SOLUSDT';
+const symbol = "SOLUSDT";
 
 async function getSymbolInfo(
   exchangeInfo: ExchangeInfo,
-  symbol: string,
+  symbol: string
 ): Promise<SymbolInfo> {
   try {
     // Find the symbol information once
@@ -54,19 +51,19 @@ async function getSymbolInfo(
 
     // Extract filters from the symbol info
     const priceFilter = symbolInfo.filters.find(
-      (f) => f.filterType === 'PRICE_FILTER',
+      (f) => f.filterType === "PRICE_FILTER"
     );
     const lotSizeFilter = symbolInfo.filters.find(
-      (f) => f.filterType === 'LOT_SIZE',
+      (f) => f.filterType === "LOT_SIZE"
     );
     const marketLotSizeFilter = symbolInfo.filters.find(
-      (f) => f.filterType === 'MARKET_LOT_SIZE',
+      (f) => f.filterType === "MARKET_LOT_SIZE"
     );
     const maxNumOrdersFilter = symbolInfo.filters.find(
-      (f) => f.filterType === 'MAX_NUM_ORDERS',
+      (f) => f.filterType === "MAX_NUM_ORDERS"
     );
     const notionalFilter = symbolInfo.filters.find(
-      (f) => f.filterType === 'NOTIONAL',
+      (f) => f.filterType === "NOTIONAL"
     );
 
     const symbolFilters = {
@@ -96,17 +93,17 @@ function formatOrderParams(
   symbol: string,
   price: number,
   quantity: number,
-  symbolInfo: any,
+  symbolInfo: any
 ): { symbol: string; price: number; quantity: number } {
   try {
     // Check if price is within allowed range
-    const minPrice = parseFloat(symbolInfo.tickSize || '0');
+    const minPrice = parseFloat(symbolInfo.tickSize || "0");
     if (price < minPrice) {
       throw new Error(`Price ${price} is below minimum ${minPrice}`);
     }
 
     // Check if quantity is within allowed range
-    const minQty = parseFloat(symbolInfo.minOrderQty || '0');
+    const minQty = parseFloat(symbolInfo.minOrderQty || "0");
     const maxQty = parseFloat(symbolInfo.maxOrderQty || Infinity);
 
     if (quantity < minQty) {
@@ -119,11 +116,11 @@ function formatOrderParams(
 
     // Check notional value (price * quantity)
     const notional = price * quantity;
-    const minNotional = parseFloat(symbolInfo.minNotional || '0');
+    const minNotional = parseFloat(symbolInfo.minNotional || "0");
 
     if (notional < minNotional) {
       throw new Error(
-        `Order value ${notional} is below minimum ${minNotional}`,
+        `Order value ${notional} is below minimum ${minNotional}`
       );
     }
 
@@ -153,17 +150,22 @@ async function testSymbolUtils() {
   const testPrice = 23.45678;
   console.log(
     `Original price: ${testPrice}`,
-    `Formatted price: ${roundToTickSize(testPrice, symbolFilters.tickSize.toString())}`,
+    `Formatted price: ${
+      symbolFilters.tickSize
+        ? roundToTickSize(testPrice, symbolFilters.tickSize.toString())
+        : testPrice
+    }`
   );
 
   // Test quantity formatting
   const testQty = 1.23456;
   console.log(
     `Original quantity: ${testQty}`,
-    `Formatted quantity: ${roundToStepSize(
-      testQty,
-      symbolFilters.qtyStepSize.toString(),
-    )}`,
+    `Formatted quantity: ${
+      symbolFilters.qtyStepSize
+        ? roundToStepSize(testQty, symbolFilters.qtyStepSize.toString())
+        : testQty
+    }`
   );
 
   // Test full order formatting
@@ -171,18 +173,18 @@ async function testSymbolUtils() {
     symbol,
     testPrice,
     testQty,
-    symbolFilters,
+    symbolFilters
   );
-  console.log('Formatted order parameters:', orderParams);
+  console.log("Formatted order parameters:", orderParams);
 
   // example how to use the order params
   const order = await client.submitNewOrder({
     symbol: orderParams.symbol,
-    side: 'BUY',
-    type: 'LIMIT',
+    side: "BUY",
+    type: "LIMIT",
     quantity: Number(orderParams.quantity),
     price: Number(orderParams.price),
-    timeInForce: 'GTC',
+    timeInForce: "GTC",
   });
 
   console.log(order);
