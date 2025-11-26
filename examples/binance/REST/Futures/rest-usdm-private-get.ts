@@ -1,8 +1,5 @@
-import { USDMClient } from '../../src/index';
+import { USDMClient } from 'binance';
 // import axios from 'axios';
-
-// or
-// import { USDMClient } from 'binance';
 
 const key = process.env.API_KEY_COM || 'APIKEY';
 const secret = process.env.API_SECRET_COM || 'APISECRET';

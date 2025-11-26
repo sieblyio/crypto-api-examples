@@ -1,9 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// or
-// import { WebsocketAPIClient, WebsocketClient, WS_KEY_MAP } from 'binance';
-// or
-// const { WebsocketAPIClient, WebsocketClient, WS_KEY_MAP } = require('binance');
-
 import {
   isWsFormattedFuturesUserDataEvent,
   isWsFormattedSpotBalanceUpdate,
@@ -13,7 +8,7 @@ import {
   WebsocketAPIClient,
   WebsocketClient,
   WS_KEY_MAP,
-} from '../../src';
+} from "binance";
 
 /**
  * The WS API only works with an Ed25519 API key.
@@ -41,32 +36,32 @@ const secret = process.env.API_SECRET_COM;
 // const secret = privateKey;
 
 function attachEventHandlers<TWSClient extends WebsocketClient>(
-  wsClient: TWSClient,
+  wsClient: TWSClient
 ): void {
   /**
    * General event handlers for monitoring the WebsocketClient
    */
 
   // Raw events received from binance, as is:
-  wsClient.on('message', (data) => {
+  wsClient.on("message", (data) => {
     // console.log('raw message received ', JSON.stringify(data));
   });
 
   // Formatted events from the built-in beautifier, with fully readable property names and parsed floats:
-  wsClient.on('formattedMessage', (data) => {
+  wsClient.on("formattedMessage", (data) => {
     // We've included type guards for many events, especially on the user data stream, to help easily
     // identify events using simple `if` checks.
     //
     // Use `if` checks to narrow down specific events from the user data stream
     if (isWsFormattedSpotOutboundAccountPosition(data)) {
       console.log(
-        'formattedMessage->isWsFormattedSpotOutboundAccountPosition: ',
-        data,
+        "formattedMessage->isWsFormattedSpotOutboundAccountPosition: ",
+        data
       );
       return;
     }
     if (isWsFormattedSpotBalanceUpdate(data)) {
-      console.log('formattedMessage->isWsFormattedSpotBalanceUpdate: ', data);
+      console.log("formattedMessage->isWsFormattedSpotBalanceUpdate: ", data);
       return;
     }
 
@@ -74,22 +69,22 @@ function attachEventHandlers<TWSClient extends WebsocketClient>(
 
     // Any user data event in spot:
     if (isWsFormattedSpotUserDataEvent(data)) {
-      console.log('formattedMessage->isWsFormattedSpotUserDataEvent: ', data);
+      console.log("formattedMessage->isWsFormattedSpotUserDataEvent: ", data);
     }
     // Any user data event in futures:
     if (isWsFormattedFuturesUserDataEvent(data)) {
       console.log(
-        'formattedMessage->isWsFormattedFuturesUserDataEvent: ',
-        data,
+        "formattedMessage->isWsFormattedFuturesUserDataEvent: ",
+        data
       );
     }
 
     // Any user data event on any market (spot + futures)
     if (isWsFormattedUserDataEvent(data)) {
-      console.log('formattedMessage->isWsFormattedUserDataEvent: ', data);
+      console.log("formattedMessage->isWsFormattedUserDataEvent: ", data);
       return;
     }
-    console.log('formattedMessage: ', data);
+    console.log("formattedMessage: ", data);
   });
 
   // Formatted user data events also have a dedicated event handler, but that's optional and no different to the above
@@ -109,23 +104,23 @@ function attachEventHandlers<TWSClient extends WebsocketClient>(
   //   }
   //   console.log('formattedUserDataMessage: ', data);
   // });
-  wsClient.on('response', (data) => {
+  wsClient.on("response", (data) => {
     // console.log('ws response: ', JSON.stringify(data));
   });
-  wsClient.on('open', (data) => {
-    console.log('ws connected', data.wsKey);
+  wsClient.on("open", (data) => {
+    console.log("ws connected", data.wsKey);
   });
-  wsClient.on('reconnecting', ({ wsKey }) => {
-    console.log('ws automatically reconnecting.... ', wsKey);
+  wsClient.on("reconnecting", ({ wsKey }) => {
+    console.log("ws automatically reconnecting.... ", wsKey);
   });
-  wsClient.on('reconnected', (data) => {
-    console.log('ws has reconnected ', data?.wsKey);
+  wsClient.on("reconnected", (data) => {
+    console.log("ws has reconnected ", data?.wsKey);
   });
-  wsClient.on('authenticated', (data) => {
-    console.log('ws has authenticated ', data?.wsKey);
+  wsClient.on("authenticated", (data) => {
+    console.log("ws has authenticated ", data?.wsKey);
   });
-  wsClient.on('exception', (data) => {
-    console.error('ws exception: ', JSON.stringify(data));
+  wsClient.on("exception", (data) => {
+    console.error("ws exception: ", JSON.stringify(data));
   });
 }
 
@@ -159,12 +154,12 @@ async function main() {
   // automatically call this method again if reconnected,
   try {
     const response = await wsClient.subscribeUserDataStream(
-      WS_KEY_MAP.mainWSAPI, // The `mainWSAPI` wsKey will connect to the "spot" Websocket API on Binance.
+      WS_KEY_MAP.mainWSAPI // The `mainWSAPI` wsKey will connect to the "spot" Websocket API on Binance.
     );
 
-    console.log('subscribeUserDataStream response: ', response);
+    console.log("subscribeUserDataStream response: ", response);
   } catch (e) {
-    console.log('subscribeUserDataStream error: ', e);
+    console.log("subscribeUserDataStream error: ", e);
   }
 }
 

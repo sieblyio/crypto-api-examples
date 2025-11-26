@@ -1,7 +1,4 @@
-import { MainClient } from '../../src/index';
-
-// or
-// import { MainClient } from 'binance';
+import { MainClient } from 'binance';
 
 const client = new MainClient({
   // Optional (default: false) - when true, response strings are parsed to floats (only for known keys).

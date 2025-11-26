@@ -1,4 +1,4 @@
-import { USDMClient } from '../../src';
+import { USDMClient } from 'binance';
 
 const client = new USDMClient({
   testnet: true,

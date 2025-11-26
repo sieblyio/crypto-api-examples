@@ -4,17 +4,7 @@ import {
   isWsDiffBookDepthEventFormatted,
   isWsPartialBookDepthEventFormatted,
   WebsocketClient,
-} from '../../src';
-
-// or, with the npm package
-/*
-import {
-  WebsocketClient,
-  DefaultLogger,
-  isWsFormatted24hrTicker,
-  isWsFormattedKline,
-} from 'binance';
-*/
+} from "binance";
 
 (async () => {
   // Without typescript:
@@ -26,7 +16,7 @@ import {
       // if (params[0].includes('ping') || params[0].includes('pong')) {
       //   return;
       // }
-      console.log('\n', new Date(), 'trace ', ...params);
+      console.log("\n", new Date(), "trace ", ...params);
     },
   };
 
@@ -36,19 +26,19 @@ import {
       // Beautified data is emitted via the "formattedMessage" event
       beautify: true,
     },
-    logger, // Optional: customise logging behaviour by extending or overwriting the default logger implementation
+    logger // Optional: customise logging behaviour by extending or overwriting the default logger implementation
   );
 
   // Raw unprocessed incoming data, e.g. if you have the beautifier disabled
-  wsClient.on('message', (data) => {
+  wsClient.on("message", (data) => {
     // console.log('raw message received ', JSON.stringify(data, null, 2));
     // console.log('raw message received ', JSON.stringify(data));
-    console.log('log rawMessage: ', data);
+    console.log("log rawMessage: ", data);
   });
 
   // Formatted data that has gone through the beautifier
-  wsClient.on('formattedMessage', (data) => {
-    console.log('log formattedMessage: ', data);
+  wsClient.on("formattedMessage", (data) => {
+    console.log("log formattedMessage: ", data);
 
     /**
      * Optional: we've included type-guards for many formatted websocket topics.
@@ -98,33 +88,33 @@ import {
     // }
 
     if (isWsPartialBookDepthEventFormatted(data)) {
-      return console.log('log partial book depth event: ', data);
+      return console.log("log partial book depth event: ", data);
     }
 
     if (isWsDiffBookDepthEventFormatted(data)) {
-      return console.log('log diff book depthUpdate event: ', data);
+      return console.log("log diff book depthUpdate event: ", data);
     }
   });
 
-  wsClient.on('formattedUserDataMessage', (data) => {
-    console.log('log formattedUserDataMessage: ', data);
+  wsClient.on("formattedUserDataMessage", (data) => {
+    console.log("log formattedUserDataMessage: ", data);
   });
 
-  wsClient.on('open', (data) => {
-    console.log('connection opened open:', data.wsKey);
+  wsClient.on("open", (data) => {
+    console.log("connection opened open:", data.wsKey);
   });
 
   // response to command sent via WS stream (e.g LIST_SUBSCRIPTIONS)
-  wsClient.on('response', (data) => {
-    console.log('log response: ', data?.message || JSON.stringify(data));
+  wsClient.on("response", (data) => {
+    console.log("log response: ", data?.message || JSON.stringify(data));
   });
 
-  wsClient.on('reconnecting', (data) => {
-    console.log('ws automatically reconnecting.... ', data?.wsKey);
+  wsClient.on("reconnecting", (data) => {
+    console.log("ws automatically reconnecting.... ", data?.wsKey);
   });
 
-  wsClient.on('reconnected', (data) => {
-    console.log('ws has reconnected ', data?.wsKey);
+  wsClient.on("reconnected", (data) => {
+    console.log("ws has reconnected ", data?.wsKey);
     // No action needed here, unless you need to query the REST API after being reconnected.
   });
 
@@ -150,9 +140,9 @@ import {
     //   'usdm',
     // );
 
-    const symbol = 'BTCUSDT';
-    const coinMSymbol = 'ETHUSD_PERP';
-    const coinMSymbol2 = 'ETHUSD';
+    const symbol = "BTCUSDT";
+    const coinMSymbol = "ETHUSD_PERP";
+    const coinMSymbol2 = "ETHUSD";
 
     /**
      * Subscribe to each available type of spot market topic, the new way
@@ -161,69 +151,69 @@ import {
       [
         // Aggregate Trade Streams
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#aggregate-trade-streams
-        'btcusdt@aggTrade',
+        "btcusdt@aggTrade",
         // Trade Streams
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#trade-streams
-        'btcusdt@trade',
+        "btcusdt@trade",
         // Kline/Candlestick Streams for UTC
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#klinecandlestick-streams-for-utc
-        'btcusdt@kline_5m',
+        "btcusdt@kline_5m",
         // Kline/Candlestick Streams with timezone offset
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#klinecandlestick-streams-with-timezone-offset
-        'btcusdt@kline_5m@+08:00',
+        "btcusdt@kline_5m@+08:00",
         // Individual Symbol Mini Ticker Stream
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#individual-symbol-mini-ticker-stream
-        'btcusdt@miniTicker',
+        "btcusdt@miniTicker",
         // All Market Mini Tickers Stream
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#all-market-mini-tickers-stream
-        '!miniTicker@arr',
+        "!miniTicker@arr",
         // Individual Symbol Ticker Streams
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#individual-symbol-ticker-streams
-        'btcusdt@ticker',
+        "btcusdt@ticker",
         // All Market Tickers Stream - DEPRECATED (2025-11-14)
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#all-market-tickers-stream
         // '!ticker@arr', // DEPRECATED: Use '<symbol>@ticker' or '!miniTicker@arr' instead
         // Recommended alternative: '!miniTicker@arr' for all market mini tickers (already subscribed above)
         // Individual Symbol Rolling Window Statistics Streams
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#individual-symbol-rolling-window-statistics-streams
-        'btcusdt@ticker_1h',
+        "btcusdt@ticker_1h",
         // All Market Rolling Window Statistics Streams
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#all-market-rolling-window-statistics-streams
-        '!ticker_1h@arr',
+        "!ticker_1h@arr",
         // Individual Symbol Book Ticker Streams
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#individual-symbol-book-ticker-streams
-        'btcusdt@bookTicker',
+        "btcusdt@bookTicker",
         // Average Price
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#average-price
-        'btcusdt@avgPrice',
+        "btcusdt@avgPrice",
         // Partial Book Depth Streams
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#partial-book-depth-streams
-        'btcusdt@depth5',
-        'btcusdt@depth10@100ms',
+        "btcusdt@depth5",
+        "btcusdt@depth10@100ms",
         // Diff. Depth Stream
         // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#diff-depth-stream
-        'btcusdt@depth',
-        'btcusdt@depth@100ms',
+        "btcusdt@depth",
+        "btcusdt@depth@100ms",
       ],
       // Look at the `WS_KEY_URL_MAP` for a list of values here:
       // https://github.com/tiagosiebler/binance/blob/master/src/util/websockets/websocket-util.ts
       // "main" connects to wss://stream.binance.com:9443/stream
       // https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams
-      'main',
+      "main"
     );
 
     await wsClient.subscribe(
       [
         // Aggregate Trade Stream
         // https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-market-streams/Aggregate-Trade-Streams
-        'btcusdt@aggTrade',
+        "btcusdt@aggTrade",
         // Mark Price Stream
         // https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-market-streams/Mark-Price-Stream
-        'btcusdt@markPrice',
-        'btcusdt@markPrice@1s',
+        "btcusdt@markPrice",
+        "btcusdt@markPrice@1s",
         // Mark Price Stream for All market
         // https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-market-streams/Mark-Price-Stream-for-All-market
-        '!markPrice@arr',
+        "!markPrice@arr",
         // Kline/Candlestick Streams
         // https://developers.binance.com/docs/derivatives/usds-margined-futures/websocket-market-streams/Kline-Candlestick-Streams
         // 'btcusdt@kline_1m',
@@ -275,7 +265,7 @@ import {
         // '!assetIndex@arr' // DOESNT EXIST AS TYPE GUARD
         // 'btcusdt@assetIndex'
       ],
-      'usdm',
+      "usdm"
     );
 
     /**
@@ -285,12 +275,12 @@ import {
      *
      * https://eapi.binance.com/eapi/v1/exchangeInfo
      */
-    const optionsAsset = 'ETH';
-    const optionsExpiration = '250328';
-    const optionsSymbol = 'BTC-250328-140000-C';
+    const optionsAsset = "ETH";
+    const optionsExpiration = "250328";
+    const optionsSymbol = "BTC-250328-140000-C";
     await wsClient.subscribe(
       [
-        'option_pair',
+        "option_pair",
         `${optionsAsset}@openInterest@${optionsExpiration}`,
         `${optionsAsset}@markPrice`,
         `${optionsSymbol}@kline_1m`,
@@ -299,7 +289,7 @@ import {
         `${optionsAsset}@trade`,
         `${optionsSymbol}@depth100`,
       ],
-      'eoptions',
+      "eoptions"
     );
 
     // /**
@@ -354,6 +344,6 @@ import {
     // wsClient.subscribeContractInfoStream('usdm');
     // wsClient.subscribeContractInfoStream('coinm');
   } catch (e) {
-    console.error('exception on subscribe attempt: ', e);
+    console.error("exception on subscribe attempt: ", e);
   }
 })();

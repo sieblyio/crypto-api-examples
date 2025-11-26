@@ -1,7 +1,4 @@
-import { MainClient } from '../../src/index';
-
-// or
-// import { MainClient } from 'binance';
+import { MainClient } from 'binance';
 
 const key = 'APIKEY';
 const secret = 'APISECRET';

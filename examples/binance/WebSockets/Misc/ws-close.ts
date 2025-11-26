@@ -1,7 +1,4 @@
-import { DefaultLogger, WebsocketClient } from '../../src/index';
-
-// or
-// import { DefaultLogger, WebsocketClient } from 'binance';
+import { DefaultLogger, WebsocketClient } from "binance";
 
 (async () => {
   const key = process.env.API_KEY_COM || 'APIKEY';

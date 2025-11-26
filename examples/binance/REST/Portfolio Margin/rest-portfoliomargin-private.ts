@@ -1,7 +1,4 @@
-import { PortfolioClient } from '../../src/index';
-
-// or
-// import { PortfolioClient } from 'binance';
+import { PortfolioClient } from 'binance';
 
 const key = process.env.API_KEY_COM || 'APIKEY';
 const secret = process.env.API_SECRET_COM || 'APISECRET';

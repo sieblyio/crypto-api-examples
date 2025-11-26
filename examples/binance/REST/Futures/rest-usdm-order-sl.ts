@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { USDMClient } from '../../src/index';
-
-// or
-// import { USDMClient } from 'binance';
+import { USDMClient } from 'binance';
 
 const key = process.env.API_KEY_COM || 'APIKEY';
 const secret = process.env.API_SECRET_COM || 'APISECRET';

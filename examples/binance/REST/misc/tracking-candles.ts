@@ -28,7 +28,7 @@ const ignoredTraceLogMsgs = [
 ];
 const customLogger = {
   ...DefaultLogger,
-  trace: (msg, context) => {
+  trace: (msg: string, context: any) => {
     if (ignoredTraceLogMsgs.includes(msg)) {
       return;
     }
@@ -310,7 +310,7 @@ wsClient.on("response", (data) => {
 
   // empty response result === success
   if (!data.result && data.request.method === "SUBSCRIBE") {
-    data.request.params.forEach(async (topic) => {
+    data.request.params.forEach(async (topic: any) => {
       console.log("Successfully subscribed to topic: ", topic);
 
       // btcusdt@kline_1m -> btcusdt, kline_1m

@@ -2,16 +2,7 @@ import {
   DefaultLogger,
   isWsFormattedMarkPriceUpdateArray,
   WebsocketClient,
-} from '../../src/index';
-
-// or, with the npm package
-/*
-import {
-  WebsocketClient,
-  DefaultLogger,
-  isWsFormattedMarkPriceUpdateArray,
-} from 'binance';
-*/
+} from "binance";
 
 (async () => {
   const logger = {
@@ -25,12 +16,12 @@ import {
       // api_secret: secret,
       beautify: true,
     },
-    logger,
+    logger
   );
 
-  wsClient.on('formattedMessage', (data) => {
+  wsClient.on("formattedMessage", (data) => {
     if (isWsFormattedMarkPriceUpdateArray(data)) {
-      console.log('all mark price evt received ');
+      console.log("all mark price evt received ");
 
       const mapped = data
         .map((r) => {
@@ -47,23 +38,23 @@ import {
       return;
     }
 
-    console.log('log unhandled formatted msg: ', data);
+    console.log("log unhandled formatted msg: ", data);
   });
 
-  wsClient.on('open', (data) => {
-    console.log('connection opened open:', data.wsKey, data.wsUrl);
+  wsClient.on("open", (data) => {
+    console.log("connection opened open:", data.wsKey, data.wsUrl);
   });
 
   // response to command sent via WS stream (e.g LIST_SUBSCRIPTIONS)
-  wsClient.on('response', (data) => {
-    console.log('log response: ', JSON.stringify(data, null, 2));
+  wsClient.on("response", (data) => {
+    console.log("log response: ", JSON.stringify(data, null, 2));
   });
-  wsClient.on('reconnecting', (data) => {
-    console.log('ws automatically reconnecting.... ', data?.wsKey);
+  wsClient.on("reconnecting", (data) => {
+    console.log("ws automatically reconnecting.... ", data?.wsKey);
   });
-  wsClient.on('reconnected', (data) => {
-    console.log('ws has reconnected ', data?.wsKey);
+  wsClient.on("reconnected", (data) => {
+    console.log("ws has reconnected ", data?.wsKey);
   });
 
-  wsClient.subscribeAllMarketMarkPrice('usdm', 1000);
+  wsClient.subscribeAllMarketMarkPrice("usdm", 1000);
 })();
