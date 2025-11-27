@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "binance": "^3.1.5",
+        "bitget-api": "^3.0.10",
         "bybit-api": "^4.4.2"
     }
 }
