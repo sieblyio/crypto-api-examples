@@ -2,7 +2,7 @@ import {
   FuturesPlaceOrderRequestV2,
   RestClientV2,
   WebsocketClientV2,
-} from "bitget-api";
+} from 'bitget-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
@@ -53,115 +53,115 @@ function promiseSleep(milliseconds: number) {
 (async () => {
   try {
     // Add event listeners to log websocket events on account
-    wsClient.on("update", (data) => logWSEvent("update", data));
+    wsClient.on('update', (data) => logWSEvent('update', data));
 
-    wsClient.on("open", (data) => logWSEvent("open", data));
-    wsClient.on("response", (data) => logWSEvent("response", data));
-    wsClient.on("reconnect", (data) => logWSEvent("reconnect", data));
-    wsClient.on("reconnected", (data) => logWSEvent("reconnected", data));
-    wsClient.on("authenticated", (data) => logWSEvent("authenticated", data));
-    wsClient.on("exception", (data) => logWSEvent("exception", data));
+    wsClient.on('open', (data) => logWSEvent('open', data));
+    wsClient.on('response', (data) => logWSEvent('response', data));
+    wsClient.on('reconnect', (data) => logWSEvent('reconnect', data));
+    wsClient.on('reconnected', (data) => logWSEvent('reconnected', data));
+    wsClient.on('authenticated', (data) => logWSEvent('authenticated', data));
+    wsClient.on('exception', (data) => logWSEvent('exception', data));
 
     // futures private
     // : account updates
-    wsClient.subscribeTopic("USDT-FUTURES", "account");
+    wsClient.subscribeTopic('USDT-FUTURES', 'account');
 
     // : position updates
-    wsClient.subscribeTopic("USDT-FUTURES", "positions");
+    wsClient.subscribeTopic('USDT-FUTURES', 'positions');
 
     // : order updates
-    wsClient.subscribeTopic("USDT-FUTURES", "orders");
+    wsClient.subscribeTopic('USDT-FUTURES', 'orders');
 
     // wait briefly for ws to be ready (could also use the response or authenticated events, to make sure topics are subscribed to before starting)
     await promiseSleep(2.5 * 1000);
 
-    const symbol = "BTCUSDT";
-    const marginCoin = "USDT";
+    const symbol = 'BTCUSDT';
+    const marginCoin = 'USDT';
 
     const balanceResult = await client.getFuturesAccountAssets({
-      productType: "USDT-FUTURES",
+      productType: 'USDT-FUTURES',
     });
     const accountBalance = balanceResult.data;
     // const balances = allBalances.filter((bal) => Number(bal.available) != 0);
     const assetList = accountBalance.find(
-      (bal) => bal.marginCoin === marginCoin
+      (bal) => bal.marginCoin === marginCoin,
     )?.assetList;
     const usdtAmount = assetList?.find(
-      (asset) => asset.coin === "USDT"
+      (asset) => asset.coin === 'USDT',
     )?.balance;
 
-    console.log("USDT balance: ", usdtAmount);
+    console.log('USDT balance: ', usdtAmount);
 
     if (!usdtAmount) {
-      console.error("No USDT to trade");
+      console.error('No USDT to trade');
       return;
     }
 
     const symbolRulesResult = await client.getFuturesContractConfig({
       symbol,
-      productType: "USDT-FUTURES",
+      productType: 'USDT-FUTURES',
     });
     const bitcoinUSDFuturesRule = symbolRulesResult.data.find(
-      (row) => row.symbol === symbol
+      (row) => row.symbol === symbol,
     );
 
-    console.log("symbol rules: ", bitcoinUSDFuturesRule);
+    console.log('symbol rules: ', bitcoinUSDFuturesRule);
     if (!bitcoinUSDFuturesRule) {
-      console.error("Failed to get trading rules for " + symbol);
+      console.error('Failed to get trading rules for ' + symbol);
       return;
     }
 
     const order: FuturesPlaceOrderRequestV2 = {
       marginCoin: marginCoin,
-      marginMode: "crossed",
-      productType: "USDT-FUTURES",
-      orderType: "market",
-      side: "buy",
+      marginMode: 'crossed',
+      productType: 'USDT-FUTURES',
+      orderType: 'market',
+      side: 'buy',
       size: bitcoinUSDFuturesRule.minTradeNum,
       symbol: symbol,
     } as const;
 
-    console.log("placing order: ", order);
+    console.log('placing order: ', order);
 
     const result = await client.futuresSubmitOrder(order);
 
-    console.log("order result: ", result);
+    console.log('order result: ', result);
 
     const positionsResult = await client.getFuturesPositions({
-      productType: "USDT-FUTURES",
+      productType: 'USDT-FUTURES',
     });
     const positionsToClose = positionsResult.data.filter(
-      (pos) => pos.total !== "0"
+      (pos) => pos.total !== '0',
     );
 
-    console.log("open positions to close: ", positionsToClose);
+    console.log('open positions to close: ', positionsToClose);
 
     // Loop through any active positions and send a closing market order on each position
     for (const position of positionsToClose) {
-      const closingSide = position.holdSide === "long" ? "sell" : "buy";
+      const closingSide = position.holdSide === 'long' ? 'sell' : 'buy';
       const closingOrder: FuturesPlaceOrderRequestV2 = {
         marginCoin: position.marginCoin,
-        marginMode: "crossed",
-        productType: "USDT-FUTURES",
-        orderType: "market",
+        marginMode: 'crossed',
+        productType: 'USDT-FUTURES',
+        orderType: 'market',
         side: closingSide,
         size: position.available,
         symbol: position.symbol,
       };
 
-      console.log("closing position with market order: ", closingOrder);
+      console.log('closing position with market order: ', closingOrder);
 
       const result = await client.futuresSubmitOrder(closingOrder);
-      console.log("position closing order result: ", result);
+      console.log('position closing order result: ', result);
     }
 
     console.log(
-      "positions after closing all: ",
+      'positions after closing all: ',
       await client.getFuturesPositions({
-        productType: "USDT-FUTURES",
-      })
+        productType: 'USDT-FUTURES',
+      }),
     );
   } catch (e) {
-    console.error("request failed: ", e);
+    console.error('request failed: ', e);
   }
 })();

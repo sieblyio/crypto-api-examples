@@ -1,4 +1,4 @@
-import { DefaultLogger, WebsocketAPIClient } from "okx-api";
+import { DefaultLogger, WebsocketAPIClient } from 'okx-api';
 
 // function attachEventHandlers<TWSClient extends WebsocketClient>(
 //   wsClient: TWSClient,
@@ -23,7 +23,7 @@ import { DefaultLogger, WebsocketAPIClient } from "okx-api";
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params: any) => console.log("trace", ...params),
+    trace: (...params: any) => console.log('trace', ...params),
   };
 
   // For private events, all 3 of the following are required (per account):
@@ -49,13 +49,13 @@ import { DefaultLogger, WebsocketAPIClient } from "okx-api";
       accounts: [
         // For private topics, include one or more accounts in an array. Otherwise only public topics will work
         {
-          apiKey: API_KEY || "",
-          apiSecret: API_SECRET || "",
-          apiPass: API_PASSPHRASE || "",
+          apiKey: API_KEY || '',
+          apiSecret: API_SECRET || '',
+          apiPass: API_PASSPHRASE || '',
         },
       ],
     },
-    logger
+    logger,
   );
 
   // Optional, see above "attachEventListeners". Attach basic event handlers, so nothing is left unhandled
@@ -79,11 +79,11 @@ import { DefaultLogger, WebsocketAPIClient } from "okx-api";
    */
   try {
     const res = await wsClient.submitNewOrder({
-      instId: "BTC-USDT",
-      tdMode: "cash",
-      side: "buy",
-      ordType: "market",
-      sz: "100",
+      instId: 'BTC-USDT',
+      tdMode: 'cash',
+      side: 'buy',
+      ordType: 'market',
+      sz: '100',
     });
     /**
       const res = {
@@ -141,18 +141,18 @@ import { DefaultLogger, WebsocketAPIClient } from "okx-api";
   try {
     const res = await wsClient.submitMultipleOrders([
       {
-        instId: "BTC-USDT",
-        tdMode: "cash",
-        side: "buy",
-        ordType: "market",
-        sz: "100",
+        instId: 'BTC-USDT',
+        tdMode: 'cash',
+        side: 'buy',
+        ordType: 'market',
+        sz: '100',
       },
       {
-        instId: "BTC-USDT",
-        tdMode: "cash",
-        side: "buy",
-        ordType: "market",
-        sz: "50",
+        instId: 'BTC-USDT',
+        tdMode: 'cash',
+        side: 'buy',
+        ordType: 'market',
+        sz: '50',
       },
     ]);
     console.log(new Date(), 'WS API "submitMultipleOrders()" result: ', res);
@@ -160,9 +160,9 @@ import { DefaultLogger, WebsocketAPIClient } from "okx-api";
     console.error(
       new Date(),
       'Exception with WS API "submitMultipleOrders()": ',
-      e
+      e,
     );
   }
 
-  console.log(new Date(), "Reached end of example.");
+  console.log(new Date(), 'Reached end of example.');
 })();

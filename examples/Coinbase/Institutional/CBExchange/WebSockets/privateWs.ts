@@ -1,49 +1,49 @@
-import { WebsocketClient } from "coinbase-api";
+import { WebsocketClient } from 'coinbase-api';
 
 async function start() {
   const client = new WebsocketClient(
     {
-      apiKey: "yourAPIKeyHere",
-      apiSecret: "yourAPISecretHere",
+      apiKey: 'yourAPIKeyHere',
+      apiSecret: 'yourAPISecretHere',
       //This is the passphrase you provided when creating this API key. NOT your account password.
-      apiPassphrase: "yourAPIPassPhraseHere",
+      apiPassphrase: 'yourAPIPassPhraseHere',
       // Optional, connect to sandbox instead: https://public-sandbox.exchange.coinbase.com/apikeys
       // useSandbox: true,
-    }
+    },
     // logger,
   );
 
-  client.on("open", (data) => {
-    console.log("open: ", data?.wsKey);
+  client.on('open', (data) => {
+    console.log('open: ', data?.wsKey);
   });
 
   // Data received
-  client.on("update", (data) => {
-    console.info(new Date(), "data received: ", JSON.stringify(data));
+  client.on('update', (data) => {
+    console.info(new Date(), 'data received: ', JSON.stringify(data));
   });
 
   // Something happened, attempting to reconenct
-  client.on("reconnect", (data) => {
-    console.log("reconnect: ", data);
+  client.on('reconnect', (data) => {
+    console.log('reconnect: ', data);
   });
 
   // Reconnect successful
-  client.on("reconnected", (data) => {
-    console.log("reconnected: ", data);
+  client.on('reconnected', (data) => {
+    console.log('reconnected: ', data);
   });
 
   // Connection closed. If unexpected, expect reconnect -> reconnected.
-  client.on("close", (data) => {
-    console.error("close: ", data);
+  client.on('close', (data) => {
+    console.error('close: ', data);
   });
 
   // Reply to a request, e.g. "subscribe"/"unsubscribe"/"authenticate"
-  client.on("response", (data) => {
-    console.info("response: ", JSON.stringify(data, null, 2));
+  client.on('response', (data) => {
+    console.info('response: ', JSON.stringify(data, null, 2));
   });
 
-  client.on("exception", (data) => {
-    console.error("exception: ", data);
+  client.on('exception', (data) => {
+    console.error('exception: ', data);
   });
 
   try {
@@ -56,25 +56,25 @@ async function start() {
      */
     client.subscribe(
       {
-        topic: "full",
+        topic: 'full',
         payload: {
-          product_ids: ["BTC-USD"],
+          product_ids: ['BTC-USD'],
         },
       },
-      "exchangeDirectMarketData"
+      'exchangeDirectMarketData',
     );
 
     client.subscribe(
       {
-        topic: "balance",
+        topic: 'balance',
         payload: {
           account_ids: [
-            "d50ec984-77a8-460a-b958-66f114b0de9b",
-            "d50ec984-77a8-460a-b958-66f114b0de9a",
+            'd50ec984-77a8-460a-b958-66f114b0de9b',
+            'd50ec984-77a8-460a-b958-66f114b0de9a',
           ],
         },
       },
-      "exchangeDirectMarketData"
+      'exchangeDirectMarketData',
     );
 
     /**
@@ -84,40 +84,40 @@ async function start() {
       [
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#full-channel
         {
-          topic: "full",
+          topic: 'full',
           payload: {
-            product_ids: ["BTC-USD"],
+            product_ids: ['BTC-USD'],
           },
         },
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#user-channel
         {
-          topic: "user",
+          topic: 'user',
           payload: {
-            product_ids: ["BTC-USD"],
+            product_ids: ['BTC-USD'],
           },
         },
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#level2-channel
         {
-          topic: "level2",
+          topic: 'level2',
           payload: {
-            product_ids: ["BTC-USD"],
+            product_ids: ['BTC-USD'],
           },
         },
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#balance-channel
         {
-          topic: "balance",
+          topic: 'balance',
           payload: {
             account_ids: [
-              "d50ec984-77a8-460a-b958-66f114b0de9b",
-              "d50ec984-77a8-460a-b958-66f114b0de9a",
+              'd50ec984-77a8-460a-b958-66f114b0de9b',
+              'd50ec984-77a8-460a-b958-66f114b0de9a',
             ],
           },
         },
       ],
-      "exchangeDirectMarketData"
+      'exchangeDirectMarketData',
     );
   } catch (e) {
-    console.error(`Subscribe exception: `, e);
+    console.error('Subscribe exception: ', e);
   }
 }
 

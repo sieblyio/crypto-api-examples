@@ -2,7 +2,7 @@ import {
   // DefaultLogger,
   WebsocketClient,
   WsTopicRequest,
-} from "coinbase-api";
+} from 'coinbase-api';
 
 async function start() {
   // Optional: fully customise the logging experience by injecting a custom logger
@@ -26,38 +26,38 @@ async function start() {
 
   const client = new WebsocketClient();
 
-  client.on("open", (data) => {
-    console.log("open: ", data?.wsKey);
+  client.on('open', (data) => {
+    console.log('open: ', data?.wsKey);
   });
 
   // Data received
-  client.on("update", (data) => {
-    console.info(new Date(), "data received: ", JSON.stringify(data));
+  client.on('update', (data) => {
+    console.info(new Date(), 'data received: ', JSON.stringify(data));
   });
 
   // Something happened, attempting to reconenct
-  client.on("reconnect", (data) => {
-    console.log("reconnect: ", data);
+  client.on('reconnect', (data) => {
+    console.log('reconnect: ', data);
   });
 
   // Reconnect successful
-  client.on("reconnected", (data) => {
-    console.log("reconnected: ", data);
+  client.on('reconnected', (data) => {
+    console.log('reconnected: ', data);
   });
 
   // Connection closed. If unexpected, expect reconnect -> reconnected.
-  client.on("close", (data) => {
-    console.error("close: ", data);
+  client.on('close', (data) => {
+    console.error('close: ', data);
   });
 
   // Reply to a request, e.g. "subscribe"/"unsubscribe"/"authenticate"
-  client.on("response", (data) => {
-    console.info("response: ", JSON.stringify(data, null, 2));
+  client.on('response', (data) => {
+    console.info('response: ', JSON.stringify(data, null, 2));
     // throw new Error('res?');
   });
 
-  client.on("exception", (data) => {
-    console.error("exception: ", data);
+  client.on('exception', (data) => {
+    console.error('exception: ', data);
   });
 
   try {
@@ -87,28 +87,28 @@ async function start() {
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const tickerSubscribeRequest: WsTopicRequest = {
-      topic: "ticker",
+      topic: 'ticker',
       /**
        * Anything in the payload will be merged into the subscribe "request",
        * allowing you to send misc parameters supported by the exchange (such as `product_ids: string[]`)
        */
       payload: {
-        product_ids: ["ETH-USD", "BTC-USD"],
+        product_ids: ['ETH-USD', 'BTC-USD'],
       },
     };
-    client.subscribe(tickerSubscribeRequest, "advTradeMarketData");
+    client.subscribe(tickerSubscribeRequest, 'advTradeMarketData');
 
     /**
      * Subscribe to the "status" topic for a few symbols
      */
     client.subscribe(
       {
-        topic: "status",
+        topic: 'status',
         payload: {
-          product_ids: ["ETH-USD", "BTC-USD"],
+          product_ids: ['ETH-USD', 'BTC-USD'],
         },
       },
-      "advTradeMarketData"
+      'advTradeMarketData',
     );
 
     /**
@@ -116,12 +116,12 @@ async function start() {
      */
     client.subscribe(
       {
-        topic: "status",
+        topic: 'status',
         payload: {
-          product_ids: ["XRP-USD"],
+          product_ids: ['XRP-USD'],
         },
       },
-      "advTradeMarketData"
+      'advTradeMarketData',
     );
 
     // /**
@@ -135,49 +135,49 @@ async function start() {
     client.subscribe(
       [
         {
-          topic: "heartbeats",
+          topic: 'heartbeats',
         },
         {
-          topic: "candles",
+          topic: 'candles',
           payload: {
-            product_ids: ["ETH-USD"],
+            product_ids: ['ETH-USD'],
           },
         },
         {
-          topic: "market_trades",
+          topic: 'market_trades',
           payload: {
-            product_ids: ["ETH-USD", "BTC-USD"],
+            product_ids: ['ETH-USD', 'BTC-USD'],
           },
         },
         {
-          topic: "status",
+          topic: 'status',
           payload: {
-            product_ids: ["ETH-USD", "BTC-USD"],
+            product_ids: ['ETH-USD', 'BTC-USD'],
           },
         },
         {
-          topic: "ticker",
+          topic: 'ticker',
           payload: {
-            product_ids: ["ETH-USD", "BTC-USD"],
+            product_ids: ['ETH-USD', 'BTC-USD'],
           },
         },
         {
-          topic: "ticker_batch",
+          topic: 'ticker_batch',
           payload: {
-            product_ids: ["ETH-USD", "BTC-USD"],
+            product_ids: ['ETH-USD', 'BTC-USD'],
           },
         },
         {
-          topic: "level2",
+          topic: 'level2',
           payload: {
-            product_ids: ["ETH-USD", "BTC-USD"],
+            product_ids: ['ETH-USD', 'BTC-USD'],
           },
         },
       ],
-      "advTradeMarketData"
+      'advTradeMarketData',
     );
   } catch (e) {
-    console.error(`Subscribe exception: `, e);
+    console.error('Subscribe exception: ', e);
   }
 }
 

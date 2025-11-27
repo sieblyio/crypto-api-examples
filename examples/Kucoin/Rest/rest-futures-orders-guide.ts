@@ -1,10 +1,10 @@
-import { FuturesClient } from "kucoin-api";
+import { FuturesClient } from 'kucoin-api';
 
 async function start() {
   const account = {
-    key: "keyHere",
-    secret: "secretHere",
-    passphrase: "memoHere",
+    key: 'keyHere',
+    secret: 'secretHere',
+    passphrase: 'memoHere',
   };
   const client = new FuturesClient({
     apiKey: account.key,
@@ -24,7 +24,7 @@ async function start() {
      * For example:  https://api-futures.kucoin.com/api/v1/contracts/XRPUSDTM  - see the "multiplier" value.
      * */
 
-    const symbolInfo = await client.getSymbol({ symbol: "XRPUSDTM" });
+    const symbolInfo = await client.getSymbol({ symbol: 'XRPUSDTM' });
     const multiplier = symbolInfo.data.multiplier;
 
     /**
@@ -54,53 +54,53 @@ async function start() {
 
     // A MARKET SHORT of 2 contracts of XBT using leverage of 5:
     const marketShort = client.submitOrder({
-      clientOid: "123456789",
+      clientOid: '123456789',
       leverage: 5,
-      side: "sell",
+      side: 'sell',
       size: 2,
-      symbol: "XBTUSDTM",
-      timeInForce: "GTC",
-      type: "market",
+      symbol: 'XBTUSDTM',
+      timeInForce: 'GTC',
+      type: 'market',
     });
-    console.log("Market short: ", marketShort);
+    console.log('Market short: ', marketShort);
 
     // A MARKET LONG of 2 contracts of XBT using leverage of 5:
     const marketLong = client.submitOrder({
-      clientOid: "123456789",
+      clientOid: '123456789',
       leverage: 5,
-      side: "buy",
+      side: 'buy',
       size: 2,
-      symbol: "XBTUSDTM",
-      timeInForce: "GTC",
-      type: "market",
+      symbol: 'XBTUSDTM',
+      timeInForce: 'GTC',
+      type: 'market',
     });
-    console.log("Market long: ", marketLong);
+    console.log('Market long: ', marketLong);
 
     // A LIMIT SHORT of 2 contracts of XBT using leverage of 5:
     const limitShort = client.submitOrder({
-      clientOid: "123456789",
+      clientOid: '123456789',
       leverage: 5,
-      price: "70300.31",
-      side: "sell",
+      price: '70300.31',
+      side: 'sell',
       size: 2,
-      symbol: "XBTUSDTM",
-      timeInForce: "GTC",
-      type: "limit",
+      symbol: 'XBTUSDTM',
+      timeInForce: 'GTC',
+      type: 'limit',
     });
-    console.log("Limit short: ", limitShort);
+    console.log('Limit short: ', limitShort);
 
     // A LIMIT LONG of 2 contracts of XBT using leverage of 5:
     const limitLong = client.submitOrder({
-      clientOid: "123456789",
+      clientOid: '123456789',
       leverage: 5,
-      price: "40300.31",
-      side: "buy",
+      price: '40300.31',
+      side: 'buy',
       size: 2,
-      symbol: "XBTUSDTM",
-      timeInForce: "GTC",
-      type: "limit",
+      symbol: 'XBTUSDTM',
+      timeInForce: 'GTC',
+      type: 'limit',
     });
-    console.log("Limit long: ", limitLong);
+    console.log('Limit long: ', limitLong);
     // On any "close position" action, if you specify a SIZE=0 or leave off the SIZE parameter,
     // then it will close the whole position, regardless of the size.
     // If you specify a SIZE, it will close only the number of contracts you specify.
@@ -111,74 +111,74 @@ async function start() {
 
     // A MARKET CLOSE POSITION example:
     const marketClose = client.submitOrder({
-      clientOid: "123456789",
+      clientOid: '123456789',
       closeOrder: true,
-      symbol: "XBTUSDTM",
-      timeInForce: "GTC",
-      type: "market",
-      side: "sell",
+      symbol: 'XBTUSDTM',
+      timeInForce: 'GTC',
+      type: 'market',
+      side: 'sell',
       size: 0,
     });
-    console.log("Market close: ", marketClose);
+    console.log('Market close: ', marketClose);
 
     // A LIMIT CLOSE of a LONG example:
     const limitCloseLong = client.submitOrder({
-      clientOid: "123456789",
+      clientOid: '123456789',
       leverage: 5,
-      price: "70300.31",
+      price: '70300.31',
       closeOrder: true,
-      side: "sell",
+      side: 'sell',
       size: 2,
-      symbol: "XBTUSDTM",
-      timeInForce: "GTC",
-      type: "limit",
+      symbol: 'XBTUSDTM',
+      timeInForce: 'GTC',
+      type: 'limit',
     });
-    console.log("Limit close long: ", limitCloseLong);
+    console.log('Limit close long: ', limitCloseLong);
 
     // A LIMIT CLOSE of a SHORT example:
     const limitCloseShort = client.submitOrder({
-      clientOid: "123456789",
+      clientOid: '123456789',
       leverage: 5,
-      price: "40300.31",
+      price: '40300.31',
       closeOrder: true,
-      side: "buy",
+      side: 'buy',
       size: 2,
-      symbol: "XBTUSDTM",
-      timeInForce: "GTC",
-      type: "limit",
+      symbol: 'XBTUSDTM',
+      timeInForce: 'GTC',
+      type: 'limit',
     });
-    console.log("Limit close short: ", limitCloseShort);
+    console.log('Limit close short: ', limitCloseShort);
 
     // A STOP LOSS example for a LONG position:
     const stopLossLong = client.submitOrder({
-      clientOid: "123456789",
+      clientOid: '123456789',
       closeOrder: true,
-      stop: "down",
-      side: "buy",
-      stopPrice: "40200.31",
-      stopPriceType: "TP",
-      symbol: "XBTUSDTM",
-      timeInForce: "GTC",
-      type: "market",
+      stop: 'down',
+      side: 'buy',
+      stopPrice: '40200.31',
+      stopPriceType: 'TP',
+      symbol: 'XBTUSDTM',
+      timeInForce: 'GTC',
+      type: 'market',
     });
-    console.log("Stoploss long: ", stopLossLong);
+    console.log('Stoploss long: ', stopLossLong);
 
     // A STOP LOSS example for a SHORT position:
     const stopLossShort = client.submitOrder({
-      clientOid: "123456789",
+      clientOid: '123456789',
       closeOrder: true,
-      stop: "up",
-      side: "sell",
-      stopPrice: "40200.31",
-      stopPriceType: "TP",
-      symbol: "XBTUSDTM",
-      timeInForce: "GTC",
-      type: "market",
+      stop: 'up',
+      side: 'sell',
+      stopPrice: '40200.31',
+      stopPriceType: 'TP',
+      symbol: 'XBTUSDTM',
+      timeInForce: 'GTC',
+      type: 'market',
     });
 
-    console.log("Stoploss short: ", stopLossShort);
+    console.log('Stoploss short: ', stopLossShort);
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

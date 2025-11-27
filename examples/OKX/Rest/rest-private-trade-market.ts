@@ -1,4 +1,4 @@
-import { OrderRequest, RestClient } from "okx-api";
+import { OrderRequest, RestClient } from 'okx-api';
 
 // or
 // import { RestClient, OrderRequest } from 'okx-api';
@@ -15,11 +15,11 @@ const API_PASS = process.env.API_PASSPHRASE_COM;
 
 if (!API_KEY || !API_SECRET || !API_PASS) {
   throw new Error(
-    "Missing api credentials. Use environmental variables or hard code in the script"
+    'Missing api credentials. Use environmental variables or hard code in the script',
   );
 }
 
-console.log(new Date(), "Using credentials: ", {
+console.log(new Date(), 'Using credentials: ', {
   API_KEY,
   API_SECRET,
   API_PASS,
@@ -37,11 +37,11 @@ const client = new RestClient({
 /** Get available balance for an asset */
 async function getAssetBalance(
   client: RestClient,
-  coin: string
+  coin: string,
 ): Promise<number | null> {
   const allBalances = await client.getBalance();
   const usdtBalanceResult = allBalances[0].details.find(
-    (bal) => bal.ccy === coin
+    (bal) => bal.ccy === coin,
   );
 
   const usdtBalance = Number(usdtBalanceResult?.availBal);
@@ -63,56 +63,56 @@ async function getAssetBalance(
  */
 (async () => {
   try {
-    const usdtBalance = await getAssetBalance(client, "USDT");
+    const usdtBalance = await getAssetBalance(client, 'USDT');
     if (!usdtBalance) {
-      console.error("No USDT to trade");
+      console.error('No USDT to trade');
       return;
     }
 
     console.log(`USDT available: ${usdtBalance}`);
 
-    const symbol = "BTC-USDT";
+    const symbol = 'BTC-USDT';
     const percentBalanceToUse = 50;
 
     const quantity = usdtBalance * (percentBalanceToUse / 100);
     const buyOrder: OrderRequest = {
       instId: symbol,
-      ordType: "market",
-      side: "buy",
+      ordType: 'market',
+      side: 'buy',
       sz: String(quantity),
-      tdMode: "cash",
-      tgtCcy: "base_ccy",
+      tdMode: 'cash',
+      tgtCcy: 'base_ccy',
     };
 
-    console.log("submitting buy order:", buyOrder);
+    console.log('submitting buy order:', buyOrder);
     const buyResult = await client.submitOrder(buyOrder);
 
-    console.log("buy order result: ", buyResult, "\n\n");
+    console.log('buy order result: ', buyResult, '\n\n');
 
-    const btcBalance = await getAssetBalance(client, "BTC");
+    const btcBalance = await getAssetBalance(client, 'BTC');
     if (!btcBalance) {
-      console.error("No BTC to trade");
+      console.error('No BTC to trade');
       return;
     }
 
     console.log(`BTC available: ${btcBalance}`);
     const sellOrder: OrderRequest = {
       instId: symbol,
-      ordType: "market",
-      side: "sell",
+      ordType: 'market',
+      side: 'sell',
       sz: String(btcBalance),
-      tdMode: "cash",
-      tgtCcy: "base_ccy",
+      tdMode: 'cash',
+      tgtCcy: 'base_ccy',
     };
 
-    console.log("submitting sell order:", sellOrder);
+    console.log('submitting sell order:', sellOrder);
     const sellResult = await client.submitOrder(sellOrder);
 
-    console.log("sell order result: ", sellResult, "\n\n");
-    const usdtBalanceFinal = await getAssetBalance(client, "USDT");
+    console.log('sell order result: ', sellResult, '\n\n');
+    const usdtBalanceFinal = await getAssetBalance(client, 'USDT');
 
-    console.log("final balance: ", usdtBalanceFinal);
+    console.log('final balance: ', usdtBalanceFinal);
   } catch (e) {
-    console.error("request failed: ", e);
+    console.error('request failed: ', e);
   }
 })();

@@ -1,5 +1,4 @@
-import { RestClientV3 } from "bitget-api";
-
+import { RestClientV3 } from 'bitget-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
@@ -25,6 +24,6 @@ const client = new RestClientV3({
   try {
     console.log(await client.getBalances());
   } catch (e) {
-    console.error("request failed: ", e);
+    console.error('request failed: ', e);
   }
 })();

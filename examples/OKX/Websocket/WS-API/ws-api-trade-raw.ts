@@ -1,10 +1,9 @@
-import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from "okx-api";
-
+import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from 'okx-api';
 
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params: any) => console.log("trace", ...params),
+    trace: (...params: any) => console.log('trace', ...params),
   };
 
   // For private events, all 3 of the following are required (per account):
@@ -20,34 +19,34 @@ import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from "okx-api";
       accounts: [
         // For private topics, include one or more accounts in an array. Otherwise only public topics will work
         {
-          apiKey: API_KEY || "",
-          apiSecret: API_SECRET || "",
-          apiPass: API_PASSPHRASE || "",
+          apiKey: API_KEY || '',
+          apiSecret: API_SECRET || '',
+          apiPass: API_PASSPHRASE || '',
         },
       ],
     },
-    logger
+    logger,
   );
 
-  wsClient.on("update", (data) => {
-    console.log("WS raw message received ", data);
+  wsClient.on('update', (data) => {
+    console.log('WS raw message received ', data);
     // console.log('WS raw message received ', JSON.stringify(data, null, 2));
   });
 
-  wsClient.on("open", (data) => {
-    console.log("WS connection opened:", data.wsKey);
+  wsClient.on('open', (data) => {
+    console.log('WS connection opened:', data.wsKey);
   });
-  wsClient.on("response", (data) => {
-    console.log("WS response: ", JSON.stringify(data, null, 2));
+  wsClient.on('response', (data) => {
+    console.log('WS response: ', JSON.stringify(data, null, 2));
   });
-  wsClient.on("reconnect", ({ wsKey }) => {
-    console.log("WS automatically reconnecting.... ", wsKey);
+  wsClient.on('reconnect', ({ wsKey }) => {
+    console.log('WS automatically reconnecting.... ', wsKey);
   });
-  wsClient.on("reconnected", (data) => {
-    console.log("WS reconnected ", data?.wsKey);
+  wsClient.on('reconnected', (data) => {
+    console.log('WS reconnected ', data?.wsKey);
   });
-  wsClient.on("exception", (data) => {
-    console.log("WS error", data);
+  wsClient.on('exception', (data) => {
+    console.log('WS error', data);
   });
 
   // prodPrivate is for the www.okx.com /ws/v5/private channel
@@ -71,14 +70,14 @@ import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from "okx-api";
   try {
     const res = await wsClient.sendWSAPIRequest(
       OKX_GLOBAL_PRIVATE_CHANNEL,
-      "order",
+      'order',
       {
-        instId: "BTC-USDT",
-        tdMode: "cash",
-        side: "buy",
-        ordType: "market",
-        sz: "100",
-      }
+        instId: 'BTC-USDT',
+        tdMode: 'cash',
+        side: 'buy',
+        ordType: 'market',
+        sz: '100',
+      },
     );
 
     /**
@@ -138,11 +137,11 @@ import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from "okx-api";
   try {
     const res = await wsClient.sendWSAPIRequest(
       OKX_GLOBAL_PRIVATE_CHANNEL,
-      "cancel-order",
+      'cancel-order',
       {
-        instId: "BTC-USDT",
-        ordId: "2510789768709120",
-      }
+        instId: 'BTC-USDT',
+        ordId: '2510789768709120',
+      },
     );
 
     /**
@@ -172,5 +171,5 @@ import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from "okx-api";
     console.error(new Date(), 'Exception with WS API "place-order": ', e);
   }
 
-  console.log(new Date(), "Reached end of example.");
+  console.log(new Date(), 'Reached end of example.');
 })();

@@ -1,4 +1,4 @@
-import { DefaultLogger, WebsocketClientV3, WS_KEY_MAP } from "bitget-api";
+import { DefaultLogger, WebsocketClientV3, WS_KEY_MAP } from 'bitget-api';
 
 // or
 // import { DefaultLogger, WS_KEY_MAP, WebsocketClientV2 } from 'bitget-api';
@@ -6,7 +6,7 @@ import { DefaultLogger, WebsocketClientV3, WS_KEY_MAP } from "bitget-api";
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params: any) => console.log("trace", ...params),
+    trace: (...params: any) => console.log('trace', ...params),
   };
 
   const API_KEY = process.env.API_KEY_COM;
@@ -22,74 +22,74 @@ import { DefaultLogger, WebsocketClientV3, WS_KEY_MAP } from "bitget-api";
       apiSecret: API_SECRET,
       apiPass: API_PASS,
     },
-    logger
+    logger,
   );
 
-  wsClient.on("update", (data) => {
-    console.log("WS raw message received ", data);
+  wsClient.on('update', (data) => {
+    console.log('WS raw message received ', data);
     // console.log('WS raw message received ', JSON.stringify(data, null, 2));
   });
 
-  wsClient.on("open", (data) => {
-    console.log("WS connection opened:", data.wsKey);
+  wsClient.on('open', (data) => {
+    console.log('WS connection opened:', data.wsKey);
   });
-  wsClient.on("response", (data) => {
-    console.log("WS response: ", JSON.stringify(data, null, 2));
+  wsClient.on('response', (data) => {
+    console.log('WS response: ', JSON.stringify(data, null, 2));
   });
-  wsClient.on("reconnect", ({ wsKey }) => {
-    console.log("WS automatically reconnecting.... ", wsKey);
+  wsClient.on('reconnect', ({ wsKey }) => {
+    console.log('WS automatically reconnecting.... ', wsKey);
   });
-  wsClient.on("reconnected", (data) => {
-    console.log("WS reconnected ", data?.wsKey);
+  wsClient.on('reconnected', (data) => {
+    console.log('WS reconnected ', data?.wsKey);
   });
-  wsClient.on("exception", (data) => {
-    console.log("WS error", data);
+  wsClient.on('exception', (data) => {
+    console.log('WS error', data);
   });
 
   // You can subscribe to one topic at a time
   wsClient.subscribe(
     {
-      topic: "account",
+      topic: 'account',
       payload: {
-        instType: "UTA", // Note: all account events go on the UTA instType
+        instType: 'UTA', // Note: all account events go on the UTA instType
       },
     },
-    WS_KEY_MAP.v3Private // This parameter points to private or public
+    WS_KEY_MAP.v3Private, // This parameter points to private or public
   );
 
   // Note: all account events go on the UTA instType
-  const ACCOUNT_INST_TYPE = "UTA";
+  const ACCOUNT_INST_TYPE = 'UTA';
   const ACCOUNT_WS_KEY = WS_KEY_MAP.v3Private;
 
   // Or multiple at once:
   wsClient.subscribe(
     [
       {
-        topic: "account",
+        topic: 'account',
         payload: {
           instType: ACCOUNT_INST_TYPE,
         },
       },
       {
-        topic: "position",
+        topic: 'position',
         payload: {
           instType: ACCOUNT_INST_TYPE,
         },
       },
       {
-        topic: "fill",
+        topic: 'fill',
         payload: {
           instType: ACCOUNT_INST_TYPE,
         },
       },
       {
-        topic: "order",
+        topic: 'order',
         payload: {
           instType: ACCOUNT_INST_TYPE,
         },
       },
     ],
-    ACCOUNT_WS_KEY
+    ACCOUNT_WS_KEY,
   );
 
   // Topics are tracked per websocket type
@@ -97,6 +97,6 @@ import { DefaultLogger, WebsocketClientV3, WS_KEY_MAP } from "bitget-api";
   setTimeout(() => {
     const privateTopics = wsClient.getWsStore().getTopics(WS_KEY_MAP.v3Private);
 
-    console.log("private topics currently in state: ", privateTopics);
+    console.log('private topics currently in state: ', privateTopics);
   }, 5 * 1000);
 })();

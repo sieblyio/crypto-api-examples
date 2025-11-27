@@ -1,4 +1,4 @@
-import { DefaultLogger, isWsFormattedTrade, WebsocketClient } from "binance";
+import { DefaultLogger, isWsFormattedTrade, WebsocketClient } from 'binance';
 
 (async () => {
   const logger = {
@@ -10,37 +10,37 @@ import { DefaultLogger, isWsFormattedTrade, WebsocketClient } from "binance";
     {
       beautify: true,
     },
-    logger
+    logger,
   );
 
-  wsClient.on("formattedMessage", (data) => {
+  wsClient.on('formattedMessage', (data) => {
     if (isWsFormattedTrade(data)) {
-      console.log("trade event ", data);
+      console.log('trade event ', data);
       return;
     }
 
-    console.log("log formattedMessage: ", data);
+    console.log('log formattedMessage: ', data);
   });
 
-  wsClient.on("open", (data) => {
-    console.log("connection opened open:", data.wsKey, data.wsUrl);
+  wsClient.on('open', (data) => {
+    console.log('connection opened open:', data.wsKey, data.wsUrl);
   });
-  wsClient.on("response", (data) => {
-    console.log("log response: ", JSON.stringify(data, null, 2));
+  wsClient.on('response', (data) => {
+    console.log('log response: ', JSON.stringify(data, null, 2));
   });
-  wsClient.on("reconnecting", (data) => {
-    console.log("ws automatically reconnecting.... ", data?.wsKey);
+  wsClient.on('reconnecting', (data) => {
+    console.log('ws automatically reconnecting.... ', data?.wsKey);
   });
-  wsClient.on("reconnected", (data) => {
-    console.log("ws has reconnected ", data?.wsKey);
+  wsClient.on('reconnected', (data) => {
+    console.log('ws has reconnected ', data?.wsKey);
   });
 
   // Request subscription to the following symbol trade events:
-  const symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT"];
+  const symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT'];
 
   // Loop through symbols
   for (const symbol of symbols) {
-    console.log("subscribing to trades for: ", symbol);
+    console.log('subscribing to trades for: ', symbol);
     wsClient.subscribeSpotTrades(symbol);
   }
 })();

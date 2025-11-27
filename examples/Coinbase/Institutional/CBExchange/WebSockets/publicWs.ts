@@ -1,4 +1,4 @@
-import { WebsocketClient } from "coinbase-api";
+import { WebsocketClient } from 'coinbase-api';
 
 async function start() {
   /**
@@ -8,38 +8,38 @@ async function start() {
    */
   const client = new WebsocketClient();
 
-  client.on("open", (data) => {
-    console.log("open: ", data?.wsKey);
+  client.on('open', (data) => {
+    console.log('open: ', data?.wsKey);
   });
 
   // Data received
-  client.on("update", (data) => {
-    console.info(new Date(), "data received: ", JSON.stringify(data));
+  client.on('update', (data) => {
+    console.info(new Date(), 'data received: ', JSON.stringify(data));
   });
 
   // Something happened, attempting to reconenct
-  client.on("reconnect", (data) => {
-    console.log("reconnect: ", data);
+  client.on('reconnect', (data) => {
+    console.log('reconnect: ', data);
   });
 
   // Reconnect successful
-  client.on("reconnected", (data) => {
-    console.log("reconnected: ", data);
+  client.on('reconnected', (data) => {
+    console.log('reconnected: ', data);
   });
 
   // Connection closed. If unexpected, expect reconnect -> reconnected.
-  client.on("close", (data) => {
-    console.error("close: ", data);
+  client.on('close', (data) => {
+    console.error('close: ', data);
   });
 
   // Reply to a request, e.g. "subscribe"/"unsubscribe"/"authenticate"
-  client.on("response", (data) => {
-    console.info("response: ", JSON.stringify(data, null, 2));
+  client.on('response', (data) => {
+    console.info('response: ', JSON.stringify(data, null, 2));
     // throw new Error('res?');
   });
 
-  client.on("exception", (data) => {
-    console.error("exception: ", data);
+  client.on('exception', (data) => {
+    console.error('exception: ', data);
   });
 
   try {
@@ -103,30 +103,30 @@ async function start() {
       [
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#heartbeat-channel
         {
-          topic: "heartbeat",
+          topic: 'heartbeat',
           payload: {
-            product_ids: ["ETH-EUR"],
+            product_ids: ['ETH-EUR'],
           },
         },
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#status-channel
-        "status",
+        'status',
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#auction-channel
         {
-          topic: "auctionfeed",
+          topic: 'auctionfeed',
           payload: {
-            product_ids: ["LTC-USD"],
+            product_ids: ['LTC-USD'],
           },
         },
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#matches-channel
         {
-          topic: "matches",
+          topic: 'matches',
           payload: {
-            product_ids: ["BTC-USD"],
+            product_ids: ['BTC-USD'],
           },
         },
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#rfq-matches-channel
         {
-          topic: "rfq_matches",
+          topic: 'rfq_matches',
           payload: {
             // Optional:
             // product_ids: ['ETH-USD', 'BTC-USD'],
@@ -134,30 +134,30 @@ async function start() {
         },
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#ticker-channel
         {
-          topic: "ticker",
+          topic: 'ticker',
           payload: {
-            product_ids: ["ETH-USD", "BTC-USD"],
+            product_ids: ['ETH-USD', 'BTC-USD'],
           },
         },
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#ticker-batch-channel
         {
-          topic: "ticker_batch",
+          topic: 'ticker_batch',
           payload: {
-            product_ids: ["ETH-USD", "BTC-USD"],
+            product_ids: ['ETH-USD', 'BTC-USD'],
           },
         },
         // https://docs.cdp.coinbase.com/exchange/docs/websocket-channels#level2-batch-channel
         {
-          topic: "level2_batch",
+          topic: 'level2_batch',
           payload: {
-            product_ids: ["ETH-USD", "BTC-USD"],
+            product_ids: ['ETH-USD', 'BTC-USD'],
           },
         },
       ],
-      "exchangeMarketData"
+      'exchangeMarketData',
     );
   } catch (e) {
-    console.error(`Subscribe exception: `, e);
+    console.error('Subscribe exception: ', e);
   }
 }
 

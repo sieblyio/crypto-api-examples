@@ -8,7 +8,7 @@ async function getTickers() {
 
     console.log('Tickers: ', JSON.stringify(tickers, null, 2));
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

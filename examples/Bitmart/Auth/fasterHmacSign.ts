@@ -1,6 +1,5 @@
-import { createHmac } from 'crypto';
-
 import { RestClient } from 'bitmart-api';
+import { createHmac } from 'crypto';
 
 const account = {
   key: process.env.API_KEY || 'apiKeyHere',
@@ -27,7 +26,7 @@ async function getSpotBalances() {
 
     console.log('Balances: ', JSON.stringify(balances, null, 2));
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

@@ -67,7 +67,7 @@ async function start() {
     // Order Channel
     // client.subscribe('futures/order', 'futures');
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

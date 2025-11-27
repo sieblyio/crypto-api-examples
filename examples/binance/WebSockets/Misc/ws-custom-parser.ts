@@ -2,7 +2,7 @@
 // Import 3rd party library for parsing big number types in JSON
 // import JSONbig from 'json-bigint';
 
-import { WebsocketClient } from "binance";
+import { WebsocketClient } from 'binance';
 
 // Demonstrates using a custom JSON parser for incoming WS messages to preserve big integers
 

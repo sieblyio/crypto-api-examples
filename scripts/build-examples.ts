@@ -1,10 +1,10 @@
-import { parse as parseComments } from "comment-parser";
-import * as fs from "fs/promises";
-import { glob } from "glob";
-import * as ts from "typescript";
+import { parse as parseComments } from 'comment-parser';
+import * as fs from 'fs/promises';
+import { glob } from 'glob';
+import * as ts from 'typescript';
 
 interface ExampleFile {
-  type: "file";
+  type: 'file';
   name: string;
   path: string;
   code: string;
@@ -17,7 +17,7 @@ interface ExampleFile {
 }
 
 interface ExampleFolder {
-  type: "folder";
+  type: 'folder';
   name: string;
   path: string;
   children: (ExampleFile | ExampleFolder)[];
@@ -26,27 +26,27 @@ interface ExampleFolder {
 async function buildFileTree(basePath: string): Promise<ExampleFolder> {
   const files: string[] = glob.sync(`${basePath}/**/*.ts`);
   const tree: ExampleFolder = {
-    type: "folder",
+    type: 'folder',
     name: basePath,
     path: basePath,
     children: [],
   };
 
   for (const filePath of files) {
-    const parts = filePath.split("/");
+    const parts = filePath.split('/');
     let current = tree;
 
     // Create folder structure
     for (let i = 1; i < parts.length - 1; i++) {
       let folder = current.children.find(
-        (child) => child.type === "folder" && child.name === parts[i]
+        (child) => child.type === 'folder' && child.name === parts[i],
       ) as ExampleFolder;
 
       if (!folder) {
         folder = {
-          type: "folder",
+          type: 'folder',
           name: parts[i],
-          path: parts.slice(0, i + 1).join("/"),
+          path: parts.slice(0, i + 1).join('/'),
           children: [],
         };
         current.children.push(folder);
@@ -55,7 +55,7 @@ async function buildFileTree(basePath: string): Promise<ExampleFolder> {
     }
 
     // Add file
-    const content = await fs.readFile(filePath, "utf-8");
+    const content = await fs.readFile(filePath, 'utf-8');
     const comments = parseComments(content);
     const metadata =
       comments[0]?.tags.reduce(
@@ -63,11 +63,11 @@ async function buildFileTree(basePath: string): Promise<ExampleFolder> {
           ...acc,
           [tag.tag]: tag.description,
         }),
-        {}
+        {},
       ) || {};
 
     current.children.push({
-      type: "file",
+      type: 'file',
       name: parts[parts.length - 1],
       path: filePath,
       code: content,
@@ -75,7 +75,7 @@ async function buildFileTree(basePath: string): Promise<ExampleFolder> {
         title: metadata.title,
         description: metadata.description,
         category: metadata.category,
-        tags: metadata.tags?.split(",").map((t) => t.trim()),
+        tags: metadata.tags?.split(',').map((t) => t.trim()),
       },
     });
   }
@@ -84,37 +84,37 @@ async function buildFileTree(basePath: string): Promise<ExampleFolder> {
 }
 
 async function buildExamplesIndex(): Promise<void> {
-  const tree = await buildFileTree("examples");
+  const tree = await buildFileTree('examples');
 
-  await fs.mkdir("public", { recursive: true });
-  await fs.mkdir("public/js", { recursive: true });
+  await fs.mkdir('public', { recursive: true });
+  await fs.mkdir('public/js', { recursive: true });
 
   await fs.writeFile(
-    "public/examples-index.json",
-    JSON.stringify(tree, null, 2)
+    'public/examples-index.json',
+    JSON.stringify(tree, null, 2),
   );
 
-  console.log("✓ Examples index built successfully");
+  console.log('✓ Examples index built successfully');
   console.log(`✓ Processed ${countFiles(tree)} example files`);
 }
 
 function countFiles(node: ExampleFolder | ExampleFile): number {
-  if (node.type === "file") return 1;
+  if (node.type === 'file') return 1;
   return node.children.reduce((sum, child) => sum + countFiles(child), 0);
 }
 
 async function checkTypeScriptErrors(): Promise<void> {
-  console.log("\nChecking TypeScript compilation errors...");
+  console.log('\nChecking TypeScript compilation errors...');
 
-  const files = glob.sync("examples/**/*.ts");
+  const files = glob.sync('examples/**/*.ts');
   const configPath = ts.findConfigFile(
-    "./",
+    './',
     ts.sys.fileExists,
-    "tsconfig.json"
+    'tsconfig.json',
   );
 
   if (!configPath) {
-    console.error("Could not find tsconfig.json");
+    console.error('Could not find tsconfig.json');
     return;
   }
 
@@ -122,14 +122,14 @@ async function checkTypeScriptErrors(): Promise<void> {
   const compilerOptions = ts.parseJsonConfigFileContent(
     configFile.config,
     ts.sys,
-    "./"
+    './',
   );
 
   const program = ts.createProgram(files, compilerOptions.options);
   const diagnostics = ts.getPreEmitDiagnostics(program);
 
   if (diagnostics.length === 0) {
-    console.log("✓ All example files compile successfully!");
+    console.log('✓ All example files compile successfully!');
     return;
   }
 
@@ -155,7 +155,7 @@ async function checkTypeScriptErrors(): Promise<void> {
           diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
         const message = ts.flattenDiagnosticMessageText(
           diagnostic.messageText,
-          "\n"
+          '\n',
         );
         console.log(`   Line ${line + 1}:${character + 1} - ${message}`);
       }

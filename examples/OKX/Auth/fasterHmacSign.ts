@@ -1,6 +1,5 @@
-import { createHmac } from "crypto";
-
-import { DefaultLogger, RestClient, WebsocketClient } from "okx-api";
+import { createHmac } from 'crypto';
+import { DefaultLogger, RestClient, WebsocketClient } from 'okx-api';
 
 /**
  * Injecting a custom signMessage function.
@@ -43,7 +42,7 @@ const restClient = new RestClient({
    * you can inject a faster sign mechanism such as node's native createHmac:
    */
   customSignMessageFn: async (message, secret) => {
-    return createHmac("sha256", secret).update(message).digest("hex");
+    return createHmac('sha256', secret).update(message).digest('hex');
   },
 });
 
@@ -58,9 +57,9 @@ const wsClient = new WebsocketClient(
     accounts: [
       // For private topics, include one or more accounts in an array. Otherwise only public topics will work
       {
-        apiKey: API_KEY || "",
-        apiSecret: API_SECRET || "",
-        apiPass: API_PASS || "",
+        apiKey: API_KEY || '',
+        apiSecret: API_SECRET || '',
+        apiPass: API_PASS || '',
       },
     ],
     /**
@@ -68,61 +67,61 @@ const wsClient = new WebsocketClient(
      * you can inject a faster sign mechanism such as node's native createHmac:
      */
     customSignMessageFn: async (message, secret) => {
-      return createHmac("sha256", secret).update(message).digest("hex");
+      return createHmac('sha256', secret).update(message).digest('hex');
     },
   },
-  customLogger
+  customLogger,
 );
 
 function setWsClientEventListeners(
   websocketClient: WebsocketClient,
-  accountRef: string
+  accountRef: string,
 ): Promise<void> {
   return new Promise(() => {
-    websocketClient.on("update", (data) => {
-      console.log(new Date(), accountRef, "data ", JSON.stringify(data));
+    websocketClient.on('update', (data) => {
+      console.log(new Date(), accountRef, 'data ', JSON.stringify(data));
       // console.log('raw message received ', JSON.stringify(data, null, 2));
     });
 
-    websocketClient.on("open", (data) => {
+    websocketClient.on('open', (data) => {
       console.log(
         new Date(),
         accountRef,
-        "connection opened open:",
-        data.wsKey
+        'connection opened open:',
+        data.wsKey,
       );
     });
-    websocketClient.on("response", (data) => {
+    websocketClient.on('response', (data) => {
       console.log(
         new Date(),
         accountRef,
-        "log response: ",
-        JSON.stringify(data, null, 2)
+        'log response: ',
+        JSON.stringify(data, null, 2),
       );
     });
-    websocketClient.on("reconnect", ({ wsKey }) => {
+    websocketClient.on('reconnect', ({ wsKey }) => {
       console.log(
         new Date(),
         accountRef,
-        "ws automatically reconnecting.... ",
-        wsKey
+        'ws automatically reconnecting.... ',
+        wsKey,
       );
     });
-    websocketClient.on("reconnected", (data) => {
-      console.log(new Date(), accountRef, "ws has reconnected ", data?.wsKey);
+    websocketClient.on('reconnected', (data) => {
+      console.log(new Date(), accountRef, 'ws has reconnected ', data?.wsKey);
     });
-    websocketClient.on("exception", (data) => {
-      console.error(new Date(), accountRef, "ws exception: ", data);
+    websocketClient.on('exception', (data) => {
+      console.error(new Date(), accountRef, 'ws exception: ', data);
     });
   });
 }
 
 (async () => {
   try {
-    const onSubscribed = setWsClientEventListeners(wsClient, "demoAcc");
+    const onSubscribed = setWsClientEventListeners(wsClient, 'demoAcc');
 
     wsClient.subscribe({
-      channel: "account",
+      channel: 'account',
     });
 
     // Simple promise to ensure we're subscribed before trying anything else
@@ -130,8 +129,8 @@ function setWsClientEventListeners(
 
     // Start trading
     const balResponse1 = await restClient.getBalances();
-    console.log("balResponse1: ", JSON.stringify(balResponse1, null, 2));
+    console.log('balResponse1: ', JSON.stringify(balResponse1, null, 2));
   } catch (e) {
-    console.error("request failed: ", e);
+    console.error('request failed: ', e);
   }
 })();

@@ -1,4 +1,4 @@
-import { WebsocketClient } from "okx-api";
+import { WebsocketClient } from 'okx-api';
 
 /**
  *
@@ -14,42 +14,42 @@ const wsClient = new WebsocketClient({
   accounts: [
     // For private topics, include one or more accounts in an array. Otherwise only public topics will work
     {
-      apiKey: "INCORRECT_API_KEY",
-      apiSecret: "INCORRECT_API_SECRET",
-      apiPass: "INCORRECT_API_PASSPHRASE",
+      apiKey: 'INCORRECT_API_KEY',
+      apiSecret: 'INCORRECT_API_SECRET',
+      apiPass: 'INCORRECT_API_PASSPHRASE',
     },
   ],
 });
 
 // Raw data will arrive on the 'update' event
-wsClient.on("update", (data) => {
+wsClient.on('update', (data) => {
   // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
-  console.log("ws update (raw data received)", JSON.stringify(data));
+  console.log('ws update (raw data received)', JSON.stringify(data));
 });
 
-wsClient.on("open", (data) => {
-  console.log("connection opened open:", data.wsKey);
+wsClient.on('open', (data) => {
+  console.log('connection opened open:', data.wsKey);
 });
 
 // Replies (e.g. authenticating or subscribing to channels) will arrive on the 'response' event
-wsClient.on("response", (data) => {
+wsClient.on('response', (data) => {
   // console.log('ws response: ', JSON.stringify(data, null, 2));
-  console.log("ws response: ", JSON.stringify(data));
+  console.log('ws response: ', JSON.stringify(data));
 });
 
-wsClient.on("reconnect", ({ wsKey }) => {
-  console.log("ws automatically reconnecting.... ", wsKey);
+wsClient.on('reconnect', ({ wsKey }) => {
+  console.log('ws automatically reconnecting.... ', wsKey);
 });
-wsClient.on("reconnected", (data) => {
-  console.log("ws has reconnected ", data?.wsKey);
+wsClient.on('reconnected', (data) => {
+  console.log('ws has reconnected ', data?.wsKey);
 });
 
-wsClient.on("exception", (data) => {
-  console.error("ws exception: ", data);
+wsClient.on('exception', (data) => {
+  console.error('ws exception: ', data);
 
-  const INVALID_API_KEY_ERROR = "60005";
-  if (data.event === "error" && data.code === INVALID_API_KEY_ERROR) {
-    console.error("Detected auth failure - closing websocket");
+  const INVALID_API_KEY_ERROR = '60005';
+  if (data.event === 'error' && data.code === INVALID_API_KEY_ERROR) {
+    console.error('Detected auth failure - closing websocket');
     wsClient.close(data.wsKey);
   }
 });
@@ -61,5 +61,5 @@ wsClient.connectPrivate();
 
 // Subscribe one event at a time:
 wsClient.subscribe({
-  channel: "account",
+  channel: 'account',
 });

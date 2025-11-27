@@ -57,7 +57,7 @@ async function start() {
     client.subscribe('spot/ticker:BTC_USDT', 'spot');
     //
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

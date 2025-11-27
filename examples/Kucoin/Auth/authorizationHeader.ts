@@ -1,4 +1,4 @@
-import { SpotClient } from "kucoin-api";
+import { SpotClient } from 'kucoin-api';
 
 async function start() {
   /**
@@ -7,19 +7,19 @@ async function start() {
    * More details: https://github.com/tiagosiebler/kucoin-api/issues/2
    */
   const client = new SpotClient({
-    apiAccessToken: "accessTokenHere!",
+    apiAccessToken: 'accessTokenHere!',
   });
 
   try {
     const result = await client.getBalances();
 
-    console.log("result ", JSON.stringify(result, null, 2));
+    console.log('result ', JSON.stringify(result, null, 2));
   } catch (e) {
-    console.error("Req error: ", e);
+    console.error('Req error: ', e);
   }
 
   // If you later need to set a new access token (e.g. it expired):
-  client.setAccessToken("newAccessTokenHere");
+  client.setAccessToken('newAccessTokenHere');
 }
 
 start();

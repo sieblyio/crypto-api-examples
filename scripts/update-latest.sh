@@ -1,0 +1,9 @@
+npm install okx-api@latest
+npm install bitget-api@latest
+npm install bitmart-api@latest
+npm install bybit-api@latest
+npm install coinbase-api@latest
+npm install gateio-api@latest
+npm install kucoin-api@latest
+npm install binance@latest
+npm install @siebly/kraken-api@latest

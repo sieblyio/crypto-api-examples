@@ -1,9 +1,9 @@
-import { DefaultLogger, WebsocketClientV2, WS_KEY_MAP } from "bitget-api";
+import { DefaultLogger, WebsocketClientV2, WS_KEY_MAP } from 'bitget-api';
 
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params: any) => console.log("trace", ...params),
+    trace: (...params: any) => console.log('trace', ...params),
   };
 
   const wsClient = new WebsocketClientV2(
@@ -12,40 +12,40 @@ import { DefaultLogger, WebsocketClientV2, WS_KEY_MAP } from "bitget-api";
       // optionally provide rest options, e.g. to pass through a proxy
       // },
     },
-    logger
+    logger,
   );
 
-  wsClient.on("update", (data) => {
-    console.log("WS raw message received ", data);
+  wsClient.on('update', (data) => {
+    console.log('WS raw message received ', data);
     // console.log('WS raw message received ', JSON.stringify(data, null, 2));
   });
 
-  wsClient.on("open", (data) => {
-    console.log("WS connection opened:", data.wsKey);
+  wsClient.on('open', (data) => {
+    console.log('WS connection opened:', data.wsKey);
   });
-  wsClient.on("response", (data) => {
-    console.log("WS response: ", JSON.stringify(data, null, 2));
+  wsClient.on('response', (data) => {
+    console.log('WS response: ', JSON.stringify(data, null, 2));
   });
-  wsClient.on("reconnect", ({ wsKey }) => {
-    console.log("WS automatically reconnecting.... ", wsKey);
+  wsClient.on('reconnect', ({ wsKey }) => {
+    console.log('WS automatically reconnecting.... ', wsKey);
   });
-  wsClient.on("reconnected", (data) => {
-    console.log("WS reconnected ", data?.wsKey);
+  wsClient.on('reconnected', (data) => {
+    console.log('WS reconnected ', data?.wsKey);
   });
-  wsClient.on("exception", (data) => {
-    console.log("WS error", data);
+  wsClient.on('exception', (data) => {
+    console.log('WS error', data);
   });
 
   /**
    * Public events
    */
 
-  const symbol = "BTCUSDT";
+  const symbol = 'BTCUSDT';
 
   // Spot public
 
   // tickers
-  wsClient.subscribeTopic("SPOT", "ticker", symbol);
+  wsClient.subscribeTopic('SPOT', 'ticker', symbol);
 
   // candles
   // wsClient.subscribeTopic('SPOT', 'candle1m', symbol);
@@ -75,6 +75,6 @@ import { DefaultLogger, WebsocketClientV2, WS_KEY_MAP } from "bitget-api";
   setTimeout(() => {
     const publicTopics = wsClient.getWsStore().getTopics(WS_KEY_MAP.v2Public);
 
-    console.log("public  topics: ", publicTopics);
+    console.log('public  topics: ', publicTopics);
   }, 5 * 1000);
 })();

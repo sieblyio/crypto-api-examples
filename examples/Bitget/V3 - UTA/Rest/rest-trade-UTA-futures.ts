@@ -2,7 +2,7 @@ import {
   PlaceOrderRequestV3,
   RestClientV3,
   WebsocketClientV3,
-} from "bitget-api";
+} from 'bitget-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
@@ -53,129 +53,129 @@ function promiseSleep(milliseconds: number) {
 (async () => {
   try {
     // Add event listeners to log websocket events on account
-    wsClient.on("update", (data) => logWSEvent("update", data));
+    wsClient.on('update', (data) => logWSEvent('update', data));
 
-    wsClient.on("open", (data) => logWSEvent("open", data));
-    wsClient.on("response", (data) => logWSEvent("response", data));
-    wsClient.on("reconnect", (data) => logWSEvent("reconnect", data));
-    wsClient.on("reconnected", (data) => logWSEvent("reconnected", data));
-    wsClient.on("authenticated", (data) => logWSEvent("authenticated", data));
-    wsClient.on("exception", (data) => logWSEvent("exception", data));
+    wsClient.on('open', (data) => logWSEvent('open', data));
+    wsClient.on('response', (data) => logWSEvent('response', data));
+    wsClient.on('reconnect', (data) => logWSEvent('reconnect', data));
+    wsClient.on('reconnected', (data) => logWSEvent('reconnected', data));
+    wsClient.on('authenticated', (data) => logWSEvent('authenticated', data));
+    wsClient.on('exception', (data) => logWSEvent('exception', data));
 
     // Subscribe to private topics for UTA account
     wsClient.subscribe(
       {
-        topic: "account",
+        topic: 'account',
         payload: {
-          instType: "UTA",
+          instType: 'UTA',
         },
       },
-      "v3Private"
+      'v3Private',
     );
 
     // Subscribe to position updates
     wsClient.subscribe(
       {
-        topic: "position",
+        topic: 'position',
         payload: {
-          instType: "UTA",
+          instType: 'UTA',
         },
       },
-      "v3Private"
+      'v3Private',
     );
 
     // Subscribe to order updates
     wsClient.subscribe(
       {
-        topic: "order",
+        topic: 'order',
         payload: {
-          instType: "UTA",
+          instType: 'UTA',
         },
       },
-      "v3Private"
+      'v3Private',
     );
 
     // wait briefly for ws to be ready (could also use the response or authenticated events, to make sure topics are subscribed to before starting)
     await promiseSleep(2.5 * 1000);
 
-    const symbol = "BTCUSDT";
+    const symbol = 'BTCUSDT';
 
     const balanceResult = await client.getBalances();
     const accountBalance = balanceResult.data;
 
     const usdtAsset = accountBalance.assets?.find(
-      (asset) => asset.coin === "USDT"
+      (asset) => asset.coin === 'USDT',
     );
     const usdtAmount = usdtAsset ? Number(usdtAsset.available) : 0;
 
-    console.log("USDT balance: ", usdtAmount);
+    console.log('USDT balance: ', usdtAmount);
 
     if (!usdtAmount) {
-      console.error("No USDT to trade");
+      console.error('No USDT to trade');
       return;
     }
 
     const symbolRulesResult = await client.getInstruments({
-      category: "USDT-FUTURES",
+      category: 'USDT-FUTURES',
       symbol: symbol,
     });
     const bitcoinUSDFuturesRule = symbolRulesResult.data.find(
-      (row) => row.symbol === symbol
+      (row) => row.symbol === symbol,
     );
 
-    console.log("symbol rules: ", bitcoinUSDFuturesRule);
+    console.log('symbol rules: ', bitcoinUSDFuturesRule);
     if (!bitcoinUSDFuturesRule) {
-      console.error("Failed to get trading rules for " + symbol);
+      console.error('Failed to get trading rules for ' + symbol);
       return;
     }
 
     const order: PlaceOrderRequestV3 = {
-      category: "USDT-FUTURES",
-      orderType: "market",
-      side: "buy",
+      category: 'USDT-FUTURES',
+      orderType: 'market',
+      side: 'buy',
       qty: bitcoinUSDFuturesRule.minOrderQty,
       symbol: symbol,
     } as const;
 
-    console.log("placing order: ", order);
+    console.log('placing order: ', order);
 
     const result = await client.submitNewOrder(order);
 
-    console.log("order result: ", result);
+    console.log('order result: ', result);
 
     const positionsResult = await client.getCurrentPosition({
-      category: "USDT-FUTURES",
+      category: 'USDT-FUTURES',
     });
     const positionsToClose = positionsResult.data.list.filter(
-      (pos) => pos.total !== "0"
+      (pos) => pos.total !== '0',
     );
 
-    console.log("open positions to close: ", positionsToClose);
+    console.log('open positions to close: ', positionsToClose);
 
     // Loop through any active positions and send a closing market order on each position
     for (const position of positionsToClose) {
-      const closingSide = position.posSide === "long" ? "sell" : "buy";
+      const closingSide = position.posSide === 'long' ? 'sell' : 'buy';
       const closingOrder: PlaceOrderRequestV3 = {
-        category: "USDT-FUTURES",
-        orderType: "market",
+        category: 'USDT-FUTURES',
+        orderType: 'market',
         side: closingSide,
         qty: position.total,
         symbol: position.symbol,
       };
 
-      console.log("closing position with market order: ", closingOrder);
+      console.log('closing position with market order: ', closingOrder);
 
       const result = await client.submitNewOrder(closingOrder);
-      console.log("position closing order result: ", result);
+      console.log('position closing order result: ', result);
     }
 
     console.log(
-      "positions after closing all: ",
+      'positions after closing all: ',
       await client.getCurrentPosition({
-        category: "USDT-FUTURES",
-      })
+        category: 'USDT-FUTURES',
+      }),
     );
   } catch (e) {
-    console.error("request failed: ", e);
+    console.error('request failed: ', e);
   }
 })();

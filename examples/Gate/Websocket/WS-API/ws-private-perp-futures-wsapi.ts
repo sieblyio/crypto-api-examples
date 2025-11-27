@@ -1,8 +1,9 @@
-import { LogParams, WebsocketClient } from "gateio-api";
+import { LogParams, WebsocketClient } from 'gateio-api';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const account = {
-  key: process.env.API_KEY || "apiKeyHere",
-  secret: process.env.API_SECRET || "apiSecretHere",
+  key: process.env.API_KEY || 'apiKeyHere',
+  secret: process.env.API_SECRET || 'apiSecretHere',
 };
 
 // Define a custom logger object to handle logging at different levels
@@ -14,11 +15,11 @@ const customLogger = {
   },
   // Info level logging: used for general informational messages
   info: (...params: LogParams): void => {
-    console.log(new Date(), "info", ...params);
+    console.log(new Date(), 'info', ...params);
   },
   // Error level logging: used for error messages
   error: (...params: LogParams): void => {
-    console.error(new Date(), "error", ...params);
+    console.error(new Date(), 'error', ...params);
   },
 };
 
@@ -29,11 +30,11 @@ async function start() {
       apiSecret: account.secret,
       reauthWSAPIOnReconnect: true,
     },
-    customLogger
+    customLogger,
   );
 
-  client.on("open", (data) => {
-    console.log(new Date(), "ws connected ", data?.wsKey);
+  client.on('open', (data) => {
+    console.log(new Date(), 'ws connected ', data?.wsKey);
   });
 
   // See comments below about event-driven vs promise-driven. Not needed if using the promise-driven approach
@@ -43,18 +44,18 @@ async function start() {
   // });
 
   // Something happened, attempting to reconnect
-  client.on("reconnect", (data) => {
-    console.log(new Date(), "ws reconnect: ", data);
+  client.on('reconnect', (data) => {
+    console.log(new Date(), 'ws reconnect: ', data);
   });
 
   // Reconnect successful
-  client.on("reconnected", (data) => {
-    console.log(new Date(), "ws reconnected: ", data);
+  client.on('reconnected', (data) => {
+    console.log(new Date(), 'ws reconnected: ', data);
   });
 
   // Connection closed. If unexpected, expect reconnect -> reconnected.
-  client.on("close", (data) => {
-    console.error(new Date(), "ws close: ", data);
+  client.on('close', (data) => {
+    console.error(new Date(), 'ws close: ', data);
   });
 
   // Reply to a request, e.g. "subscribe"/"unsubscribe"/"authenticate"
@@ -68,8 +69,8 @@ async function start() {
   //   );
   // });
 
-  client.on("exception", (data) => {
-    console.error(new Date(), "ws exception: ", data);
+  client.on('exception', (data) => {
+    console.error(new Date(), 'ws exception: ', data);
   });
 
   // Optional, listen to this event if you prefer the event-driven approach.
@@ -93,14 +94,14 @@ async function start() {
      * Optional - you can inject rich types to set the response type
      *    const loginResult = await client.sendWSAPIRequest<WSAPIResponse<WSAPILoginResponse>>('perpFuturesUSDTV4', 'futures.login');
      */
-    console.log(new Date(), "try authenticate");
+    console.log(new Date(), 'try authenticate');
     const loginResult = await client.sendWSAPIRequest(
-      "perpFuturesUSDTV4",
-      "futures.login"
+      'perpFuturesUSDTV4',
+      'futures.login',
     );
 
-    client.sendWSAPIRequest("perpFuturesUSDTV4", "futures.login");
-    console.log(new Date(), "authenticated!", loginResult);
+    client.sendWSAPIRequest('perpFuturesUSDTV4', 'futures.login');
+    console.log(new Date(), 'authenticated!', loginResult);
 
     /**
      * For other channels, the 3rd parameter should have any parameters for the request (the payload).
@@ -113,117 +114,117 @@ async function start() {
      * Submit futures order
      */
 
-    console.log(new Date(), "Sending futures order:");
+    console.log(new Date(), 'Sending futures order:');
     const submitOrder = await client.sendWSAPIRequest(
-      "perpFuturesUSDTV4",
-      "futures.order_place",
+      'perpFuturesUSDTV4',
+      'futures.order_place',
       {
-        contract: "BTC_USDT",
+        contract: 'BTC_USDT',
         size: 20, // positive for long, negative for short
-        price: "0",
-        tif: "ioc",
-      }
+        price: '0',
+        tif: 'ioc',
+      },
     );
 
-    console.log(new Date(), "Result: ", submitOrder);
+    console.log(new Date(), 'Result: ', submitOrder);
 
     /**
      * Submit batch futures order
      */
 
-    console.log(new Date(), "Sending batch futures order!");
+    console.log(new Date(), 'Sending batch futures order!');
     const submitBatchOrder = await client.sendWSAPIRequest(
-      "perpFuturesUSDTV4",
-      "futures.order_batch_place",
+      'perpFuturesUSDTV4',
+      'futures.order_batch_place',
       [
         {
-          contract: "ETH_USDT",
+          contract: 'ETH_USDT',
           size: 10, // positive for long, negative for short
-          price: "0",
-          tif: "ioc",
+          price: '0',
+          tif: 'ioc',
         },
         {
-          contract: "BTC_USDT",
+          contract: 'BTC_USDT',
           size: 10, // positive for long, negative for short
-          price: "0",
-          tif: "ioc",
+          price: '0',
+          tif: 'ioc',
         },
-      ]
+      ],
     );
 
-    console.log(new Date(), "Result: ", submitBatchOrder);
+    console.log(new Date(), 'Result: ', submitBatchOrder);
 
     /**
      * Cancel futures order
      */
-    console.log(new Date(), "Cancelling futures order!");
+    console.log(new Date(), 'Cancelling futures order!');
     const cancelOrder = await client.sendWSAPIRequest(
-      "perpFuturesUSDTV4",
-      "futures.order_cancel",
-      { order_id: "orderIDHere" }
+      'perpFuturesUSDTV4',
+      'futures.order_cancel',
+      { order_id: 'orderIDHere' },
     );
 
-    console.log(new Date(), "Result: ", cancelOrder);
+    console.log(new Date(), 'Result: ', cancelOrder);
 
     /**
      * Cancel all futures orders
      */
-    console.log(new Date(), "Cancelling all futures orders!");
+    console.log(new Date(), 'Cancelling all futures orders!');
     const cancelAllOrders = await client.sendWSAPIRequest(
-      "perpFuturesUSDTV4",
-      "futures.order_cancel_cp",
-      { contract: "BTC_USDT" }
+      'perpFuturesUSDTV4',
+      'futures.order_cancel_cp',
+      { contract: 'BTC_USDT' },
     );
 
-    console.log(new Date(), "Result: ", cancelAllOrders);
+    console.log(new Date(), 'Result: ', cancelAllOrders);
 
     /**
      * Update/Amend Futures order
      */
-    console.log(new Date(), "Updating futures order!");
+    console.log(new Date(), 'Updating futures order!');
     const updateOrder = await client.sendWSAPIRequest(
-      "perpFuturesUSDTV4",
-      "futures.order_amend",
+      'perpFuturesUSDTV4',
+      'futures.order_amend',
       {
-        order_id: "orderIdHere",
-        price: "31303.180000",
-      }
+        order_id: 'orderIdHere',
+        price: '31303.180000',
+      },
     );
 
-    console.log(new Date(), "Result: ", updateOrder);
+    console.log(new Date(), 'Result: ', updateOrder);
 
     /**
      * Get orders list
      */
 
-    console.log(new Date(), "Getting futures orders!");
+    console.log(new Date(), 'Getting futures orders!');
     const getList = await client.sendWSAPIRequest(
-      "perpFuturesUSDTV4",
-      "futures.order_list",
+      'perpFuturesUSDTV4',
+      'futures.order_list',
       {
-        status: "open",
-        contract: "BTC_USDT",
-      }
+        status: 'open',
+        contract: 'BTC_USDT',
+      },
     );
 
-    console.log(new Date(), "Result: ", getList);
+    console.log(new Date(), 'Result: ', getList);
 
     /**
      * Get order status
      */
 
-    console.log(new Date(), "Getting order status!");
+    console.log(new Date(), 'Getting order status!');
     const getStatus = await client.sendWSAPIRequest(
-      "perpFuturesUSDTV4",
-      "futures.order_status",
+      'perpFuturesUSDTV4',
+      'futures.order_status',
       {
-        order_id: "74046543",
-      }
+        order_id: '74046543',
+      },
     );
 
-    console.log(new Date(), "Result: ", getStatus);
+    console.log(new Date(), 'Result: ', getStatus);
   } catch (e) {
-    console.error(`WS API Error: `, e);
+    console.error('WS API Error: ', e);
   }
 }
 

@@ -2,7 +2,7 @@ import {
   PlaceOrderRequestV3,
   RestClientV3,
   WebsocketClientV3,
-} from "bitget-api";
+} from 'bitget-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
@@ -42,35 +42,35 @@ function promiseSleep(milliseconds: number) {
 (async () => {
   try {
     // Add event listeners to log websocket events on account
-    wsClient.on("update", (data) => logWSEvent("update", data));
-    wsClient.on("open", (data) => logWSEvent("open", data));
-    wsClient.on("response", (data) => logWSEvent("response", data));
-    wsClient.on("reconnect", (data) => logWSEvent("reconnect", data));
-    wsClient.on("reconnected", (data) => logWSEvent("reconnected", data));
-    wsClient.on("authenticated", (data) => logWSEvent("authenticated", data));
-    wsClient.on("exception", (data) => logWSEvent("exception", data));
+    wsClient.on('update', (data) => logWSEvent('update', data));
+    wsClient.on('open', (data) => logWSEvent('open', data));
+    wsClient.on('response', (data) => logWSEvent('response', data));
+    wsClient.on('reconnect', (data) => logWSEvent('reconnect', data));
+    wsClient.on('reconnected', (data) => logWSEvent('reconnected', data));
+    wsClient.on('authenticated', (data) => logWSEvent('authenticated', data));
+    wsClient.on('exception', (data) => logWSEvent('exception', data));
 
     // Subscribe to private account topics
     // Account updates for UTA (unified trading account)
     wsClient.subscribe(
       {
-        topic: "account",
+        topic: 'account',
         payload: {
-          instType: "UTA",
+          instType: 'UTA',
         },
       },
-      "v3Private"
+      'v3Private',
     );
 
     // Order updates for spot
     wsClient.subscribe(
       {
-        topic: "order",
+        topic: 'order',
         payload: {
-          instType: "UTA",
+          instType: 'UTA',
         },
       },
-      "v3Private"
+      'v3Private',
     );
 
     // wait briefly for ws to be ready (could also use the response or authenticated events, to make sure topics are subscribed to before starting)
@@ -80,47 +80,47 @@ function promiseSleep(milliseconds: number) {
     const allBalances = balanceResult.data;
 
     const balanceBTC = allBalances.assets?.find(
-      (bal) => bal.coin === "BTC" || bal.coin === "btc"
+      (bal) => bal.coin === 'BTC' || bal.coin === 'btc',
     );
     const btcAmount =
       Number(allBalances.usdtEquity) > 0 ? Number(balanceBTC?.available) : 0;
-    console.log("balance: ", JSON.stringify(allBalances, null, 2));
-    console.log("BTC balance result: ", balanceBTC);
+    console.log('balance: ', JSON.stringify(allBalances, null, 2));
+    console.log('BTC balance result: ', balanceBTC);
 
     if (!btcAmount) {
-      console.error("No BTC to trade");
+      console.error('No BTC to trade');
       return;
     }
 
     console.log(`BTC available: ${btcAmount}`);
-    const symbol = "BTCUSDT";
+    const symbol = 'BTCUSDT';
 
     const symbolsResult = await client.getInstruments({
-      category: "SPOT",
+      category: 'SPOT',
       symbol: symbol,
     });
     const btcRules = symbolsResult.data.find((rule) => rule.symbol === symbol);
-    console.log("btc trading rules: ", btcRules);
+    console.log('btc trading rules: ', btcRules);
     if (!btcRules) {
-      return console.log("no rules found for trading " + symbol);
+      return console.log('no rules found for trading ' + symbol);
     }
 
     const quantity = btcRules.minOrderQty;
 
     const order: PlaceOrderRequestV3 = {
       symbol: symbol,
-      side: "sell",
-      orderType: "market",
-      category: "SPOT",
+      side: 'sell',
+      orderType: 'market',
+      category: 'SPOT',
       qty: quantity,
     } as const;
 
-    console.log("submitting order: ", order);
+    console.log('submitting order: ', order);
 
     const sellResult = await client.submitNewOrder(order);
 
-    console.log("sell result: ", sellResult);
+    console.log('sell result: ', sellResult);
   } catch (e) {
-    console.error("request failed: ", e);
+    console.error('request failed: ', e);
   }
 })();

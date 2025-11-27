@@ -1,7 +1,6 @@
+import { RestClientV5 } from 'bybit-api';
 import fs from 'fs';
 import path from 'path';
-
-import { RestClientV5 } from 'bybit-api';
 
 // ENDPOINT: /v5/p2p/oss/upload_file
 // METHOD: POST

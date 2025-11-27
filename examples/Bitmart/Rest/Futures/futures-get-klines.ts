@@ -1,6 +1,5 @@
 import { FuturesClientV2 } from 'bitmart-api';
 
-
 const client = new FuturesClientV2();
 
 async function getFuturesKlines() {
@@ -13,7 +12,7 @@ async function getFuturesKlines() {
 
     console.log('Tickers: ', JSON.stringify(klines, null, 2));
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { WebsocketClient, WsTopicRequest } from "kucoin-api";
+import { WebsocketClient, WsTopicRequest } from 'kucoin-api';
 
 async function start() {
   // Optional: fully customise the logging experience by injecting a custom logger
@@ -22,38 +22,38 @@ async function start() {
   // const client = new WebsocketClient({}, logger);
   const client = new WebsocketClient();
 
-  client.on("open", (data) => {
-    console.log("open: ", data?.wsKey);
+  client.on('open', (data) => {
+    console.log('open: ', data?.wsKey);
   });
 
   // Data received
-  client.on("update", (data) => {
-    console.info("data received: ", JSON.stringify(data));
+  client.on('update', (data) => {
+    console.info('data received: ', JSON.stringify(data));
   });
 
   // Something happened, attempting to reconenct
-  client.on("reconnect", (data) => {
-    console.log("reconnect: ", data);
+  client.on('reconnect', (data) => {
+    console.log('reconnect: ', data);
   });
 
   // Reconnect successful
-  client.on("reconnected", (data) => {
-    console.log("reconnected: ", data);
+  client.on('reconnected', (data) => {
+    console.log('reconnected: ', data);
   });
 
   // Connection closed. If unexpected, expect reconnect -> reconnected.
-  client.on("close", (data) => {
-    console.error("close: ", data);
+  client.on('close', (data) => {
+    console.error('close: ', data);
   });
 
   // Reply to a request, e.g. "subscribe"/"unsubscribe"/"authenticate"
-  client.on("response", (data) => {
-    console.info("response: ", data);
+  client.on('response', (data) => {
+    console.info('response: ', data);
     // throw new Error('res?');
   });
 
-  client.on("exception", (data) => {
-    console.error("exception: ", {
+  client.on('exception', (data) => {
+    console.error('exception: ', {
       msg: data.msg,
       errno: data.errno,
       code: data.code,
@@ -72,16 +72,16 @@ async function start() {
      * You can subscribe to topics one at a time or many one one request. Topics can be sent as simple strings:
      *
      */
-    client.subscribe("/market/ticker:BTC-USDT,ETH-USDT", "spotPublicV1");
-    client.subscribe("/market/snapshot:KCS-BTC", "spotPublicV1");
+    client.subscribe('/market/ticker:BTC-USDT,ETH-USDT', 'spotPublicV1');
+    client.subscribe('/market/snapshot:KCS-BTC', 'spotPublicV1');
 
     /**
      * Or, as an array of simple strings
      *
      */
     client.subscribe(
-      ["/market/ticker:BTC-USDT,ETH-USDT", "/market/snapshot:KCS-BTC"],
-      "spotPublicV1"
+      ['/market/ticker:BTC-USDT,ETH-USDT', '/market/snapshot:KCS-BTC'],
+      'spotPublicV1',
     );
 
     /**
@@ -89,7 +89,7 @@ async function start() {
      *
      */
     const subRequest: WsTopicRequest = {
-      topic: "/market/ticker:BTC-USDT",
+      topic: '/market/ticker:BTC-USDT',
       /** Anything in the payload will be merged into the subscribe "request", allowing you to send misc parameters supported by the exchange.
        *    For more info on parameters, see: https://www.kucoin.com/docs/websocket/basic-info/subscribe/introduction
        */
@@ -98,7 +98,7 @@ async function start() {
         response: false,
       },
     };
-    client.subscribe(subRequest, "spotPublicV1");
+    client.subscribe(subRequest, 'spotPublicV1');
 
     /**
      * Or, send an array of structured objects with parameters, if you wanted to send multiple in one request
@@ -111,18 +111,18 @@ async function start() {
      */
     client.subscribe(
       [
-        "/market/ticker:BTC-USDT,ETH-USDT",
-        "/market/ticker:all",
-        "/market/snapshot:KCS-BTC",
-        "/market/snapshot:BTC",
-        "/spotMarket/level1:BTC-USDT,ETH-USDT",
-        "/market/level2:BTC-USDT,ETH-USDT",
-        "/spotMarket/level2Depth5:BTC-USDT,ETH-USDT",
-        "/spotMarket/level2Depth50:BTC-USDT,ETH-USDT",
-        "/market/candles:BTC-USDT_1hour",
-        "/market/match:BTC-USDT,ETH-USDT",
+        '/market/ticker:BTC-USDT,ETH-USDT',
+        '/market/ticker:all',
+        '/market/snapshot:KCS-BTC',
+        '/market/snapshot:BTC',
+        '/spotMarket/level1:BTC-USDT,ETH-USDT',
+        '/market/level2:BTC-USDT,ETH-USDT',
+        '/spotMarket/level2Depth5:BTC-USDT,ETH-USDT',
+        '/spotMarket/level2Depth50:BTC-USDT,ETH-USDT',
+        '/market/candles:BTC-USDT_1hour',
+        '/market/match:BTC-USDT,ETH-USDT',
       ],
-      "spotPublicV1"
+      'spotPublicV1',
     );
 
     /**
@@ -130,13 +130,13 @@ async function start() {
      */
     client.subscribe(
       [
-        "/indicator/index:USDT-BTC,ETH-USDT",
-        "/indicator/markPrice:USDT-BTC,ETH-USDT",
+        '/indicator/index:USDT-BTC,ETH-USDT',
+        '/indicator/markPrice:USDT-BTC,ETH-USDT',
       ],
-      "spotPublicV1"
+      'spotPublicV1',
     );
   } catch (e) {
-    console.error("Subscribe exception: ", e);
+    console.error('Subscribe exception: ', e);
   }
 }
 

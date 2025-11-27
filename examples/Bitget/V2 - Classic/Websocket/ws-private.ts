@@ -1,9 +1,9 @@
-import { DefaultLogger, WebsocketClientV2 } from "bitget-api";
+import { DefaultLogger, WebsocketClientV2 } from 'bitget-api';
 
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params: any) => console.log("trace", ...params),
+    trace: (...params: any) => console.log('trace', ...params),
   };
 
   const API_KEY = process.env.API_KEY_COM;
@@ -24,33 +24,33 @@ import { DefaultLogger, WebsocketClientV2 } from "bitget-api";
       // optionally provide rest options, e.g. to pass through a proxy
       // },
     },
-    logger
+    logger,
   );
 
-  wsClient.on("update", (data) => {
-    console.log("WS raw message received ", data);
+  wsClient.on('update', (data) => {
+    console.log('WS raw message received ', data);
     // console.log('WS raw message received ', JSON.stringify(data, null, 2));
   });
 
-  wsClient.on("open", (data) => {
-    console.log("WS connection opened:", data.wsKey);
+  wsClient.on('open', (data) => {
+    console.log('WS connection opened:', data.wsKey);
   });
-  wsClient.on("response", (data) => {
-    console.log("WS response: ", JSON.stringify(data, null, 2));
+  wsClient.on('response', (data) => {
+    console.log('WS response: ', JSON.stringify(data, null, 2));
   });
-  wsClient.on("reconnect", ({ wsKey }) => {
-    console.log("WS automatically reconnecting.... ", wsKey);
+  wsClient.on('reconnect', ({ wsKey }) => {
+    console.log('WS automatically reconnecting.... ', wsKey);
   });
-  wsClient.on("reconnected", (data) => {
-    console.log("WS reconnected ", data?.wsKey);
+  wsClient.on('reconnected', (data) => {
+    console.log('WS reconnected ', data?.wsKey);
   });
   // auth happens async after the ws connection opens
-  wsClient.on("authenticated", (data) => {
-    console.log("WS authenticated", data);
+  wsClient.on('authenticated', (data) => {
+    console.log('WS authenticated', data);
     // wsClient.subscribePublicSpotTickers(['BTCUSDT', 'LTCUSDT']);
   });
-  wsClient.on("exception", (data) => {
-    console.log("WS error", data);
+  wsClient.on('exception', (data) => {
+    console.log('WS error', data);
   });
 
   /**
@@ -59,15 +59,15 @@ import { DefaultLogger, WebsocketClientV2 } from "bitget-api";
 
   // spot private
   // : account updates
-  wsClient.subscribeTopic("SPOT", "account");
+  wsClient.subscribeTopic('SPOT', 'account');
 
   // : order updates (note: symbol is required)
   // wsClient.subscribeTopic('SPOT', 'orders', 'BTCUSDT');
 
   // futures private
   // : account updates
-  wsClient.subscribeTopic("USDT-FUTURES", "account");
-  wsClient.subscribeTopic("USDC-FUTURES", "account");
+  wsClient.subscribeTopic('USDT-FUTURES', 'account');
+  wsClient.subscribeTopic('USDC-FUTURES', 'account');
 
   // : position updates
   // wsClient.subscribeTopic('USDT-FUTURES', 'positions');

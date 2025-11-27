@@ -2,7 +2,7 @@ import {
   RestClientV2,
   SpotOrderRequestV2,
   WebsocketClientV2,
-} from "bitget-api";
+} from 'bitget-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
@@ -42,21 +42,21 @@ function promiseSleep(milliseconds: number) {
 (async () => {
   try {
     // Add event listeners to log websocket events on account
-    wsClient.on("update", (data) => logWSEvent("update", data));
-    wsClient.on("open", (data) => logWSEvent("open", data));
-    wsClient.on("response", (data) => logWSEvent("response", data));
-    wsClient.on("reconnect", (data) => logWSEvent("reconnect", data));
-    wsClient.on("reconnected", (data) => logWSEvent("reconnected", data));
-    wsClient.on("authenticated", (data) => logWSEvent("authenticated", data));
-    wsClient.on("exception", (data) => logWSEvent("exception", data));
+    wsClient.on('update', (data) => logWSEvent('update', data));
+    wsClient.on('open', (data) => logWSEvent('open', data));
+    wsClient.on('response', (data) => logWSEvent('response', data));
+    wsClient.on('reconnect', (data) => logWSEvent('reconnect', data));
+    wsClient.on('reconnected', (data) => logWSEvent('reconnected', data));
+    wsClient.on('authenticated', (data) => logWSEvent('authenticated', data));
+    wsClient.on('exception', (data) => logWSEvent('exception', data));
 
     // Subscribe to private account topics
     // spot private
     // : account updates
-    wsClient.subscribeTopic("SPOT", "account");
+    wsClient.subscribeTopic('SPOT', 'account');
 
     // : order updates (note: symbol is required)
-    wsClient.subscribeTopic("SPOT", "orders", "BTCUSDT");
+    wsClient.subscribeTopic('SPOT', 'orders', 'BTCUSDT');
 
     // wait briefly for ws to be ready (could also use the response or authenticated events, to make sure topics are subscribed to before starting)
     await promiseSleep(2.5 * 1000);
@@ -65,43 +65,43 @@ function promiseSleep(milliseconds: number) {
     const allBalances = balanceResult.data;
 
     const balanceBTC = allBalances.find(
-      (bal) => bal.coin === "BTC" || bal.coin === "btc"
+      (bal) => bal.coin === 'BTC' || bal.coin === 'btc',
     );
     const btcAmount = balanceBTC ? Number(balanceBTC.available) : 0;
     // console.log('balance: ', JSON.stringify(balances, null, 2));
-    console.log("BTC balance result: ", balanceBTC);
+    console.log('BTC balance result: ', balanceBTC);
 
     if (!btcAmount) {
-      console.error("No BTC to trade");
+      console.error('No BTC to trade');
       return;
     }
 
     console.log(`BTC available: ${btcAmount}`);
-    const symbol = "BTCUSDT";
+    const symbol = 'BTCUSDT';
 
     const symbolsResult = await client.getSpotSymbolInfo();
     const btcRules = symbolsResult.data.find((rule) => rule.symbol === symbol);
-    console.log("btc trading rules: ", btcRules);
+    console.log('btc trading rules: ', btcRules);
     if (!btcRules) {
-      return console.log("no rules found for trading " + symbol);
+      return console.log('no rules found for trading ' + symbol);
     }
 
     const quantity = btcRules.minTradeAmount;
 
     const order: SpotOrderRequestV2 = {
       symbol: symbol,
-      side: "sell",
-      orderType: "market",
-      force: "gtc",
+      side: 'sell',
+      orderType: 'market',
+      force: 'gtc',
       size: quantity,
     } as const;
 
-    console.log("submitting order: ", order);
+    console.log('submitting order: ', order);
 
     const sellResult = await client.spotSubmitOrder(order);
 
-    console.log("sell result: ", sellResult);
+    console.log('sell result: ', sellResult);
   } catch (e) {
-    console.error("request failed: ", e);
+    console.error('request failed: ', e);
   }
 })();

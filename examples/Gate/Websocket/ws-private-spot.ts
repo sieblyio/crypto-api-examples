@@ -1,5 +1,6 @@
-import { LogParams, WebsocketClient, WsTopicRequest } from "gateio-api";
+import { LogParams, WebsocketClient, WsTopicRequest } from 'gateio-api';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const account = {
   key: process.env.API_KEY || 'apiKeyHere',
   secret: process.env.API_SECRET || 'apiSecretHere',
@@ -123,7 +124,7 @@ async function start() {
       'spotV4',
     );
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

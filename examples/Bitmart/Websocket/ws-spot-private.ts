@@ -73,7 +73,7 @@ async function start() {
     // balance updates
     // client.subscribe('spot/user/balance:BALANCE_UPDATE', 'spot');
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

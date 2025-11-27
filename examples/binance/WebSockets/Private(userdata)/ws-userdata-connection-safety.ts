@@ -6,7 +6,7 @@ import {
   isWsFormattedUserDataEvent,
   WebsocketClient,
   WsUserDataEvents,
-} from "binance";
+} from 'binance';
 
 // or
 // import { DefaultLogger, WebsocketClient } from 'binance';
@@ -16,14 +16,14 @@ import {
  * In most cases this is overkill!
  */
 (async () => {
-  const key = process.env.API_KEY_COM || "APIKEY";
-  const secret = process.env.API_SECRET_COM || "APISECRET";
+  const key = process.env.API_KEY_COM || 'APIKEY';
+  const secret = process.env.API_SECRET_COM || 'APISECRET';
 
   // optionally block some silly logs from showing in the logger
   const ignoredTraceLogMsgs = [
-    "Sending ping",
-    "Received pong, clearing pong timer",
-    "Received ping, sending pong frame",
+    'Sending ping',
+    'Received pong, clearing pong timer',
+    'Received ping, sending pong frame',
   ];
 
   // Optional, hook and customise logging behavior
@@ -43,7 +43,7 @@ import {
       api_secret: secret,
       beautify: true,
     },
-    logger
+    logger,
   );
 
   // wsClient.on('message', (data) => {
@@ -56,36 +56,36 @@ import {
 
     // or use a type guard, if one exists (PRs welcome)
     if (isWsFormattedSpotUserDataExecutionReport(data)) {
-      console.log("spot user execution report event: ", data);
+      console.log('spot user execution report event: ', data);
       return;
     }
     if (isWsFormattedSpotUserDataEvent(data)) {
-      console.log("spot user data event: ", data);
+      console.log('spot user data event: ', data);
       return;
     }
-    if (data.wsMarket.includes("margin")) {
-      console.log("margin user data event: ", data);
+    if (data.wsMarket.includes('margin')) {
+      console.log('margin user data event: ', data);
       return;
     }
-    if (data.wsMarket.includes("isolatedMargin")) {
-      console.log("isolatedMargin user data event: ", data);
+    if (data.wsMarket.includes('isolatedMargin')) {
+      console.log('isolatedMargin user data event: ', data);
       return;
     }
-    if (data.wsMarket.includes("usdmTestnet")) {
-      console.log("usdmTestnet user data event: ", data);
+    if (data.wsMarket.includes('usdmTestnet')) {
+      console.log('usdmTestnet user data event: ', data);
       return;
     }
-    if (data.wsMarket.includes("coinmTestnet")) {
-      console.log("coinmTestnet user data event: ", data);
+    if (data.wsMarket.includes('coinmTestnet')) {
+      console.log('coinmTestnet user data event: ', data);
       return;
     }
     if (isWsFormattedFuturesUserDataEvent(data)) {
-      console.log("usdm user data event: ", data);
+      console.log('usdm user data event: ', data);
       return;
     }
   }
 
-  wsClient.on("formattedMessage", (data) => {
+  wsClient.on('formattedMessage', (data) => {
     // The wsKey can be parsed to determine the type of message (what websocket it came from)
     // if (!Array.isArray(data) && data.wsKey.includes('userData')) {
     //   return onUserDataEvent(data);
@@ -95,40 +95,40 @@ import {
     if (isWsFormattedUserDataEvent(data)) {
       return onUserDataEvent(data);
     }
-    console.log("formattedMsg: ", JSON.stringify(data, null, 2));
+    console.log('formattedMsg: ', JSON.stringify(data, null, 2));
   });
 
   let didConnectUserDataSuccessfully = false;
-  wsClient.on("open", (data) => {
-    if (data.wsKey.includes("userData")) {
+  wsClient.on('open', (data) => {
+    if (data.wsKey.includes('userData')) {
       didConnectUserDataSuccessfully = true;
     }
-    console.log("connection opened open:", data.wsKey, data.wsUrl);
+    console.log('connection opened open:', data.wsKey, data.wsUrl);
   });
 
   // response to command sent via WS stream (e.g LIST_SUBSCRIPTIONS)
-  wsClient.on("response", (data) => {
-    console.log("log reply: ", JSON.stringify(data, null, 2));
+  wsClient.on('response', (data) => {
+    console.log('log reply: ', JSON.stringify(data, null, 2));
   });
-  wsClient.on("reconnecting", (data) => {
-    console.log("ws automatically reconnecting.... ", data?.wsKey);
+  wsClient.on('reconnecting', (data) => {
+    console.log('ws automatically reconnecting.... ', data?.wsKey);
   });
-  wsClient.on("reconnected", (data) => {
-    console.log("ws has reconnected ", data?.wsKey);
+  wsClient.on('reconnected', (data) => {
+    console.log('ws has reconnected ', data?.wsKey);
   });
-  wsClient.on("exception", (data) => {
-    console.error("ws saw error: ", data);
+  wsClient.on('exception', (data) => {
+    console.error('ws saw error: ', data);
 
     // Note: manually re-subscribing like this may only be needed if the FIRST user data connection attempt failed
     // Capture exceptions using the error event, and handle this.
-    if (!didConnectUserDataSuccessfully && data.wsKey.includes("userData")) {
+    if (!didConnectUserDataSuccessfully && data.wsKey.includes('userData')) {
       setTimeout(() => {
         console.warn(
-          `Retrying connection to userdata ws ${data.wsKey} in 1 second...`
+          `Retrying connection to userdata ws ${data.wsKey} in 1 second...`,
         );
-        if (data.wsKey.includes("spot")) {
+        if (data.wsKey.includes('spot')) {
           wsClient.subscribeSpotUserDataStream();
-        } else if (data.wsKey.includes("usdm")) {
+        } else if (data.wsKey.includes('usdm')) {
           wsClient.subscribeUsdFuturesUserDataStream();
         }
       }, 1000);

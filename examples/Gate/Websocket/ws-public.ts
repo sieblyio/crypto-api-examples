@@ -1,4 +1,4 @@
-import { WebsocketClient, WsTopicRequest } from "gateio-api";
+import { WebsocketClient, WsTopicRequest } from 'gateio-api';
 
 // const customLogger = {
 //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -19,52 +19,52 @@ async function start() {
   // Optional, inject a custom logger
   // const client = new WebsocketClient({}, customLogger);
 
-  client.on("open", (data) => {
-    console.log("connected ", data?.wsKey);
+  client.on('open', (data) => {
+    console.log('connected ', data?.wsKey);
   });
 
   // Data received
-  client.on("update", (data) => {
-    console.info("data received: ", JSON.stringify(data));
+  client.on('update', (data) => {
+    console.info('data received: ', JSON.stringify(data));
   });
 
   // Something happened, attempting to reconnect
-  client.on("reconnect", (data) => {
-    console.log("reconnect: ", data);
+  client.on('reconnect', (data) => {
+    console.log('reconnect: ', data);
   });
 
   // Reconnect successful
-  client.on("reconnected", (data) => {
-    console.log("reconnected: ", data);
+  client.on('reconnected', (data) => {
+    console.log('reconnected: ', data);
   });
 
   // Connection closed. If unexpected, expect reconnect -> reconnected.
-  client.on("close", (data) => {
-    console.error("close: ", data);
+  client.on('close', (data) => {
+    console.error('close: ', data);
   });
 
   // Reply to a request, e.g. "subscribe"/"unsubscribe"/"authenticate"
-  client.on("response", (data) => {
-    console.info("server reply: ", JSON.stringify(data), "\n");
+  client.on('response', (data) => {
+    console.info('server reply: ', JSON.stringify(data), '\n');
   });
 
-  client.on("exception", (data) => {
-    console.error("exception: ", data);
+  client.on('exception', (data) => {
+    console.error('exception: ', data);
   });
 
-  client.on("authenticated", (data) => {
-    console.error("authenticated: ", data);
+  client.on('authenticated', (data) => {
+    console.error('authenticated: ', data);
   });
 
   try {
     const tickersRequestWithParams: WsTopicRequest = {
-      topic: "spot.tickers",
-      payload: ["BTC_USDT", "ETH_USDT", "MATIC_USDT"],
+      topic: 'spot.tickers',
+      payload: ['BTC_USDT', 'ETH_USDT', 'MATIC_USDT'],
     };
 
     const rawTradesRequestWithParams: WsTopicRequest = {
-      topic: "spot.trades",
-      payload: ["BTC_USDT", "ETH_USDT", "MATIC_USDT"],
+      topic: 'spot.trades',
+      payload: ['BTC_USDT', 'ETH_USDT', 'MATIC_USDT'],
     };
 
     // const topicWithoutParamsAsString = 'spot.balances';
@@ -84,7 +84,7 @@ async function start() {
      */
     client.subscribe(
       [tickersRequestWithParams, rawTradesRequestWithParams],
-      "spotV4"
+      'spotV4',
     );
 
     // /**
@@ -95,7 +95,7 @@ async function start() {
     //   'spotV4',
     // );
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

@@ -1,4 +1,4 @@
-import { RestClientV2 } from "bitget-api";
+import { RestClientV2 } from 'bitget-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
@@ -23,6 +23,6 @@ const client = new RestClientV2({
   try {
     console.log(await client.getSpotAccount());
   } catch (e) {
-    console.error("request failed: ", e);
+    console.error('request failed: ', e);
   }
 })();

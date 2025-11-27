@@ -1,9 +1,9 @@
-import { DefaultLogger, WebsocketClientV2 } from "bitget-api";
+import { DefaultLogger, WebsocketClientV2 } from 'bitget-api';
 
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params: any) => console.log("trace", ...params),
+    trace: (...params: any) => console.log('trace', ...params),
   };
 
   const API_KEY = process.env.API_KEY_COM;
@@ -27,36 +27,36 @@ import { DefaultLogger, WebsocketClientV2 } from "bitget-api";
       apiSecret: API_SECRET,
       apiPass: API_PASS,
     },
-    logger
+    logger,
   );
 
-  wsClient.on("update", (data) => {
-    console.log("WS raw message received ", data);
+  wsClient.on('update', (data) => {
+    console.log('WS raw message received ', data);
     // console.log('WS raw message received ', JSON.stringify(data, null, 2));
   });
 
-  wsClient.on("open", (data) => {
-    console.log("WS connection opened:", data.wsKey);
+  wsClient.on('open', (data) => {
+    console.log('WS connection opened:', data.wsKey);
   });
-  wsClient.on("response", (data) => {
-    console.log("WS response: ", JSON.stringify(data, null, 2));
+  wsClient.on('response', (data) => {
+    console.log('WS response: ', JSON.stringify(data, null, 2));
   });
-  wsClient.on("reconnect", ({ wsKey }) => {
-    console.log("WS automatically reconnecting.... ", wsKey);
+  wsClient.on('reconnect', ({ wsKey }) => {
+    console.log('WS automatically reconnecting.... ', wsKey);
   });
-  wsClient.on("reconnected", (data) => {
-    console.log("WS reconnected ", data?.wsKey);
+  wsClient.on('reconnected', (data) => {
+    console.log('WS reconnected ', data?.wsKey);
   });
-  wsClient.on("exception", (data) => {
-    console.log("WS error", data);
+  wsClient.on('exception', (data) => {
+    console.log('WS error', data);
   });
 
   /**
    * Public events
    */
 
-  const symbol = "BTCUSDT";
-  wsClient.subscribeTopic("SPOT", "ticker", symbol);
+  const symbol = 'BTCUSDT';
+  wsClient.subscribeTopic('SPOT', 'ticker', symbol);
 
-  wsClient.subscribeTopic("USDC-FUTURES", "account");
+  wsClient.subscribeTopic('USDC-FUTURES', 'account');
 })();

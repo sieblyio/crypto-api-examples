@@ -1,4 +1,4 @@
-import { DefaultLogger, WebsocketAPIClient } from "bitget-api";
+import { DefaultLogger, WebsocketAPIClient } from 'bitget-api';
 
 // function attachEventHandlers<TWSClient extends WebsocketClientV3>(
 //   wsClient: TWSClient,
@@ -23,7 +23,7 @@ import { DefaultLogger, WebsocketAPIClient } from "bitget-api";
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params: any) => console.log("trace", ...params),
+    trace: (...params: any) => console.log('trace', ...params),
   };
 
   const API_KEY = process.env.API_KEY_COM;
@@ -46,7 +46,7 @@ import { DefaultLogger, WebsocketAPIClient } from "bitget-api";
       // disable this setting and see the `attachEventHandlers` example below:
       // attachEventListeners: false
     },
-    logger // Optional: inject a custom logger
+    logger, // Optional: inject a custom logger
   );
 
   // Optional, see above "attachEventListeners". Attach basic event handlers, so nothing is left unhandled
@@ -71,13 +71,13 @@ import { DefaultLogger, WebsocketAPIClient } from "bitget-api";
    * https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
    */
   try {
-    const res = await wsClient.submitNewOrder("spot", {
-      orderType: "limit",
-      price: "100",
-      qty: "0.1",
-      side: "buy",
-      symbol: "BTCUSDT",
-      timeInForce: "gtc",
+    const res = await wsClient.submitNewOrder('spot', {
+      orderType: 'limit',
+      price: '100',
+      qty: '0.1',
+      side: 'buy',
+      symbol: 'BTCUSDT',
+      timeInForce: 'gtc',
     });
     /**
       const res = {
@@ -113,24 +113,24 @@ import { DefaultLogger, WebsocketAPIClient } from "bitget-api";
     /**
      * Note: batch place will never reject the request, even if all orders were rejected. Check the "code" and "msg" properties for individual orders in the response, to detect batch place errors.
      */
-    const res = await wsClient.placeBatchOrders("spot", [
+    const res = await wsClient.placeBatchOrders('spot', [
       {
-        clientOid: "xxxxxxxx1",
-        orderType: "limit",
-        price: "100",
-        qty: "0.1",
-        side: "buy",
-        symbol: "BTCUSDT",
-        timeInForce: "gtc",
+        clientOid: 'xxxxxxxx1',
+        orderType: 'limit',
+        price: '100',
+        qty: '0.1',
+        side: 'buy',
+        symbol: 'BTCUSDT',
+        timeInForce: 'gtc',
       },
       {
-        clientOid: "xxxxxxxx2",
-        orderType: "limit",
-        price: "100",
-        qty: "0.15",
-        side: "buy",
-        symbol: "BTCUSDT",
-        timeInForce: "gtc",
+        clientOid: 'xxxxxxxx2',
+        orderType: 'limit',
+        price: '100',
+        qty: '0.15',
+        side: 'buy',
+        symbol: 'BTCUSDT',
+        timeInForce: 'gtc',
       },
     ]);
 
@@ -167,7 +167,7 @@ import { DefaultLogger, WebsocketAPIClient } from "bitget-api";
     console.error(
       new Date(),
       'Exception with WS API "placeBatchOrders()": ',
-      e
+      e,
     );
   }
 
@@ -177,8 +177,8 @@ import { DefaultLogger, WebsocketAPIClient } from "bitget-api";
    */
 
   try {
-    const res = await wsClient.cancelOrder("spot", {
-      clientOid: "xxxxxxxx1",
+    const res = await wsClient.cancelOrder('spot', {
+      clientOid: 'xxxxxxxx1',
     });
 
     /**
@@ -209,12 +209,12 @@ import { DefaultLogger, WebsocketAPIClient } from "bitget-api";
    */
 
   try {
-    const res = await wsClient.cancelBatchOrders("spot", [
+    const res = await wsClient.cancelBatchOrders('spot', [
       {
-        clientOid: "xxxxxxxx1",
+        clientOid: 'xxxxxxxx1',
       },
       {
-        orderId: "123123123",
+        orderId: '123123123',
       },
     ]);
 
@@ -246,9 +246,9 @@ import { DefaultLogger, WebsocketAPIClient } from "bitget-api";
     console.error(
       new Date(),
       'Exception with WS API "cancelBatchOrders()": ',
-      e
+      e,
     );
   }
 
-  console.log(new Date(), "Reached end of example.");
+  console.log(new Date(), 'Reached end of example.');
 })();

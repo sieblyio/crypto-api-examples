@@ -1,7 +1,6 @@
-// @ts-ignore
-import { HttpsProxyAgent } from 'https-proxy-agent';
-
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { RestClientV5 } from 'bybit-api';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 // or
 // import { RestClientV5 } from 'bybit-api';

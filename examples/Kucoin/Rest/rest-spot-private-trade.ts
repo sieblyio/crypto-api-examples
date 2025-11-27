@@ -1,10 +1,10 @@
-import { SpotClient } from "kucoin-api";
+import { SpotClient } from 'kucoin-api';
 
 async function start() {
   const account = {
-    key: "keyHere",
-    secret: "secretHere",
-    passphrase: "memoHere",
+    key: 'keyHere',
+    secret: 'secretHere',
+    passphrase: 'memoHere',
   };
 
   const client = new SpotClient({
@@ -16,24 +16,24 @@ async function start() {
   try {
     const spotBuyResult = await client.submitHFOrder({
       clientOid: client.generateNewOrderID(),
-      side: "buy",
-      type: "market",
-      symbol: "BTC-USDT",
-      size: "0.00001",
+      side: 'buy',
+      type: 'market',
+      symbol: 'BTC-USDT',
+      size: '0.00001',
     });
-    console.log("spotBuy ", JSON.stringify(spotBuyResult, null, 2));
+    console.log('spotBuy ', JSON.stringify(spotBuyResult, null, 2));
 
     const spotSellResult = await client.submitHFOrder({
       clientOid: client.generateNewOrderID(),
-      side: "sell",
-      type: "market",
-      symbol: "BTC-USDT",
-      size: "0.00001",
+      side: 'sell',
+      type: 'market',
+      symbol: 'BTC-USDT',
+      size: '0.00001',
     });
 
-    console.log("spotSellResult ", JSON.stringify(spotSellResult, null, 2));
+    console.log('spotSellResult ', JSON.stringify(spotSellResult, null, 2));
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

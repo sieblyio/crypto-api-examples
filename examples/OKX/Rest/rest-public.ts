@@ -1,4 +1,4 @@
-import { RestClient } from "okx-api";
+import { RestClient } from 'okx-api';
 
 const client = new RestClient();
 
@@ -7,15 +7,15 @@ const client = new RestClient();
  */
 (async () => {
   try {
-    const results = await client.getInstruments({ instType: "SPOT" });
+    const results = await client.getInstruments({ instType: 'SPOT' });
 
     console.log(
-      "result: ",
-      results.filter((row) => row.baseCcy === "SUI")
+      'result: ',
+      results.filter((row) => row.baseCcy === 'SUI'),
     );
 
     return;
   } catch (e) {
-    console.error("request failed: ", e);
+    console.error('request failed: ', e);
   }
 })();

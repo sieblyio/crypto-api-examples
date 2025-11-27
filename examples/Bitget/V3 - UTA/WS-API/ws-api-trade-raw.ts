@@ -1,7 +1,5 @@
 import { DefaultLogger, WebsocketClientV3, WS_KEY_MAP } from 'bitget-api';
 
-
-
 (async () => {
   const logger = {
     ...DefaultLogger,

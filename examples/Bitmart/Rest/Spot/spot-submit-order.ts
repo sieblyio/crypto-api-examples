@@ -41,7 +41,7 @@ async function start() {
     });
     console.log('res ', JSON.stringify(res, null, 2));
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

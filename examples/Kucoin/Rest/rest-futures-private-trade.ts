@@ -1,10 +1,10 @@
-import { FuturesClient } from "kucoin-api";
+import { FuturesClient } from 'kucoin-api';
 
 async function start() {
   const account = {
-    key: "keyHere",
-    secret: "secretHere",
-    passphrase: "memoHere",
+    key: 'keyHere',
+    secret: 'secretHere',
+    passphrase: 'memoHere',
   };
   const client = new FuturesClient({
     apiKey: account.key,
@@ -23,16 +23,16 @@ async function start() {
     // Submit a futures entry order for 1 lot of XBTUSDTM (0.001 bitcoin)
     const orderRes = await client.submitOrder({
       clientOid: client.generateNewOrderID(),
-      side: "buy",
-      type: "market",
-      symbol: "XBTUSDTM",
+      side: 'buy',
+      type: 'market',
+      symbol: 'XBTUSDTM',
       size: 1,
       leverage: 2,
     });
 
-    console.log("orderRes ", JSON.stringify(orderRes, null, 2));
+    console.log('orderRes ', JSON.stringify(orderRes, null, 2));
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

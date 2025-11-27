@@ -68,7 +68,7 @@ async function subscribePrivateWs() {
 
     return true;
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
     throw e;
   }
 }
@@ -80,9 +80,6 @@ async function main() {
 
     // Get futures account balance via REST
     const balances = await gateRestClient.getFuturesAccount({ settle: 'usdt' });
-
-    // total usdt balance
-    const usdtBalance = Number(balances.total);
 
     // available usdt balance
     const availableBalance = Number(balances.available);

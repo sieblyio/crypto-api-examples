@@ -1,4 +1,4 @@
-import { WebsocketClient } from "kucoin-api";
+import { WebsocketClient } from 'kucoin-api';
 
 async function start() {
   // Optional: inject and customise a logger for more control over internal logging
@@ -19,53 +19,53 @@ async function start() {
   // };
 
   const account = {
-    key: process.env.API_KEY || "keyHere",
-    secret: process.env.API_SECRET || "secretHere",
-    passphrase: process.env.API_PASSPHRASE || "apiPassPhraseHere", // This is NOT your account password
+    key: process.env.API_KEY || 'keyHere',
+    secret: process.env.API_SECRET || 'secretHere',
+    passphrase: process.env.API_PASSPHRASE || 'apiPassPhraseHere', // This is NOT your account password
   };
 
-  console.log("connecting with ", account);
+  console.log('connecting with ', account);
   const client = new WebsocketClient(
     {
       apiKey: account.key,
       apiSecret: account.secret,
       apiPassphrase: account.passphrase,
-    }
+    },
     // logger,
   );
 
-  client.on("open", (data) => {
-    console.log("open: ", data?.wsKey);
+  client.on('open', (data) => {
+    console.log('open: ', data?.wsKey);
   });
 
   // Data received
-  client.on("update", (data) => {
-    console.info("data received: ", JSON.stringify(data));
+  client.on('update', (data) => {
+    console.info('data received: ', JSON.stringify(data));
   });
 
   // Something happened, attempting to reconenct
-  client.on("reconnect", (data) => {
-    console.log("reconnect: ", data);
+  client.on('reconnect', (data) => {
+    console.log('reconnect: ', data);
   });
 
   // Reconnect successful
-  client.on("reconnected", (data) => {
-    console.log("reconnected: ", data);
+  client.on('reconnected', (data) => {
+    console.log('reconnected: ', data);
   });
 
   // Connection closed. If unexpected, expect reconnect -> reconnected.
-  client.on("close", (data) => {
-    console.error("close: ", data);
+  client.on('close', (data) => {
+    console.error('close: ', data);
   });
 
   // Reply to a request, e.g. "subscribe"/"unsubscribe"/"authenticate"
-  client.on("response", (data) => {
-    console.info("response: ", data);
+  client.on('response', (data) => {
+    console.info('response: ', data);
     // throw new Error('res?');
   });
 
-  client.on("exception", (data) => {
-    console.error("exception: ", {
+  client.on('exception', (data) => {
+    console.error('exception: ', {
       msg: data.msg,
       errno: data.errno,
       code: data.code,
@@ -87,17 +87,17 @@ async function start() {
      */
     client.subscribe(
       [
-        "/contractMarket/tradeOrders:XBTUSDM",
-        "/contractMarket/tradeOrders",
-        "/contractMarket/advancedOrders",
-        "/contractAccount/wallet",
-        "/contract/position:XBTUSDM",
-        "/contract/positionAll",
+        '/contractMarket/tradeOrders:XBTUSDM',
+        '/contractMarket/tradeOrders',
+        '/contractMarket/advancedOrders',
+        '/contractAccount/wallet',
+        '/contract/position:XBTUSDM',
+        '/contract/positionAll',
       ],
-      "futuresPrivateV1"
+      'futuresPrivateV1',
     );
   } catch (e) {
-    console.error("Subscribe exception: ", e);
+    console.error('Subscribe exception: ', e);
   }
 }
 

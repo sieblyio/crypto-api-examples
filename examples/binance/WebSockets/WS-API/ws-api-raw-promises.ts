@@ -4,12 +4,12 @@ import {
   WebsocketClient,
   WS_KEY_MAP,
   WSAPIWsKey,
-} from "binance";
+} from 'binance';
 
 const logger = {
   ...DefaultLogger,
   // For a more detailed view of the WebsocketClient, enable the `trace` level by uncommenting the below line:
-  trace: (...params: any) => console.log(new Date(), "trace", ...params),
+  trace: (...params: any) => console.log(new Date(), 'trace', ...params),
 };
 
 let key = process.env.API_KEY_COM;
@@ -25,7 +25,7 @@ MCowBQYDK2Vasdfasfasfasfasfn38QTxwLU9o=
 -----END PUBLIC KEY-----
 `;
 
-key = "TQpJN8MYasdfdasfadsfasf7DoCxTjQEbrobdG";
+key = 'TQpJN8MYasdfdasfadsfasf7DoCxTjQEbrobdG';
 secret = privateKey;
 
 const wsClient = new WebsocketClient(
@@ -35,33 +35,33 @@ const wsClient = new WebsocketClient(
     beautify: true,
     // testnet: true,
   },
-  logger // Optional: inject a custom logger
+  logger, // Optional: inject a custom logger
 );
 
 /**
  * General event handlers for monitoring the WebsocketClient
  */
-wsClient.on("message", (data) => {
-  console.log("raw message received ", JSON.stringify(data));
+wsClient.on('message', (data) => {
+  console.log('raw message received ', JSON.stringify(data));
 });
-wsClient.on("response", (data) => {
+wsClient.on('response', (data) => {
   // WS API responses can be processed here too, but that is optional
   // console.log('ws response: ', JSON.stringify(data));
 });
-wsClient.on("open", (data) => {
-  console.log("ws connected", data.wsKey);
+wsClient.on('open', (data) => {
+  console.log('ws connected', data.wsKey);
 });
-wsClient.on("reconnecting", ({ wsKey }) => {
-  console.log("ws automatically reconnecting.... ", wsKey);
+wsClient.on('reconnecting', ({ wsKey }) => {
+  console.log('ws automatically reconnecting.... ', wsKey);
 });
-wsClient.on("reconnected", (data) => {
-  console.log("ws has reconnected ", data?.wsKey);
+wsClient.on('reconnected', (data) => {
+  console.log('ws has reconnected ', data?.wsKey);
 });
-wsClient.on("authenticated", (data) => {
-  console.log("ws has authenticated ", data?.wsKey);
+wsClient.on('authenticated', (data) => {
+  console.log('ws has authenticated ', data?.wsKey);
 });
-wsClient.on("exception", (data) => {
-  console.error("ws exception: ", JSON.stringify(data));
+wsClient.on('exception', (data) => {
+  console.error('ws exception: ', JSON.stringify(data));
 });
 
 async function main() {
@@ -104,57 +104,57 @@ async function main() {
   try {
     const wsAPIResponse = await wsClient.sendWSAPIRequest(
       WS_API_WS_KEY,
-      "ping"
+      'ping',
     );
-    console.log(new Date(), "wsapi PING: ", wsAPIResponse);
+    console.log(new Date(), 'wsapi PING: ', wsAPIResponse);
   } catch (e) {
-    console.log(new Date(), "wsapi PING error:", e);
+    console.log(new Date(), 'wsapi PING error:', e);
   }
 
   try {
     const wsAPIResponse = await wsClient.sendWSAPIRequest(
       WS_API_WS_KEY,
-      "session.status"
+      'session.status',
     );
-    console.log(new Date(), "wsapi sessionStatus: ", wsAPIResponse, {
+    console.log(new Date(), 'wsapi sessionStatus: ', wsAPIResponse, {
       authSince: wsAPIResponse.result.authorizedSince,
     });
   } catch (e) {
-    console.log(new Date(), "wsapi sessionStatus error:", e);
+    console.log(new Date(), 'wsapi sessionStatus error:', e);
   }
 
   try {
     const wsAPIResponse = await wsClient.sendWSAPIRequest(
       WS_API_WS_KEY,
-      "exchangeInfo"
+      'exchangeInfo',
     );
-    console.log(new Date(), "wsapi exchangeInfo: ", wsAPIResponse, {
+    console.log(new Date(), 'wsapi exchangeInfo: ', wsAPIResponse, {
       // rateLimits: wsAPIResponse.result.rateLimits,
       // symbols: wsAPIResponse.result.symbols,
     });
   } catch (e) {
-    console.log(new Date(), "wsapi exchangeInfo error:", e);
+    console.log(new Date(), 'wsapi exchangeInfo error:', e);
   }
 
   try {
     const wsAPIResponse = await wsClient.sendWSAPIRequest(
       WS_API_WS_KEY,
-      "order.place",
+      'order.place',
       {
-        symbol: "BTCUSDT",
-        type: "MARKET",
-        side: "SELL",
+        symbol: 'BTCUSDT',
+        type: 'MARKET',
+        side: 'SELL',
         quantity: 10,
         timestamp: Date.now(),
-      }
+      },
     );
-    console.log(new Date(), "wsapi orderPlace: ", wsAPIResponse, {});
+    console.log(new Date(), 'wsapi orderPlace: ', wsAPIResponse, {});
   } catch (e) {
-    console.log(new Date(), "wsapi orderPlace error:", e);
+    console.log(new Date(), 'wsapi orderPlace error:', e);
   }
 }
 
 // Start executing the example workflow
 main().catch((e) => {
-  console.log("mainError", e);
+  console.log('mainError', e);
 });

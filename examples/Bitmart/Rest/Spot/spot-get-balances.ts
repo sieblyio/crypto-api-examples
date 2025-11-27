@@ -18,7 +18,7 @@ async function getSpotBalances() {
 
     console.log('Balances: ', JSON.stringify(balances, null, 2));
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

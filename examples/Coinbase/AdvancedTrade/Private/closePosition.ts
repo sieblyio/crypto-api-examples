@@ -1,4 +1,4 @@
-import { CBAdvancedTradeClient } from "coinbase-api";
+import { CBAdvancedTradeClient } from 'coinbase-api';
 
 // initialise the client
 /**
@@ -22,8 +22,8 @@ import { CBAdvancedTradeClient } from "coinbase-api";
  *
  */
 const client = new CBAdvancedTradeClient({
-  apiKey: process.env.API_KEY_NAME || "insert_api_key_here",
-  apiSecret: process.env.API_PRIVATE_KEY || "insert_api_secret_here",
+  apiKey: process.env.API_KEY_NAME || 'insert_api_key_here',
+  apiSecret: process.env.API_PRIVATE_KEY || 'insert_api_secret_here',
 });
 
 // this function is suggested to used with spot market orders
@@ -47,13 +47,13 @@ async function closePosition() {
   try {
     // close position
     const closePosition = await client.closePosition({
-      product_id: "BTC-USD",
-      size: "0.1",
+      product_id: 'BTC-USD',
+      size: '0.1',
       client_order_id: client.generateNewOrderId(),
     });
-    console.log("Result: ", closePosition);
+    console.log('Result: ', closePosition);
   } catch (e) {
-    console.error("Send new order error: ", e);
+    console.error('Send new order error: ', e);
   }
 
   //

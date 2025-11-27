@@ -1,4 +1,4 @@
-import { OrderRequest, RestClient } from "okx-api";
+import { OrderRequest, RestClient } from 'okx-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
@@ -12,11 +12,11 @@ const API_PASS = process.env.API_PASS_COM;
 
 if (!API_KEY || !API_SECRET || !API_PASS) {
   throw new Error(
-    "Missing api credentials. Use environmental variables or hard code in the script"
+    'Missing api credentials. Use environmental variables or hard code in the script',
   );
 }
 
-console.log(new Date(), "Using credentials: ", {
+console.log(new Date(), 'Using credentials: ', {
   API_KEY,
   API_SECRET,
   API_PASS,
@@ -37,6 +37,7 @@ const client = new RestClient({
 //   apiPass: API_PASS,
 // });
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 function logWSEvent(type: string, data: any) {
   console.log(new Date(), `WS ${type} event: `, data);
 }
@@ -47,9 +48,10 @@ function promiseSleep(milliseconds: number) {
 }
 
 // WARNING: for sensitive math you should be using a library such as decimal.js!
+/* eslint-disable @typescript-eslint/no-unused-vars */
 function roundDown(value: string, decimals: number) {
   return Number(
-    Math.floor(parseFloat(value + "e" + decimals)) + "e-" + decimals
+    Math.floor(parseFloat(value + 'e' + decimals)) + 'e-' + decimals,
   );
 }
 
@@ -75,35 +77,35 @@ function roundDown(value: string, decimals: number) {
     const allBalances = await client.getBalance();
     // const balances = allBalances.filter((bal) => Number(bal.available) != 0);
     const usdtBalanceResult = allBalances[0].details.find(
-      (bal) => bal.ccy === "USDT"
+      (bal) => bal.ccy === 'USDT',
     );
-    console.log("BTC balance result: ", usdtBalanceResult);
+    console.log('BTC balance result: ', usdtBalanceResult);
 
     const usdtBalance = Number(usdtBalanceResult?.availBal);
     // console.log('balance: ', JSON.stringify(balances, null, 2));
 
     if (!usdtBalanceResult || !usdtBalance) {
-      console.error("No USDT to trade");
+      console.error('No USDT to trade');
       return;
     }
 
     console.log(`USDT available: ${usdtBalance}`);
 
-    const symbol = "BTC-USDT";
+    const symbol = 'BTC-USDT';
     const quantity = 0.002;
 
     const order: OrderRequest = {
       instId: symbol,
-      ordType: "market",
-      side: "buy",
+      ordType: 'market',
+      side: 'buy',
       sz: String(usdtBalance * 0.5),
-      tdMode: "cash",
-      tgtCcy: "base_ccy",
+      tdMode: 'cash',
+      tgtCcy: 'base_ccy',
     };
 
     const buyResult = await client.submitOrder(order);
 
-    console.log("result: ", buyResult);
+    console.log('result: ', buyResult);
     return;
     // example to find minimum allowed size for a symbol and place an order with it
     /*  const symbol = 'BTC-USDT-SWAP';
@@ -133,6 +135,6 @@ function roundDown(value: string, decimals: number) {
 
     console.log('sell result: ', sellResult); */
   } catch (e) {
-    console.error("request failed: ", e);
+    console.error('request failed: ', e);
   }
 })();

@@ -1,11 +1,11 @@
-import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from "bybit-api";
+import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from 'bybit-api';
 
 // or
 // import { DefaultLogger, WS_KEY_MAP, WebsocketClient } from 'bybit-api';
 
 const logger = {
   ...DefaultLogger,
-  trace: (...params: any) => console.log("trace", ...params),
+  trace: (...params: any) => console.log('trace', ...params),
 };
 
 /**
@@ -20,25 +20,25 @@ const logger = {
 
 const wsClient = new WebsocketClient({}, logger);
 
-wsClient.on("update", (data) => {
-  console.log("raw message received ", JSON.stringify(data));
+wsClient.on('update', (data) => {
+  console.log('raw message received ', JSON.stringify(data));
 });
 
-wsClient.on("open", (data) => {
-  console.log("connection opened open:", data.wsKey);
+wsClient.on('open', (data) => {
+  console.log('connection opened open:', data.wsKey);
 });
-wsClient.on("response", (data) => {
-  console.log("log response: ", JSON.stringify(data, null, 2));
+wsClient.on('response', (data) => {
+  console.log('log response: ', JSON.stringify(data, null, 2));
 });
-wsClient.on("reconnect", ({ wsKey }) => {
-  console.log("ws automatically reconnecting.... ", wsKey);
+wsClient.on('reconnect', ({ wsKey }) => {
+  console.log('ws automatically reconnecting.... ', wsKey);
 });
-wsClient.on("reconnected", (data) => {
-  console.log("ws has reconnected ", data?.wsKey);
+wsClient.on('reconnected', (data) => {
+  console.log('ws has reconnected ', data?.wsKey);
 });
 
-wsClient.on("exception", (data) => {
-  console.error("ws exception: ", data);
+wsClient.on('exception', (data) => {
+  console.error('ws exception: ', data);
 });
 
 /**
@@ -65,10 +65,10 @@ wsClient.on("exception", (data) => {
 // Option v5
 // wsClient.subscribeV5('publicTrade.BTC', 'option');
 
-const topics = ["kline.5.XRPUSDT", "kline.5.BTCUSDT", "kline.5.ETHUSDT"];
+const topics = ['kline.5.XRPUSDT', 'kline.5.BTCUSDT', 'kline.5.ETHUSDT'];
 
 // Use the subscribeV5() call for most subscribe calls with v5 websockets
-wsClient.subscribeV5(topics, "spot");
+wsClient.subscribeV5(topics, 'spot');
 
 // Alternatively, you can also use objects in the wsClient.subscribe() call
 // wsClient.subscribe({
@@ -89,8 +89,8 @@ wsClient.subscribeV5(topics, "spot");
 
 // To unsubscribe from topics (after a 5 second delay, in this example):
 setTimeout(() => {
-  console.log("unsubscribing");
-  wsClient.unsubscribeV5("kline.5.ETHUSDT", "spot");
+  console.log('unsubscribing');
+  wsClient.unsubscribeV5('kline.5.ETHUSDT', 'spot');
 }, 5 * 1000);
 
 // Topics are tracked per websocket type
@@ -100,20 +100,20 @@ setTimeout(() => {
     .getWsStore()
     .getTopics(WS_KEY_MAP.v5Private);
 
-  console.log("Active private v5 topics: ", activePrivateTopics);
+  console.log('Active private v5 topics: ', activePrivateTopics);
 
   const activePublicLinearTopics = wsClient
     .getWsStore()
     .getTopics(WS_KEY_MAP.v5LinearPublic);
-  console.log("Active public linear v5 topics: ", activePublicLinearTopics);
+  console.log('Active public linear v5 topics: ', activePublicLinearTopics);
 
   const activePublicSpotTopis = wsClient
     .getWsStore()
     .getTopics(WS_KEY_MAP.v5SpotPublic);
-  console.log("Active public spot v5 topics: ", activePublicSpotTopis);
+  console.log('Active public spot v5 topics: ', activePublicSpotTopis);
 
   const activePublicOptionsTopics = wsClient
     .getWsStore()
     .getTopics(WS_KEY_MAP.v5OptionPublic);
-  console.log("Active public option v5 topics: ", activePublicOptionsTopics);
+  console.log('Active public option v5 topics: ', activePublicOptionsTopics);
 }, 15 * 1000);

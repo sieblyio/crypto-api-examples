@@ -1,4 +1,4 @@
-import { FuturesClient } from "kucoin-api";
+import { FuturesClient } from 'kucoin-api';
 
 async function start() {
   const client = new FuturesClient();
@@ -6,20 +6,20 @@ async function start() {
   try {
     // Fetch all symbols
     const symbols = await client.getSymbols();
-    console.log("symbols:", JSON.stringify(symbols, null, 2));
+    console.log('symbols:', JSON.stringify(symbols, null, 2));
 
     // Fetch ticker for a specific symbol
-    const ticker = await client.getTicker({ symbol: "XBTUSDM" });
-    console.log("ticker:", JSON.stringify(ticker, null, 2));
+    const ticker = await client.getTicker({ symbol: 'XBTUSDM' });
+    console.log('ticker:', JSON.stringify(ticker, null, 2));
 
     // Fetch klines for a specific symbol
     const klines = await client.getKlines({
-      symbol: "XBTUSDM",
+      symbol: 'XBTUSDM',
       granularity: 60,
     });
-    console.log("klines:", JSON.stringify(klines, null, 2));
+    console.log('klines:', JSON.stringify(klines, null, 2));
   } catch (e) {
-    console.error(`Req error: `, e);
+    console.error('Req error: ', e);
   }
 }
 

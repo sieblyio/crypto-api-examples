@@ -1,12 +1,11 @@
-import { EventEmitter } from "events";
-
 import {
   DefaultLogger,
   isWsFormattedKline,
   KlineInterval,
   USDMClient,
   WebsocketClient,
-} from "binance";
+} from 'binance';
+import { EventEmitter } from 'events';
 
 /**
  * This elaborate example serves the following key functions:
@@ -22,9 +21,9 @@ import {
 const restClient = new USDMClient();
 
 const ignoredTraceLogMsgs = [
-  "Sending ping",
-  "Received pong frame, clearing pong timer",
-  "Received ping frame, sending pong frame",
+  'Sending ping',
+  'Received pong frame, clearing pong timer',
+  'Received ping frame, sending pong frame',
 ];
 const customLogger = {
   ...DefaultLogger,
@@ -39,15 +38,15 @@ const wsClient = new WebsocketClient(
   {
     beautify: true,
   },
-  customLogger
+  customLogger,
 );
 
 /**
  * Configuration logic
  */
 
-const symbolsToMonitor: string[] = ["BTCUSDT", "ETHUSDT"];
-const timeframes: KlineInterval[] = ["1m"];
+const symbolsToMonitor: string[] = ['BTCUSDT', 'ETHUSDT'];
+const timeframes: KlineInterval[] = ['1m'];
 const maxStoredCandles = 3;
 
 /**
@@ -77,8 +76,8 @@ interface CandleStoreEvent {
 
 /** These are the events produced by the candle store, which can be used to implement this abstraction layer */
 export declare interface CandleEmitter extends EventEmitter {
-  on(event: "candleClose", listener: (event: CandleStoreEvent) => void): this;
-  on(event: "candleUpdate", listener: (event: CandleStoreEvent) => void): this;
+  on(event: 'candleClose', listener: (event: CandleStoreEvent) => void): this;
+  on(event: 'candleUpdate', listener: (event: CandleStoreEvent) => void): this;
 }
 
 /** Some options to configure the behaviour of the candle store */
@@ -120,7 +119,7 @@ export class CandleStore {
    */
   public setCandles(candles: EngineCandle[], interval: string): void {
     const ascendingCandles = [...candles].sort(
-      (a, b) => a.closeTime - b.closeTime
+      (a, b) => a.closeTime - b.closeTime,
     );
 
     this.initCandleStores(interval);
@@ -139,7 +138,7 @@ export class CandleStore {
   public processCandleEvent(
     candle: EngineCandle,
     interval: string,
-    isCandleClosed: boolean
+    isCandleClosed: boolean,
   ): void {
     const evt = { symbol: this.symbol, interval };
 
@@ -147,7 +146,7 @@ export class CandleStore {
 
     if (!isCandleClosed) {
       this.setOpenCandle(candle, interval);
-      this.emitter.emit("candleUpdate", evt);
+      this.emitter.emit('candleUpdate', evt);
       // console.log(this.symbol, `Open candle update`);
       return;
     }
@@ -157,7 +156,7 @@ export class CandleStore {
 
     this.trimExcessCandles(interval);
 
-    this.emitter.emit("candleClose", evt);
+    this.emitter.emit('candleClose', evt);
     // console.log(`Emit candle closed evt`, evt);
   }
 
@@ -196,7 +195,7 @@ export class CandleStore {
    */
   public getCandles(
     interval: string,
-    includeOpenCandle?: boolean
+    includeOpenCandle?: boolean,
   ): EngineCandle[] {
     const candles = this.closedCandles[interval];
     const openCandle = this.openCandles[interval];
@@ -242,7 +241,7 @@ function getCandleStore(symbol: string): CandleStore {
 const eventEmitter = new EventEmitter();
 
 // Hook up event consumers on the shared event emitter
-eventEmitter.on("candleClose", (e) => onCandleClosed(e.symbol, e.interval));
+eventEmitter.on('candleClose', (e) => onCandleClosed(e.symbol, e.interval));
 // eventEmitter.on('candleUpdate', (e) => {
 //   console.log('candle updated', {
 //     dt: new Date(),
@@ -268,7 +267,7 @@ function initCandleStoreIfMissing(symbol: string): void {
  * Websocket Listeners
  */
 
-wsClient.on("formattedMessage", (data) => {
+wsClient.on('formattedMessage', (data) => {
   if (isWsFormattedKline(data)) {
     const candle = data.kline;
     const isCandleClosed = data.kline.final;
@@ -296,39 +295,39 @@ wsClient.on("formattedMessage", (data) => {
 
     return;
   }
-  console.log("log formattedMessage: ", data);
+  console.log('log formattedMessage: ', data);
 });
 
-wsClient.on("open", async (data) => {
-  console.log("connection opened open:", data.wsKey, data.wsUrl);
+wsClient.on('open', async (data) => {
+  console.log('connection opened open:', data.wsKey, data.wsUrl);
 });
 
 // response to command sent via WS stream (e.g. subscription confirmation)
 // this will automatically trigger a backfill for that symbol.
-wsClient.on("response", (data) => {
-  console.log("log response: ", JSON.stringify(data, null, 2));
+wsClient.on('response', (data) => {
+  console.log('log response: ', JSON.stringify(data, null, 2));
 
   // empty response result === success
-  if (!data.result && data.request.method === "SUBSCRIBE") {
+  if (!data.result && data.request.method === 'SUBSCRIBE') {
     data.request.params.forEach(async (topic: any) => {
-      console.log("Successfully subscribed to topic: ", topic);
+      console.log('Successfully subscribed to topic: ', topic);
 
       // btcusdt@kline_1m -> btcusdt, kline_1m
-      const [symbol, topicWithInterval] = topic.split("@");
+      const [symbol, topicWithInterval] = topic.split('@');
 
       // kline_1m -> kline, 1m
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [topicName, interval] = topicWithInterval.split("_");
+      const [topicName, interval] = topicWithInterval.split('_');
 
       await backfillCandles(symbol.toUpperCase(), interval);
     });
   }
 });
-wsClient.on("reconnecting", (data) => {
-  console.log("ws automatically reconnecting.... ", data?.wsKey);
+wsClient.on('reconnecting', (data) => {
+  console.log('ws automatically reconnecting.... ', data?.wsKey);
 });
-wsClient.on("reconnected", async (data) => {
-  console.log("ws has reconnected ", data?.wsKey, data?.wsUrl);
+wsClient.on('reconnected', async (data) => {
+  console.log('ws has reconnected ', data?.wsKey, data?.wsUrl);
 });
 
 /**
@@ -336,7 +335,7 @@ wsClient.on("reconnected", async (data) => {
  */
 async function backfillCandles(
   symbol: string,
-  interval: KlineInterval
+  interval: KlineInterval,
 ): Promise<void> {
   initCandleStoreIfMissing(symbol);
 
@@ -362,12 +361,12 @@ async function backfillCandles(
         closeTime: candle[6],
         closeDt: new Date(candle[6]),
       };
-    }
+    },
   );
 
   // Last candle might not be closed, so filter that out (ignore any candles with close time in the future)
   const closedCandles = mappedEngineCandles.filter(
-    (c) => c.closeTime <= Date.now()
+    (c) => c.closeTime <= Date.now(),
   );
 
   // const candleStore: CandleStore = allIntervalCandleStores[symbol][interval];
@@ -389,7 +388,7 @@ symbolsToMonitor.forEach((symbol) => {
 
   timeframes.forEach(async (interval) => {
     // Open a websocket to start consuming candle events
-    await wsClient.subscribeKlines(symbol, interval, "usdm");
+    await wsClient.subscribeKlines(symbol, interval, 'usdm');
 
     console.log(`Requested subscription to ${symbol} & ${interval}`);
   });
@@ -398,7 +397,7 @@ symbolsToMonitor.forEach((symbol) => {
 function onCandleClosed(symbol: string, interval: string): void {
   // When a candle closes, fetch all closed candles from the store for that symbol, e.g. to calculate some indicators
   const closedSymbolCandles = getCandleStore(symbol).getCandles(interval);
-  console.log("candle closed", {
+  console.log('candle closed', {
     dt: new Date(),
     symbol,
     interval,

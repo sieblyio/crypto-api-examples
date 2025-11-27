@@ -1,4 +1,4 @@
-import { CBAppClient } from "coinbase-api";
+import { CBAppClient } from 'coinbase-api';
 
 // initialise the client
 /**
@@ -22,22 +22,22 @@ import { CBAppClient } from "coinbase-api";
  *
  */
 const client = new CBAppClient({
-  apiKey: process.env.API_KEY_NAME || "insert_api_key_here",
-  apiSecret: process.env.API_PRIVATE_KEY || "insert_api_secret_here",
+  apiKey: process.env.API_KEY_NAME || 'insert_api_key_here',
+  apiSecret: process.env.API_PRIVATE_KEY || 'insert_api_secret_here',
 });
 
 async function withdrawFunds() {
   try {
     // Withdraw funds from your fiat account
     const withdrawResult = await client.withdrawFunds({
-      account_id: "your_fiat_account_id",
-      amount: "50.00",
-      currency: "USD",
-      payment_method: "your_payment_method_id",
+      account_id: 'your_fiat_account_id',
+      amount: '50.00',
+      currency: 'USD',
+      payment_method: 'your_payment_method_id',
     });
-    console.log("Withdraw Result: ", withdrawResult);
+    console.log('Withdraw Result: ', withdrawResult);
   } catch (e) {
-    console.error("Withdraw funds error: ", e);
+    console.error('Withdraw funds error: ', e);
   }
 }
 
