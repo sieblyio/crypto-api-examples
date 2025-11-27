@@ -1,0 +1,180 @@
+import { DefaultLogger, WebsocketClient } from "okx-api";
+
+// Optional: Inject a custom logger.
+// This example overrides the default logger to also log "trace" (super verbose) messages, which are disabled by default
+const logger = {
+  ...DefaultLogger,
+  // trace: (...params) => console.log('trace', ...params),
+};
+
+const wsClient = new WebsocketClient(
+  {
+    // For Global users (www.okx.com), you don't need to set the market.
+    // It will use global by default.
+    // Not needed: market: 'GLOBAL',
+    // For EEA users (my.okx.com), set market to "EEA":
+    // market: 'EEA',
+    // For US users (app.okx.com), set market to "US":
+    // market: 'US',
+  },
+  logger // Optional: inject the custom logger here
+);
+
+// Raw data will arrive on the 'update' event
+wsClient.on("update", (data) => {
+  // console.log(
+  //   new Date(),
+  //   'ws update (raw data received)',
+  //   JSON.stringify(data, null, 2),
+  // );
+  // console.log('ws update (raw data received)', JSON.stringify(data, null, 2));
+  console.log(
+    new Date(),
+    "ws update (raw data received)",
+    JSON.stringify(data)
+  );
+});
+
+wsClient.on("open", (data) => {
+  console.log("ws connection opened open:", data.wsKey);
+});
+
+// Replies (e.g. authenticating or subscribing to channels) will arrive on the 'response' event
+wsClient.on("response", (data) => {
+  console.log("ws response received: ", JSON.stringify(data, null, 2));
+});
+
+wsClient.on("reconnect", ({ wsKey }) => {
+  console.log("ws automatically reconnecting.... ", wsKey);
+});
+wsClient.on("reconnected", (data) => {
+  console.log("ws has reconnected ", data?.wsKey);
+});
+wsClient.on("exception", (data) => {
+  console.error("ws exception: ", data);
+});
+
+// Send one topic at a time
+wsClient.subscribe({
+  channel: "instruments",
+  instType: "FUTURES",
+});
+
+// Or an array of requests
+wsClient.subscribe([
+  {
+    channel: "instruments",
+    instType: "SPOT",
+  },
+  {
+    channel: "tickers",
+    instId: "LTC-BTC",
+  },
+]);
+
+/**
+ *
+ * Examples for each channel: https://www.okx.com/docs-v5/en/#websocket-api-public-channel
+ *
+ */
+
+// Instruments channel
+wsClient.subscribe({
+  channel: "instruments",
+  instType: "SPOT",
+});
+
+// Tickers channel
+wsClient.subscribe({
+  channel: "tickers",
+  instId: "BTC-USDT",
+});
+
+// Open interest channel
+wsClient.subscribe({
+  channel: "open-interest",
+  instId: "BTC-USD-SWAP",
+});
+
+// Candlesticks channel
+wsClient.subscribe({
+  channel: "candle1m",
+  instId: "BTC-USDT",
+});
+
+// Trades channel
+wsClient.subscribe({
+  channel: "trades",
+  instId: "BTC-USDT",
+});
+
+// Estimated delivery/exercise price channel
+wsClient.subscribe({
+  channel: "estimated-price",
+  instType: "FUTURES",
+  instFamily: "BTC-USD",
+});
+
+// Mark price channel
+wsClient.subscribe({
+  channel: "mark-price",
+  instId: "BTC-USDT",
+});
+
+// Mark price candlesticks channel
+wsClient.subscribe({
+  channel: "mark-price-candle1m",
+  instId: "BTC-USDT",
+});
+
+// Price limit channel
+wsClient.subscribe({
+  channel: "price-limit",
+  instId: "BTC-USDT-SWAP",
+});
+
+// Order book channel
+wsClient.subscribe({
+  channel: "books",
+  instId: "BTC-USDT",
+});
+
+// OPTION summary channel
+wsClient.subscribe({
+  channel: "opt-summary",
+  instFamily: "BTC-USD",
+});
+
+// Funding rate channel
+wsClient.subscribe({
+  channel: "funding-rate",
+  instId: "BTC-USD-SWAP",
+});
+
+// Index candlesticks channel
+wsClient.subscribe({
+  channel: "index-candle1m",
+  instId: "BTC-USD",
+});
+
+// Index tickers channel
+wsClient.subscribe({
+  channel: "index-tickers",
+  instId: "BTC-USDT",
+});
+
+// Status channel
+wsClient.subscribe({
+  channel: "status",
+});
+
+// Liquidation orders channel
+wsClient.subscribe({
+  channel: "liquidation-orders",
+  instType: "FUTURES",
+});
+
+wsClient.subscribe({
+  channel: "liquidation-orders",
+  instType: "SWAP",
+});
