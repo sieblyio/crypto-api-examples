@@ -22,6 +22,8 @@
         "bitget-api": "^3.0.10",
         "bitmart-api": "^2.1.30",
         "bybit-api": "^4.4.2",
-        "coinbase-api": "^1.1.7"
+        "coinbase-api": "^1.1.7",
+        "gateio-api": "^1.3.2",
+        "kucoin-api": "^2.3.2"
     }
 }

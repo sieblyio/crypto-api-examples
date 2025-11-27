@@ -29,8 +29,12 @@ async function fetchExchangeInfo() {
   try {
     const exchangeInfo = await client.getExchangeInfo();
     return exchangeInfo;
-  } catch (error) {
-    throw new Error(`Failed to get exchange info: ${error.message}`);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(`Failed to get exchange info: ${error.message}`);
+    } else {
+      throw new Error(`Failed to get exchange info: ${String(error)}`);
+    }
   }
 }
 
@@ -82,7 +86,11 @@ async function getSymbolInfo(
 
     return symbolFilters;
   } catch (error) {
-    throw new Error(`Failed to get symbol info: ${error.message}`);
+    if (error instanceof Error) {
+      throw new Error(`Failed to get symbol info: ${error.message}`);
+    } else {
+      throw new Error(`Failed to get symbol info: ${String(error)}`);
+    }
   }
 }
 
@@ -134,7 +142,11 @@ function formatOrderParams(
       quantity: formattedQty,
     };
   } catch (error) {
-    throw new Error(`Failed to format order: ${error.message}`);
+    if (error instanceof Error) {
+      throw new Error(`Failed to format order: ${error.message}`);
+    } else {
+      throw new Error(`Failed to format order: ${String(error)}`);
+    }
   }
 }
 
