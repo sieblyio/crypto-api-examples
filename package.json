@@ -29,6 +29,7 @@
         "typescript": "^5.2.2"
     },
     "dependencies": {
+        "@siebly/kraken-api": "^0.0.9",
         "binance": "^3.1.5",
         "bitget-api": "^3.0.10",
         "bitmart-api": "^2.1.30",
