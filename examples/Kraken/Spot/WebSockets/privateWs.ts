@@ -97,7 +97,9 @@ async function start() {
    *
    * So you do NOT need to manually fetch or provide the token when subscribing to private topics.
    *
-   * Do note that all of these include the "spotPrivateV2" WsKey reference. This tells the WebsocketClient to use the private "wss://ws-auth.kraken.com/v2" endpoint for these private subscription requests.
+   * Do note that:
+   * - Most private topics use "spotPrivateV2" WsKey, which connects to "wss://ws-auth.kraken.com/v2"
+   * - The level3 topic uses "spotL3V2" WsKey, which connects to "wss://ws-l3.kraken.com/v2" (dedicated L3 endpoint)
    */
 
   try {
@@ -130,6 +132,7 @@ async function start() {
     client.subscribe(balancesRequestWithParams, WS_KEY_MAP.spotPrivateV2);
 
     // Orders Level 3, requires auth: https://docs.kraken.com/api/docs/websocket-v2/level3
+    // Note: level3 uses a dedicated endpoint (wss://ws-l3.kraken.com/v2), so use WS_KEY_MAP.spotL3V2
     const ordersRequestWithParams: WSTopicRequest<WSSpotTopic> = {
       // topic: 'level3',
       topic: 'level3',
@@ -141,7 +144,7 @@ async function start() {
       },
     };
 
-    client.subscribe(ordersRequestWithParams, WS_KEY_MAP.spotPrivateV2);
+    client.subscribe(ordersRequestWithParams, WS_KEY_MAP.spotL3V2);
   } catch (e) {
     console.error('Req error: ', e);
   }

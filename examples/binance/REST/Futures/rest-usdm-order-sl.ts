@@ -54,15 +54,15 @@ async function start() {
         const { markPrice }: any = long;
 
         // creating SL order
-        const result = await client.submitNewOrder({
-          symbol,
-          side: 'SELL', // the action of order, means this order will sell which is sl for long position
-          positionSide: 'LONG', // based on the headge mode we either LONG or SHORT, here we are doing it for our long pos
-          timeInForce: 'GTC',
+        const result = await client.submitNewAlgoOrder({
+          positionSide: 'SHORT',
+          priceProtect: 'true',
+          side: 'SELL',
+          triggerPrice: '0.123',
+          symbol: 'BTCUSDT',
           type: 'STOP_MARKET',
-          closePosition: 'true', // this is here because we don't have the position quantity value, and it means closee all quantity
-          stopPrice: parseFloat((markPrice * 0.99).toFixed(3)), // set sl price 1% below current price
-          workingType: 'MARK_PRICE',
+          algoType: 'CONDITIONAL',
+          closePosition: 'true',
         });
         console.log('SL Modifiled sell result: ', result);
       }
