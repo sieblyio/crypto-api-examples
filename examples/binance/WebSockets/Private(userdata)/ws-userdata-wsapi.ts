@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 // or
-// const { WebsocketAPIClient, WebsocketClient, WS_KEY_MAP } = require('binance');
 
 import {
   isWsFormattedFuturesUserDataEvent,

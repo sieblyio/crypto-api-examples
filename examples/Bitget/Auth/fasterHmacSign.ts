@@ -3,7 +3,6 @@ import { createHmac } from 'crypto';
 
 // or
 // import { createHmac } from 'crypto';
-// import { DefaultLogger, RestClientV3, WebsocketClientV3 } from 'bitget-api';
 
 /**
  * Injecting a custom signMessage function.

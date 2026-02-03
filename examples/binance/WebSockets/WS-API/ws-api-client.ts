@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 // or
-// const { DefaultLogger, WebsocketAPIClient, WS_KEY_MAP } = require('binance');
 
 import { DefaultLogger, WebsocketAPIClient } from 'binance';
 

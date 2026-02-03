@@ -19,8 +19,8 @@ async function SumbitFuturesOrder() {
       type: 'market',
       side: 1, // Order side - 1=buy_open_long  -2=buy_close_short  -3=sell_close_long  -4=sell_open_short
       size: 1,
-      open_type: 'cross',
       leverage: '1',
+      open_type: 'cross',
     });
 
     console.log('Order: ', JSON.stringify(order, null, 2));

@@ -4,7 +4,7 @@ import {
   numberInString,
   roundToStepSize,
   roundToTickSize,
-} from 'binance'; // from 'binance';
+} from 'binance';
 
 const client = new MainClient({
   // Optional (default: false) - when true, response strings are parsed to floats (only for known keys).

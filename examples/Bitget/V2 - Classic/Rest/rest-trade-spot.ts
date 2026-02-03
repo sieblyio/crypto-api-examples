@@ -4,8 +4,6 @@ import {
   WebsocketClientV2,
 } from 'bitget-api';
 
-// import { RestClientV2, WebsocketClient } from 'bitget-api';
-
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
 const API_SECRET = process.env.API_SECRET_COM;
