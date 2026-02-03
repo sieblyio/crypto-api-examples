@@ -4,7 +4,7 @@ import {
   numberInString,
   roundToStepSize,
   roundToTickSize,
-} from 'binance';
+} from 'binance'; // from 'binance';
 
 const client = new MainClient({
   // Optional (default: false) - when true, response strings are parsed to floats (only for known keys).
@@ -20,8 +20,8 @@ interface SymbolInfo {
   maxNumOfOrders?: number;
   minNotional?: numberInString;
   maxNotional?: numberInString;
-  maxBasePrecisionDecimals?: number;
-  maxQuotePrecisionDecimals?: number;
+  maxBasePrecisionDecimals: number;
+  maxQuotePrecisionDecimals: number;
 }
 
 // Get full exchange info so we can cache it and use it for other functions without making request every time
@@ -29,12 +29,10 @@ async function fetchExchangeInfo() {
   try {
     const exchangeInfo = await client.getExchangeInfo();
     return exchangeInfo;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to get exchange info: ${error.message}`);
-    } else {
-      throw new Error(`Failed to get exchange info: ${String(error)}`);
-    }
+  } catch (error) {
+    throw new Error(
+      `Failed to get exchange info: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
@@ -86,11 +84,9 @@ async function getSymbolInfo(
 
     return symbolFilters;
   } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to get symbol info: ${error.message}`);
-    } else {
-      throw new Error(`Failed to get symbol info: ${String(error)}`);
-    }
+    throw new Error(
+      `Failed to get symbol info: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
@@ -133,6 +129,9 @@ function formatOrderParams(
     }
 
     // Format price and quantity according to exchange requirements
+    if (!symbolInfo.tickSize || !symbolInfo.qtyStepSize) {
+      throw new Error('Missing required symbol info: tickSize or qtyStepSize');
+    }
     const formattedPrice = roundToTickSize(price, symbolInfo.tickSize);
     const formattedQty = roundToStepSize(quantity, symbolInfo.qtyStepSize);
 
@@ -142,11 +141,9 @@ function formatOrderParams(
       quantity: formattedQty,
     };
   } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to format order: ${error.message}`);
-    } else {
-      throw new Error(`Failed to format order: ${String(error)}`);
-    }
+    throw new Error(
+      `Failed to format order: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
@@ -159,25 +156,28 @@ async function testSymbolUtils() {
   if (!symbolFilters) return;
 
   // Test price formatting
+  if (!symbolFilters.tickSize) {
+    console.log('tickSize not available for this symbol');
+    return;
+  }
   const testPrice = 23.45678;
   console.log(
     `Original price: ${testPrice}`,
-    `Formatted price: ${
-      symbolFilters.tickSize
-        ? roundToTickSize(testPrice, symbolFilters.tickSize.toString())
-        : testPrice
-    }`,
+    `Formatted price: ${roundToTickSize(testPrice, symbolFilters.tickSize.toString())}`,
   );
 
   // Test quantity formatting
+  if (!symbolFilters.qtyStepSize) {
+    console.log('qtyStepSize not available for this symbol');
+    return;
+  }
   const testQty = 1.23456;
   console.log(
     `Original quantity: ${testQty}`,
-    `Formatted quantity: ${
-      symbolFilters.qtyStepSize
-        ? roundToStepSize(testQty, symbolFilters.qtyStepSize.toString())
-        : testQty
-    }`,
+    `Formatted quantity: ${roundToStepSize(
+      testQty,
+      symbolFilters.qtyStepSize.toString(),
+    )}`,
   );
 
   // Test full order formatting

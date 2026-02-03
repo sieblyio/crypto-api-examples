@@ -9,7 +9,6 @@ const client = new USDMClient({
   beautifyResponses: true,
 });
 
-// submit a 1:1 bracket market buy order with market entry order
 (async () => {
   try {
     // TODO: check balance and do other validations

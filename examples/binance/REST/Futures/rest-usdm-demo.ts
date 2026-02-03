@@ -1,8 +1,5 @@
 import { USDMClient } from 'binance';
 
-// or
-// import { USDMClient } from 'binance';
-
 const key = process.env.API_KEY_COM || 'APIKEY';
 const secret = process.env.API_SECRET_COM || 'APISECRET';
 

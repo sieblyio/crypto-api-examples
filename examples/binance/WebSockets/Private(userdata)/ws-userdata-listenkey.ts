@@ -1,3 +1,14 @@
+// or
+// import {
+//   DefaultLogger,
+//   isWsFormattedFuturesUserDataEvent,
+//   isWsFormattedSpotUserDataEvent,
+//   isWsFormattedSpotUserDataExecutionReport,
+//   isWsFormattedUserDataEvent,
+//   WebsocketClient,
+//   WsUserDataEvents,
+// } from 'binance';
+
 import {
   DefaultLogger,
   isWsFormattedFuturesUserDataEvent,
@@ -17,6 +28,7 @@ enum WsConnectionStateEnum {
   // ERROR_RECONNECTING = 5,
   ERROR = 5,
 }
+
 (async () => {
   const key = process.env.API_KEY_COM || 'APIKEY';
   const secret = process.env.API_SECRET_COM || 'APISECRET';
@@ -32,7 +44,7 @@ enum WsConnectionStateEnum {
   // Optional, hook and customise logging behavior
   const logger = {
     ...DefaultLogger,
-    trace: (msg: string, context: any) => {
+    trace: (msg: string, context?: any) => {
       if (ignoredTraceLogMsgs.includes(msg)) {
         return;
       }

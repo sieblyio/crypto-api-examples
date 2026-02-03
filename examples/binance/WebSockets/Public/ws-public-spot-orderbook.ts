@@ -4,6 +4,7 @@ import {
   DefaultLogger,
   isWsPartialBookDepthEventFormatted,
   WebsocketClient,
+  WsMessagePartialBookDepthEventFormatted,
 } from 'binance';
 
 (async () => {

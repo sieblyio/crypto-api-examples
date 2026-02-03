@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+// or
+// const { DefaultLogger, WebsocketAPIClient, WS_KEY_MAP } = require('binance');
+
 import { DefaultLogger, WebsocketAPIClient } from 'binance';
 
 /**
@@ -17,8 +22,8 @@ MC4CAQAexamplewqj5CzUuTy1
 -----END PRIVATE KEY-----
 `;
 
-const key = process.env.API_KEY_COM || publicKey;
-const secret = process.env.API_SECRET_COM || privateKey;
+const key = process.env.API_KEY_COM;
+const secret = process.env.API_SECRET_COM;
 
 // returned by binance, generated using the publicKey (above)
 // const key = 'BVv39ATnIme5TTZRcC3I04C3FqLVM7vCw3Hf7mMT7uu61nEZK8xV1V5dmhf9kifm';
@@ -205,7 +210,9 @@ async function main() {
   }
 
   try {
-    const response = await wsClient.getSpotTicker({});
+    const response = await wsClient.getSpotTicker({
+      symbol: 'BTCUSDT',
+    });
     console.log('getSpotTicker response: ', response);
   } catch (e) {
     console.log('getSpotTicker error: ', e);
@@ -680,6 +687,33 @@ async function main() {
     console.log('getFuturesAccountStatus response: ', response);
   } catch (e) {
     console.log('getFuturesAccountStatus error: ', e);
+  }
+
+  try {
+    const response = await wsClient.submitNewFuturesAlgoOrder({
+      algoType: 'CONDITIONAL',
+      symbol: 'BTCUSDT',
+      side: 'BUY',
+      type: 'STOP',
+      timeInForce: 'GTC',
+      price: '100000.10000000',
+      stopPrice: '100000.10000000',
+      quantity: '0.00847000',
+      timestamp: Date.now(),
+    });
+    console.log('submitNewFuturesAlgoOrder response: ', response);
+  } catch (e) {
+    console.log('submitNewFuturesAlgoOrder error: ', e);
+  }
+
+  try {
+    const response = await wsClient.cancelFuturesAlgoOrder({
+      algoid: 1028312903,
+      timestamp: Date.now(),
+    });
+    console.log('cancelFuturesAlgoOrder response: ', response);
+  } catch (e) {
+    console.log('cancelFuturesAlgoOrder error: ', e);
   }
 }
 

@@ -8,9 +8,6 @@ import {
   WsUserDataEvents,
 } from 'binance';
 
-// or
-// import { DefaultLogger, WebsocketClient } from 'binance';
-
 /**
  * This extended example for using the user data stream demonstrates one way to handle failures in the first connection attempt of the user data stream.
  * In most cases this is overkill!
@@ -29,7 +26,7 @@ import {
   // Optional, hook and customise logging behavior
   const logger = {
     ...DefaultLogger,
-    trace: (msg: string, context: any) => {
+    trace: (msg: string, context?: any) => {
       if (ignoredTraceLogMsgs.includes(msg)) {
         return;
       }

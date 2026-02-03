@@ -23,7 +23,7 @@ import {
   // Optional, hook and customise logging behavior
   const logger = {
     ...DefaultLogger,
-    trace: (msg: string, context: any) => {
+    trace: (msg: string, context?: any) => {
       if (ignoredTraceLogMsgs.includes(msg)) {
         return;
       }
