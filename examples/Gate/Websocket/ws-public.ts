@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { WebsocketClient, WsTopicRequest } from 'gateio-api';
 
 // const customLogger = {

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { LogParams, WebsocketClient } from 'gateio-api';
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 const account = {
   key: process.env.API_KEY || 'apiKeyHere',
   secret: process.env.API_SECRET || 'apiSecretHere',

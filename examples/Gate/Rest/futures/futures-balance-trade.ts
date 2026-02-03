@@ -6,8 +6,6 @@
  * - fetching available futures balance
  * - placing an order using 50% of the available balance
  **/
-
-// Import the RestClient and WebsocketClient from the published version of this SDK, installed via NPM (npm install gateio-api)
 import { RestClient, WebsocketClient } from 'gateio-api';
 
 // Define the account object with API key and secret
@@ -80,6 +78,9 @@ async function main() {
 
     // Get futures account balance via REST
     const balances = await gateRestClient.getFuturesAccount({ settle: 'usdt' });
+
+    // total usdt balance
+    // const usdtBalance = Number(balances.total);
 
     // available usdt balance
     const availableBalance = Number(balances.available);
