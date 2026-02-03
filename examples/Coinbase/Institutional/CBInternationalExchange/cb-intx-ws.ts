@@ -2,11 +2,6 @@ import 'dotenv/config';
 
 import { WebsocketClient, WsTopicRequest } from 'coinbase-api';
 
-/**
- * import { WebsocketClient, WsTopicRequest } from 'coinbase-api';
- * const { WebsocketClient, WsTopicRequest } = require('coinbase-api');
- */
-
 const client = new WebsocketClient(
   {
     apiKey: process.env.CB_INTX_API_KEY!,

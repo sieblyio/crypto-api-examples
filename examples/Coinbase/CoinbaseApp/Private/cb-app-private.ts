@@ -1,3 +1,8 @@
+/**
+ * import { CBAppClient } from 'coinbase-api';
+ * const { CBAppClient } = require('coinbase-api');
+ */
+
 import { CBAppClient } from 'coinbase-api';
 
 // initialise the client
