@@ -1,8 +1,5 @@
 import { RestClientV5 } from 'bybit-api';
 
-// or
-// import { RestClientV5 } from 'bybit-api';
-
 /**
  * If you don't plan on making any private api calls,
  * you can instance the REST client without any parameters

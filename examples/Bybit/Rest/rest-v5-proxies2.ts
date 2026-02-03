@@ -1,9 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { RestClientV5 } from 'bybit-api';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-
-// or
-// import { RestClientV5 } from 'bybit-api';
 
 const key = process.env.API_KEY_COM;
 const secret = process.env.API_SECRET_COM;

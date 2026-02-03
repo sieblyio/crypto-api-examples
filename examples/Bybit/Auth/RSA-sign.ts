@@ -9,9 +9,6 @@
 
 import { RestClientV5 } from 'bybit-api';
 
-// or
-// import { RestClientV5 } from 'bybit-api';
-
 // Received after creating a new API key with a self-generated RSA public key on bybit
 const api_key = 'your-api-key-here';
 

@@ -1,11 +1,8 @@
 import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from 'bybit-api';
 
-// or
-// import { DefaultLogger, WS_KEY_MAP, WebsocketClient } from 'bybit-api';
-
 const logger = {
   ...DefaultLogger,
-  trace: (...params: any) => console.log('trace', ...params),
+  trace: (...params: any[]) => console.log('trace', ...params),
 };
 
 /**

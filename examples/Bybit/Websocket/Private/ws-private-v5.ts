@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from 'bybit-api';
 
-// or
-// import { DefaultLogger, WS_KEY_MAP, WebsocketClient } from 'bybit-api';
-
 // Create & inject a custom logger to enable the trace logging level (empty function)
 const logger = {
   ...DefaultLogger,

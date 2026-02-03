@@ -1,8 +1,5 @@
 import { DefaultLogger, RestClientV5, WebsocketClient } from 'bybit-api';
 
-// or
-// import { RestClientV5 } from 'bybit-api';
-
 const key = process.env.API_KEY_COM;
 const secret = process.env.API_SECRET_COM;
 

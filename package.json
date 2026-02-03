@@ -32,7 +32,7 @@
     },
     "dependencies": {
         "@siebly/kraken-api": "^1.0.3",
-        "binance": "^3.2.2",
+        "binance": "^3.2.3",
         "bitget-api": "^3.1.2",
         "bitmart-api": "^2.3.1",
         "bybit-api": "^4.5.1",

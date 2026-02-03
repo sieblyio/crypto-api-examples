@@ -1,8 +1,5 @@
 import { RestClientV5, UniversalTransferRecordV5 } from 'bybit-api';
 
-// or
-// import { RestClientV5 } from 'bybit-api';
-
 const client = new RestClientV5({
   testnet: false,
   key: 'insert_api_key',

@@ -1,7 +1,5 @@
 import { DefaultLogger, WebsocketAPIClient } from 'bybit-api';
 
-// or
-// import { DefaultLogger, WebsocketAPIClient } from 'bybit-api';
 // const { DefaultLogger, WebsocketAPIClient } = require('bybit-api');
 
 const key = process.env.API_KEY_COM;

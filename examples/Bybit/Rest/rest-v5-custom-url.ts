@@ -1,8 +1,5 @@
 import { RestClientV5 } from 'bybit-api';
 
-// or
-// import { RestClientV5 } from 'bybit-api';
-
 /**
  * The first parameter of the REST client allows you to pass any configuration parameters supported by the SDK.
  *
