@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   PlaceOrderRequestV3,
   RestClientV3,
   WebsocketClientV3,
 } from 'bitget-api';
+
+// import { RestClientV3, WebsocketClientV3 } from 'bitget-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;

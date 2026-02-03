@@ -23,7 +23,7 @@ import { DefaultLogger, WebsocketAPIClient } from 'bitget-api';
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params: any) => console.log('trace', ...params),
+    trace: (...params: any[]) => console.log('trace', ...params),
   };
 
   const API_KEY = process.env.API_KEY_COM;
@@ -57,7 +57,7 @@ import { DefaultLogger, WebsocketAPIClient } from 'bitget-api';
   await wsClient.getWSClient().connectWSAPI();
 
   /**
-   * Bitget's WebSocket API can be used like a REST API, through this SDK's WebsocketAPIClient. The WebsocketAPIClient is a utility class wrapped around WebsocketClientV3's sendWSAPIRequest() capabilities.
+   * Bitget's WebSocket API be used like a REST API, through this SDK's WebsocketAPIClient. The WebsocketAPIClient is a utility class wrapped around WebsocketClientV3's sendWSAPIRequest() capabilities.
    *
    * Each request sent via the WebsocketAPIClient will automatically:
    * - route via the active WS API connection

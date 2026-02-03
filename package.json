@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "buildfast": " npm run lint:fix && npm run format && npm run lint && ts-node scripts/build-examples.ts ",
-        "build": "npm run update-latest && ts-node scripts/build-examples.ts ",
+        "build": "npm run update-latest && npm run buildfast",
         "update-latest": "scripts/update-latest.sh",
         "lint": "eslint \"examples/**/*.ts\" \"scripts/**/*.ts\"",
         "lint:fix": "eslint \"examples/**/*.ts\" \"scripts/**/*.ts\" --fix",

@@ -3,7 +3,7 @@ import { DefaultLogger, WebsocketClientV2, WS_KEY_MAP } from 'bitget-api';
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params: any) => console.log('trace', ...params),
+    trace: (...params: any[]) => console.log('trace', ...params),
   };
 
   const wsClient = new WebsocketClientV2(

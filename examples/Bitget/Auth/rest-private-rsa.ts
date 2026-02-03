@@ -1,5 +1,10 @@
 import { RestClientV2, RestClientV3 } from 'bitget-api';
 
+// Import frmo NPM:
+// import { RestClientV2, RestClientV3 } from 'bitget-api';
+// or if you prefer require:
+// const { RestClientV2, RestClientV3 } = require('bitget-api');
+
 // Received after creating a new API key with a self-generated RSA public key on Bitget
 const API_KEY = 'bg_0866563123123123123f567e83e52fd';
 

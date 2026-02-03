@@ -1,4 +1,4 @@
-# Bitget API Examples
+# Examples
 
 These samples can be executed using `ts-node`:
 
@@ -13,13 +13,6 @@ API_KEY_COM='yourkeyhere' API_SECRET_COM='yoursecrethere' API_PASS_COM='yourapip
 ```
 
 They can also be converted to JavaScript by changing the imports to require & removing any type annotations.
-
-## V2
-
-These examples are for Bitget's V2 APIs and WebSockets. They can be found in the examples/V2 folder.
-
-Refer to the V2 API documentation for more information on the V2 APIs:
-https://www.bitget.com/api-doc/common/intro
 
 ## V3 / Unified Trading Account (UTA)
 
@@ -43,7 +36,7 @@ This integration looks & feels like a REST API client, but uses WebSockets, via 
 This is the recommended approach to easily start sending orders via an automatically persisted WebSocket connection. A simple example is below, but for a more thorough example, check the example here: [./V3/ws-api-client-trade.ts](./V3/ws-api-client-trade.ts)
 
 ```typescript
-import { WebsocketAPIClient } from "bitget-api";
+import { WebsocketAPIClient } from 'bitget-api';
 // or if you prefer require:
 // const { WebsocketAPIClient } = require("bitget-api");
 
@@ -65,13 +58,13 @@ async function start() {
    * https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
    */
   try {
-    const res = await wsClient.submitNewOrder("spot", {
-      orderType: "limit",
-      price: "100",
-      qty: "0.1",
-      side: "buy",
-      symbol: "BTCUSDT",
-      timeInForce: "gtc",
+    const res = await wsClient.submitNewOrder('spot', {
+      orderType: 'limit',
+      price: '100',
+      qty: '0.1',
+      side: 'buy',
+      symbol: 'BTCUSDT',
+      timeInForce: 'gtc',
     });
 
     console.log(new Date(), 'WS API "submitNewOrder()" result: ', res);
@@ -80,7 +73,7 @@ async function start() {
   }
 }
 
-start().catch((e) => console.error("Exception in example: ".e));
+start().catch((e) => console.error('Exception in example: '.e));
 ```
 
 #### ws.sendWSAPIRequest(wsKey, command, category, operation)
@@ -90,3 +83,10 @@ This is the "raw" integration within the existing WebSocket client. It uses an a
 Refer to [V3/ws-api-trade-raw.ts](./V3/ws-api-trade-raw.ts) to see an example.
 
 Note: The WebsocketClient is built around this. For a more user friendly experience, it is recommended to use the WebsocketClient for WS API requests. It uses this method but has the convenience of behaving similar to a REST API (while all communication automatically happens over a persisted WebSocket connection).
+
+## V2
+
+These examples are for Bitget's V2 APIs and WebSockets. They can be found in the examples/V2 folder.
+
+Refer to the V2 API documentation for more information on the V2 APIs:
+https://www.bitget.com/api-doc/common/intro
