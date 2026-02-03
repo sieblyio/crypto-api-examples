@@ -1,5 +1,4 @@
 import { WebsocketClient } from 'kucoin-api';
-// import { DefaultLogger, WebsocketClient } from 'kucoin-api';
 
 async function start() {
   // Optional: inject a custom logger to override internal logging behaviour

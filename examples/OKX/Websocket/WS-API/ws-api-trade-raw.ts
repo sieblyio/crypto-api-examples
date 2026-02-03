@@ -1,4 +1,3 @@
-// If you cloned the repo and are using typescript, you can import from src directly:
 import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from 'okx-api';
 
 (async () => {
