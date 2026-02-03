@@ -1,4 +1,6 @@
-import { OrderRequest, RestClient } from 'okx-api';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { RestClient } from 'okx-api';
+import { OrderRequest } from 'okx-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
@@ -37,7 +39,6 @@ const client = new RestClient({
 //   apiPass: API_PASS,
 // });
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 function logWSEvent(type: string, data: any) {
   console.log(new Date(), `WS ${type} event: `, data);
 }
@@ -48,8 +49,7 @@ function promiseSleep(milliseconds: number) {
 }
 
 // WARNING: for sensitive math you should be using a library such as decimal.js!
-/* eslint-disable @typescript-eslint/no-unused-vars */
-function roundDown(value: string, decimals: number) {
+function roundDown(value: any, decimals: number) {
   return Number(
     Math.floor(parseFloat(value + 'e' + decimals)) + 'e-' + decimals,
   );

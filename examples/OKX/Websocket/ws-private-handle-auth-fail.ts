@@ -1,3 +1,4 @@
+// If you cloned the repo and are using typescript, you can import from src directly:
 import { WebsocketClient } from 'okx-api';
 
 /**

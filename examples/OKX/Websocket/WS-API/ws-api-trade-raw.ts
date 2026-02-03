@@ -1,9 +1,10 @@
+// If you cloned the repo and are using typescript, you can import from src directly:
 import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from 'okx-api';
 
 (async () => {
   const logger = {
     ...DefaultLogger,
-    trace: (...params: any) => console.log('trace', ...params),
+    trace: (...params: any[]) => console.log('trace', ...params),
   };
 
   // For private events, all 3 of the following are required (per account):
