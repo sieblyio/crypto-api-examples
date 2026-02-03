@@ -4,9 +4,9 @@ import {
   LogParams,
   WebsocketClient,
   WS_KEY_MAP,
-  WSDerivativesTopic,
   WSTopicRequest,
 } from '@siebly/kraken-api';
+import { WSDerivativesTopic } from '@siebly/kraken-api';
 
 const customLogger: DefaultLogger = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

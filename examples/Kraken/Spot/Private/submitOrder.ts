@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { SpotClient } from '@siebly/kraken-api';
 
 // This example shows how to call Kraken API endpoint with either node.js,
 // javascript (js) or typescript (ts) with the npm module "@siebly/kraken-api" for Kraken exchange
 // for SUBMITTING ORDERS
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // initialise the client
 /**
  *

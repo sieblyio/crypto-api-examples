@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DerivativesClient } from '@siebly/kraken-api';
 
 // This example shows how to call Kraken API endpoint with either node.js,
 // javascript (js) or typescript (ts) with the npm module "@siebly/kraken-api" for Kraken exchange
 // for FUTURES PUBLIC MARKET DATA that requires no authentication
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 // you can initialise public client without api keys as public calls do not require auth
 const client = new DerivativesClient();
