@@ -14,7 +14,8 @@ import {
 } from 'binance';
 
 /**
- * The WS API only works with an Ed25519 API key.
+ * Note: the WebSocket API is fastest with Ed25519 keys. HMAC & RSA will
+ * require each command to be individually signed.
  *
  * Check the rest-private-ed25519.md in this folder for more guidance
  * on preparing this Ed25519 API key.
@@ -134,7 +135,7 @@ async function main() {
     beautify: true,
 
     // Enforce testnet ws connections, regardless of supplied wsKey:
-    testnet: true,
+    // testnet: true,
 
     // Note: unless you set this to false, the SDK will automatically call
     // the `subscribeUserDataStream()` method again if reconnected (if you called it before):
