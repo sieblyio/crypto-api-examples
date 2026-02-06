@@ -1,6 +1,7 @@
 import { parse as parseComments } from 'comment-parser';
 import * as fs from 'fs/promises';
 import { glob } from 'glob';
+import * as path from 'path';
 import * as ts from 'typescript';
 
 interface ExampleFile {
@@ -84,13 +85,18 @@ async function buildFileTree(basePath: string): Promise<ExampleFolder> {
 }
 
 async function buildExamplesIndex(): Promise<void> {
-  const tree = await buildFileTree('examples');
+  // Ensure we're working from the repo root
+  const repoRoot = process.cwd();
+  const examplesPath = path.join(repoRoot, 'examples');
+  const tree = await buildFileTree(examplesPath);
 
-  await fs.mkdir('public', { recursive: true });
-  await fs.mkdir('public/js', { recursive: true });
+  const publicDir = path.join(repoRoot, 'public');
+  const publicJsDir = path.join(publicDir, 'js');
+  await fs.mkdir(publicDir, { recursive: true });
+  await fs.mkdir(publicJsDir, { recursive: true });
 
   await fs.writeFile(
-    'public/examples-index.json',
+    path.join(publicDir, 'examples-index.json'),
     JSON.stringify(tree, null, 2),
   );
 
@@ -106,26 +112,47 @@ function countFiles(node: ExampleFolder | ExampleFile): number {
 async function checkTypeScriptErrors(): Promise<void> {
   console.log('\nChecking TypeScript compilation errors...');
 
-  const files = glob.sync('examples/**/*.ts');
+  // Ensure we're working from the repo root
+  const repoRoot = process.cwd();
+  const examplesPattern = path.join(repoRoot, 'examples', '**', '*.ts');
+  const files = glob.sync(examplesPattern);
+  console.log(`Checking ${files.length} example files...`);
+
   const configPath = ts.findConfigFile(
-    './',
+    repoRoot,
     ts.sys.fileExists,
     'tsconfig.json',
   );
 
   if (!configPath) {
     console.error('Could not find tsconfig.json');
-    return;
+    process.exit(1);
   }
 
+  console.log(`Using tsconfig: ${configPath}`);
+
   const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
-  const compilerOptions = ts.parseJsonConfigFileContent(
+  if (configFile.error) {
+    console.error('Error reading tsconfig.json:', configFile.error);
+    process.exit(1);
+  }
+
+  const parsedConfig = ts.parseJsonConfigFileContent(
     configFile.config,
     ts.sys,
-    './',
+    repoRoot,
   );
 
-  const program = ts.createProgram(files, compilerOptions.options);
+  if (parsedConfig.errors && parsedConfig.errors.length > 0) {
+    console.error('Errors parsing tsconfig.json:');
+    for (const error of parsedConfig.errors) {
+      const message = ts.flattenDiagnosticMessageText(error.messageText, '\n');
+      console.error(`  ${message}`);
+    }
+    process.exit(1);
+  }
+
+  const program = ts.createProgram(files, parsedConfig.options);
   const diagnostics = ts.getPreEmitDiagnostics(program);
 
   if (diagnostics.length === 0) {
@@ -136,6 +163,7 @@ async function checkTypeScriptErrors(): Promise<void> {
   console.log(`\n❌ Found ${diagnostics.length} compilation error(s):\n`);
 
   const errorsByFile = new Map<string, ts.Diagnostic[]>();
+  const errorsWithoutFile: ts.Diagnostic[] = [];
 
   for (const diagnostic of diagnostics) {
     if (diagnostic.file) {
@@ -144,9 +172,12 @@ async function checkTypeScriptErrors(): Promise<void> {
         errorsByFile.set(fileName, []);
       }
       errorsByFile.get(fileName)!.push(diagnostic);
+    } else {
+      errorsWithoutFile.push(diagnostic);
     }
   }
 
+  // Show errors with files
   for (const [fileName, fileDiagnostics] of errorsByFile.entries()) {
     console.log(`\n📁 ${fileName}`);
     for (const diagnostic of fileDiagnostics) {
@@ -158,11 +189,36 @@ async function checkTypeScriptErrors(): Promise<void> {
           '\n',
         );
         console.log(`   Line ${line + 1}:${character + 1} - ${message}`);
+      } else {
+        const message = ts.flattenDiagnosticMessageText(
+          diagnostic.messageText,
+          '\n',
+        );
+        console.log(`   ${message}`);
       }
     }
   }
 
-  console.log(`\n❌ ${errorsByFile.size} file(s) with errors\n`);
+  // Show errors without files (configuration errors, etc.)
+  if (errorsWithoutFile.length > 0) {
+    console.log(
+      `\n⚠️  ${errorsWithoutFile.length} error(s) without file location:`,
+    );
+    for (const diagnostic of errorsWithoutFile) {
+      const message = ts.flattenDiagnosticMessageText(
+        diagnostic.messageText,
+        '\n',
+      );
+      const code = diagnostic.code;
+      console.log(`   [${code}] ${message}`);
+    }
+  }
+
+  console.log(`\n❌ ${errorsByFile.size} file(s) with errors`);
+  if (errorsWithoutFile.length > 0) {
+    console.log(`   ${errorsWithoutFile.length} configuration/global error(s)`);
+  }
+  console.log('');
   process.exit(1);
 }
 
