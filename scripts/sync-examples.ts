@@ -727,16 +727,47 @@ async function syncExchange(
   }
 
   // Clean up any case-duplicate directories in git before copying
-  // This fixes issues where git tracks both "Auth" and "auth" on case-sensitive filesystems
-  if (fs.existsSync(destDir)) {
+  // This fixes issues where git tracks both "Binance" and "binance" on case-sensitive filesystems
+  const examplesDir = path.join(repoRoot, 'examples');
+  if (fs.existsSync(examplesDir)) {
     try {
-      // Remove the directory from git index (but keep files for now)
-      execSync(`git rm -r --cached "${destDir}" 2>/dev/null || true`, {
-        cwd: repoRoot,
-        stdio: 'pipe',
-      });
-    } catch {
-      // Ignore errors - directory might not be in git yet
+      // Find all directories in examples/ that match the exchange name case-insensitively
+      const entries = fs.readdirSync(examplesDir, { withFileTypes: true });
+      const matchingDirs = entries
+        .filter((entry) => entry.isDirectory())
+        .filter(
+          (entry) =>
+            entry.name.toLowerCase() === config.destFolder.toLowerCase(),
+        )
+        .map((entry) => entry.name);
+
+      // Remove all matching directories from git and filesystem
+      for (const dirName of matchingDirs) {
+        const dirPath = path.join(examplesDir, dirName);
+        console.log(
+          `   Removing old directory (case cleanup): examples/${dirName}`,
+        );
+        try {
+          // Remove from git index
+          execSync(
+            `git rm -r --cached "examples/${dirName}" 2>/dev/null || true`,
+            {
+              cwd: repoRoot,
+              stdio: 'pipe',
+            },
+          );
+        } catch {
+          // Ignore errors - directory might not be in git yet
+        }
+        // Remove from filesystem
+        if (fs.existsSync(dirPath)) {
+          fs.rmSync(dirPath, { recursive: true, force: true });
+        }
+      }
+    } catch (error) {
+      console.log(
+        `   ⚠️  Could not clean up old directories: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
