@@ -725,23 +725,35 @@ async function syncExchange(
   if (!options.skipBuild) {
     console.log('🔨 Running lint and format checks...\n');
     try {
+      console.log('  → Running lint:fix...');
       execSync('npm run lint:fix', { cwd: repoRoot, stdio: 'inherit' });
+      console.log('  → Running format...');
       execSync('npm run format', { cwd: repoRoot, stdio: 'inherit' });
+      console.log('  → Running lint...');
       execSync('npm run lint', { cwd: repoRoot, stdio: 'inherit' });
       console.log('\n✅ Lint checks passed!\n');
-    } catch {
+    } catch (error) {
       console.error(
         '\n❌ Lint checks failed. Please fix errors before creating PR.',
       );
+      console.error('Error details:', error);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+      }
       process.exit(1);
     }
 
     console.log('🔨 Building examples...\n');
     try {
+      console.log('  → Running buildfast...');
       execSync('npm run buildfast', { cwd: repoRoot, stdio: 'inherit' });
       console.log('\n✅ Build completed!\n');
-    } catch {
+    } catch (error) {
       console.error('\n❌ Build failed. Please fix errors before creating PR.');
+      console.error('Error details:', error);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+      }
       process.exit(1);
     }
   }

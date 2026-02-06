@@ -97,10 +97,11 @@ jobs:
             echo "🔄 Syncing $exchange..."
             
             # Run sync script (it will handle PR creation)
-            npm run sync:$exchange || {
-              echo "⚠️  Failed to sync $exchange, continuing..."
-              continue
-            }
+            # Capture exit code to see if it failed
+            if ! npm run sync:$exchange; then
+              echo "❌ Failed to sync $exchange. Check logs above for details."
+              exit 1
+            fi
           done
 
       - name: Summary
