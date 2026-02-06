@@ -1,15 +1,15 @@
 {
-    "compilerOptions": {
-        "target": "es2018",
-        "module": "commonjs",
-        "strict": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "outDir": "dist",
-        "types": ["node"],
-        "moduleResolution": "node"
-    },
-    "include": ["examples/**/*", "scripts/**/*"],
-    "exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "types": ["node"],
+    "moduleResolution": "node"
+  },
+  "include": ["examples/**/*", "scripts/**/*"],
+  "exclude": ["node_modules"]
 }
