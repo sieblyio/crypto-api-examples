@@ -463,45 +463,83 @@ function commitChanges(
   config: ExchangeConfig,
   repoRoot: string,
 ): void {
-  // Only add changes in the specific exchange examples directory
+  // Add changes in the specific exchange examples directory
   const exchangeExamplesPath = `examples/${config.destFolder}/`;
+  const filesToAdd: string[] = [];
 
   // Check if there are any changes in the examples directory
   try {
-    const status = execSync(`git status --porcelain ${exchangeExamplesPath}`, {
-      encoding: 'utf-8',
-      cwd: repoRoot,
-    });
+    const examplesStatus = execSync(
+      `git status --porcelain ${exchangeExamplesPath}`,
+      {
+        encoding: 'utf-8',
+        cwd: repoRoot,
+      },
+    );
 
-    if (!status.trim()) {
-      console.log(`⚠️  No changes detected in ${exchangeExamplesPath}`);
-      return;
+    if (examplesStatus.trim()) {
+      filesToAdd.push(exchangeExamplesPath);
     }
-
-    execSync(`git add ${exchangeExamplesPath}`, {
-      stdio: 'inherit',
-      cwd: repoRoot,
-    });
-
-    // Verify something was staged before committing
-    const stagedStatus = execSync('git diff --cached --name-only', {
-      encoding: 'utf-8',
-      cwd: repoRoot,
-    });
-
-    if (!stagedStatus.trim()) {
-      console.log('⚠️  No files were staged for commit');
-      return;
+  } catch {
+    // If status check fails, try adding anyway
+    if (fs.existsSync(path.join(repoRoot, exchangeExamplesPath))) {
+      filesToAdd.push(exchangeExamplesPath);
     }
-
-    execSync(`git commit -m "chore: sync ${exchange} examples from SDK"`, {
-      stdio: 'inherit',
-      cwd: repoRoot,
-    });
-  } catch (error) {
-    console.error(`❌ Failed to commit changes: ${error}`);
-    throw error;
   }
+
+  // Also add built files (public/ directory) if they exist and have changes
+  const publicPath = path.join(repoRoot, 'public');
+  if (fs.existsSync(publicPath)) {
+    try {
+      const publicStatus = execSync('git status --porcelain public/', {
+        encoding: 'utf-8',
+        cwd: repoRoot,
+      });
+
+      if (publicStatus.trim()) {
+        filesToAdd.push('public/');
+      }
+    } catch {
+      // If status check fails, try adding anyway
+      filesToAdd.push('public/');
+    }
+  }
+
+  if (filesToAdd.length === 0) {
+    console.log('⚠️  No changes detected to commit');
+    return;
+  }
+
+  // Add all changed files
+  for (const filePath of filesToAdd) {
+    try {
+      execSync(`git add ${filePath}`, {
+        stdio: 'inherit',
+        cwd: repoRoot,
+      });
+    } catch {
+      // Skip if file doesn't exist or can't be added
+    }
+  }
+
+  // Verify something was staged before committing
+  const stagedStatus = execSync('git diff --cached --name-only', {
+    encoding: 'utf-8',
+    cwd: repoRoot,
+  });
+
+  if (!stagedStatus.trim()) {
+    console.log('⚠️  No files were staged for commit');
+    return;
+  }
+
+  execSync(
+    `git commit -m "chore: sync ${exchange} examples from SDK and rebuild"`,
+    {
+      stdio: 'inherit',
+      cwd: repoRoot,
+    },
+  );
 }
 
 function pushBranch(branchName: string, repoRoot: string): void {
@@ -685,35 +723,58 @@ async function syncExchange(
 
   // Step 3: Run build/lint if not skipped
   if (!options.skipBuild) {
-    console.log('🔨 Running build and lint checks...\n');
+    console.log('🔨 Running lint and format checks...\n');
     try {
       execSync('npm run lint:fix', { cwd: repoRoot, stdio: 'inherit' });
       execSync('npm run format', { cwd: repoRoot, stdio: 'inherit' });
       execSync('npm run lint', { cwd: repoRoot, stdio: 'inherit' });
-      console.log('\n✅ Build checks passed!\n');
+      console.log('\n✅ Lint checks passed!\n');
     } catch {
       console.error(
-        '\n❌ Build checks failed. Please fix errors before creating PR.',
+        '\n❌ Lint checks failed. Please fix errors before creating PR.',
       );
+      process.exit(1);
+    }
+
+    console.log('🔨 Building examples...\n');
+    try {
+      execSync('npm run buildfast', { cwd: repoRoot, stdio: 'inherit' });
+      console.log('\n✅ Build completed!\n');
+    } catch {
+      console.error('\n❌ Build failed. Please fix errors before creating PR.');
       process.exit(1);
     }
   }
 
   // Step 4: Check for changes and create PR if needed
   if (!options.skipPR) {
-    // Check specifically for changes in the exchange examples directory
+    // Check for changes in examples directory and built files
     const exchangeExamplesPath = `examples/${config.destFolder}/`;
     let hasChanges = false;
 
     try {
-      const status = execSync(
+      // Check for changes in examples
+      const examplesStatus = execSync(
         `git status --porcelain ${exchangeExamplesPath}`,
         {
           encoding: 'utf-8',
           cwd: repoRoot,
         },
       );
-      hasChanges = status.trim().length > 0;
+      hasChanges = examplesStatus.trim().length > 0;
+
+      // Also check for changes in built files (public/ directory)
+      if (!hasChanges) {
+        try {
+          const publicStatus = execSync('git status --porcelain public/', {
+            encoding: 'utf-8',
+            cwd: repoRoot,
+          });
+          hasChanges = publicStatus.trim().length > 0;
+        } catch {
+          // public/ might not exist or have changes, that's ok
+        }
+      }
     } catch {
       // If git status fails, check if directory exists and has files
       hasChanges = fs.existsSync(destDir);
