@@ -370,6 +370,13 @@ function copyAndTransformExamples(
   console.log(`   Destination: ${destDir}`);
   console.log(`   Excluding folders: ${config.excludeFolders.join(', ')}`);
 
+  // Clean up destination directory to avoid case-sensitivity issues
+  // Delete the entire destination directory first to ensure clean state
+  if (fs.existsSync(destDir)) {
+    console.log('   Cleaning existing destination directory...');
+    fs.rmSync(destDir, { recursive: true, force: true });
+  }
+
   const allFiles = getAllFiles(sourceDir, config.excludeFolders);
   console.log(`   Found ${allFiles.length} files to process`);
 
@@ -717,6 +724,20 @@ async function syncExchange(
   if (!fs.existsSync(sourceDir)) {
     console.error(`❌ Source directory not found: ${sourceDir}`);
     process.exit(1);
+  }
+
+  // Clean up any case-duplicate directories in git before copying
+  // This fixes issues where git tracks both "Auth" and "auth" on case-sensitive filesystems
+  if (fs.existsSync(destDir)) {
+    try {
+      // Remove the directory from git index (but keep files for now)
+      execSync(`git rm -r --cached "${destDir}" 2>/dev/null || true`, {
+        cwd: repoRoot,
+        stdio: 'pipe',
+      });
+    } catch {
+      // Ignore errors - directory might not be in git yet
+    }
   }
 
   copyAndTransformExamples(config, sourceDir, destDir, exchange);
