@@ -1,5 +1,9 @@
 import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from 'okx-api';
 
+// or use the module installed via `npm install okx-api`:
+
+// or if you're not using typescript (e.g. pure nodejs), change the "import" to "require":
+
 (async () => {
   const logger = {
     ...DefaultLogger,

@@ -1,5 +1,9 @@
 import { DefaultLogger, WebsocketAPIClient } from 'okx-api';
 
+// or use the module installed via `npm install okx-api`:
+
+// or if you're not using typescript (e.g. pure nodejs), change the "import" to "require":
+
 // function attachEventHandlers<TWSClient extends WebsocketClient>(
 //   wsClient: TWSClient,
 // ): void {
