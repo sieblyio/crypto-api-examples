@@ -6,8 +6,7 @@ import { DefaultLogger, SpotClient, WebsocketClient } from 'kucoin-api';
 /**
  * Injecting a custom signMessage function.
  *
- * As of version 3.0.0 of the kucoin-api Node.js/TypeScript/JavaScript
- * SDK for Kucoin, the SDK uses the Web Crypto API for signing requests.
+ * The SDK uses the Web Crypto API for signing requests.
  * While it is compatible with Node and Browser environments, it is
  * slightly slower than using Node's native crypto module (only
  * available in backend Node environments).
