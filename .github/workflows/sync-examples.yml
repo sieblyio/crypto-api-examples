@@ -88,14 +88,10 @@ jobs:
       - name: Verify GitHub CLI
         run: gh --version
 
-      - name: Authenticate GitHub CLI
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Sync examples
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           for exchange in ${{ steps.determine-exchanges.outputs.exchanges }}; do
             echo "🔄 Syncing $exchange..."
