@@ -84,6 +84,7 @@ const EXCHANGE_CONFIGS: Record<string, ExchangeConfig> = {
     packageName: '@siebly/kraken-api',
     destFolder: 'Kraken',
     excludeFolders: ['apidoc'],
+    repoUrl: 'https://github.com/sieblyio/kraken-api.git',
   },
   kucoin: {
     repoName: 'kucoin-api',

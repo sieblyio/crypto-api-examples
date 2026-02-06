@@ -63,22 +63,22 @@ jobs:
           cd ..
           for exchange in ${{ steps.determine-exchanges.outputs.exchanges }}; do
             case $exchange in
-              binance) REPO="binance" ;;
-              bitget) REPO="bitget-api" ;;
-              bitmart) REPO="bitmart-api" ;;
-              bybit) REPO="bybit-api" ;;
-              coinbase) REPO="coinbase-api" ;;
-              gate) REPO="gateio-api" ;;
-              kraken) REPO="kraken-api" ;;
-              kucoin) REPO="kucoin-api" ;;
-              okx) REPO="okx-api" ;;
+              binance) REPO="binance" ORG="tiagosiebler" ;;
+              bitget) REPO="bitget-api" ORG="tiagosiebler" ;;
+              bitmart) REPO="bitmart-api" ORG="tiagosiebler" ;;
+              bybit) REPO="bybit-api" ORG="tiagosiebler" ;;
+              coinbase) REPO="coinbase-api" ORG="tiagosiebler" ;;
+              gate) REPO="gateio-api" ORG="tiagosiebler" ;;
+              kraken) REPO="kraken-api" ORG="sieblyio" ;;
+              kucoin) REPO="kucoin-api" ORG="tiagosiebler" ;;
+              okx) REPO="okx-api" ORG="tiagosiebler" ;;
             esac
             
             if [ ! -d "$REPO" ]; then
               echo "📥 Cloning $REPO..."
-              git clone --depth 1 "https://github.com/tiagosiebler/$REPO.git" || {
+              git clone --depth 1 "https://github.com/$ORG/$REPO.git" || {
                 echo "⚠️  Failed to clone $REPO, trying with token..."
-                git clone --depth 1 "https://${{ secrets.GITHUB_TOKEN }}@github.com/tiagosiebler/$REPO.git" || {
+                git clone --depth 1 "https://${{ secrets.GITHUB_TOKEN }}@github.com/$ORG/$REPO.git" || {
                   echo "❌ Failed to clone $REPO"
                   continue
                 }
