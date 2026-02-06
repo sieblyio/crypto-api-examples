@@ -8,6 +8,7 @@ on:
         required: true
         type: choice
         options:
+          - all
           - binance
           - bitget
           - bitmart
@@ -49,7 +50,13 @@ jobs:
       - name: Determine exchanges to sync
         id: determine-exchanges
         run: |
-          echo "exchanges=${{ github.event.inputs.exchange }}" >> $GITHUB_OUTPUT
+          if [ "${{ github.event.inputs.exchange }}" == "all" ]; then
+            echo "exchanges=binance bitget bitmart bybit coinbase gate kraken kucoin okx" >> $GITHUB_OUTPUT
+            echo "✅ Will sync all exchanges"
+          else
+            echo "exchanges=${{ github.event.inputs.exchange }}" >> $GITHUB_OUTPUT
+            echo "✅ Will sync: ${{ github.event.inputs.exchange }}"
+          fi
 
       - name: Clone SDK repositories
         run: |
