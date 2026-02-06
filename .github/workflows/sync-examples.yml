@@ -110,4 +110,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✅ Sync workflow completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Check the logs above for details." >> $GITHUB_STEP_SUMMARY
+          echo "Check the logs above for details and PR creation links." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** If PRs were not created automatically, check the logs above for clickable PR creation links." >> $GITHUB_STEP_SUMMARY

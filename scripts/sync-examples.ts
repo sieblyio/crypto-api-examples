@@ -13,7 +13,9 @@
 
 import { execSync } from 'child_process';
 import * as fs from 'fs';
+import * as https from 'https';
 import * as path from 'path';
+import * as url from 'url';
 
 // Get script directory - works with both CommonJS and ESM
 // When running with ts-node --esm, process.argv[1] contains the script path
@@ -103,51 +105,228 @@ function getRepoUrl(repoName: string, customUrl?: string): string {
   return `https://github.com/tiagosiebler/${repoName}.git`;
 }
 
-// Regex patterns for transformation (same as in individual regex scripts)
-const srcImportRegex = /from\s+['"](?:\.\.\/)+src(?:\/[^'"]*)?['"]/g;
+// Exchange-specific transformation functions
+// Each exchange has slightly different patterns, so we use the exact same logic as individual scripts
 
-// Package-specific comment regexes (simplified - can be enhanced per exchange)
-function getPackageCommentRegex(packageName: string): RegExp {
-  // Escape special regex characters in package name
+interface ExchangeTransformConfig {
+  srcImportRegex: RegExp;
+  packageCommentRegex: RegExp;
+  inlineCommentRegex: RegExp;
+  blockCommentRegex?: RegExp;
+  orCommentBlockRegex?: RegExp;
+  clonedRepoCommentRegex?: RegExp;
+}
+
+function getExchangeTransformConfig(
+  exchange: string,
+  packageName: string,
+): ExchangeTransformConfig {
   const escaped = packageName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(
-    `(?:\\n\\s*\\/\\/\\s*or\\s*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import|const).*?['"]${escaped}['"].*?\\n`,
-    'g',
-  );
+  const scopedEscaped = escaped.replace(/\//g, '\\/');
+
+  switch (exchange.toLowerCase()) {
+    case 'binance':
+      return {
+        srcImportRegex: /from\s+['"](?:\.\.\/)+src(?:\/[^'"]*)?['"]/g,
+        packageCommentRegex: new RegExp(
+          `(?:\\n\\s*\\/\\/\\s*or\\s*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import|const).*?['"]${escaped}['"].*?\\n`,
+          'g',
+        ),
+        inlineCommentRegex: new RegExp(
+          `\\s*\\/\\/\\s*from\\s*['"]${escaped}['"];?\\s*$`,
+          'gm',
+        ),
+        orCommentBlockRegex: new RegExp(
+          `\\n\\s*\\/\\/\\s*or,?\\s*with the npm package\\s*\\n\\s*\\/\\*[\\s\\S]*?from\\s*['"]${escaped}['"];?\\s*\\*\\/\\s*\\n`,
+          'g',
+        ),
+      };
+
+    case 'okx':
+      return {
+        srcImportRegex:
+          /from\s+['"](?:\.\.\/)+src(?:\/\/?[^'"]*)?(?:\.js)?['"]/g,
+        packageCommentRegex: new RegExp(
+          `(?:\\n\\s*\\/\\/\\s*(?:If you cloned|or|or if you're not using typescript|or use the module installed)[^\\n]*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import|const|If you cloned|or use the module|or if you're not).*?['"]${escaped}['"].*?\\n`,
+          'g',
+        ),
+        inlineCommentRegex: new RegExp(
+          `\\s*\\/\\/\\s*from\\s*['"]${escaped}['"];?\\s*$`,
+          'gm',
+        ),
+        blockCommentRegex: new RegExp(
+          `\\n\\s*\\/\\*\\*\\s*\\n\\s*\\*\\s*(?:import|const).*?['"]${escaped}['"][\\s\\S]*?\\*\\/\\s*\\n`,
+          'g',
+        ),
+        clonedRepoCommentRegex: new RegExp(
+          "\\n\\s*\\/\\/\\s*If you cloned the repo[^\\n]*\\n(?:\\s*\\/\\/\\s*(?:or use the module|or if you're not using typescript)[^\\n]*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)*",
+          'g',
+        ),
+      };
+
+    case 'kraken':
+      return {
+        srcImportRegex:
+          /from\s+['"](?:\.\.\/)+src(?:\/\/?[^'"]*)?(?:\.js)?['"]/g,
+        packageCommentRegex: new RegExp(
+          `(?:\\n\\s*\\/\\/\\s*or\\s*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import|const|normally you should install).*?${scopedEscaped}.*?\\n`,
+          'g',
+        ),
+        inlineCommentRegex: new RegExp(
+          `\\s*\\/\\/\\s*(?:from\\s*['"]${scopedEscaped}['"]|normally you should install[^\\n]*${scopedEscaped}[^\\n]*);?\\s*$`,
+          'gm',
+        ),
+        blockCommentRegex: new RegExp(
+          `\\n\\s*\\/\\*\\*\\s*\\n\\s*\\*\\s*(?:import|const).*?${scopedEscaped}[\\s\\S]*?\\*\\/\\s*\\n`,
+          'g',
+        ),
+      };
+
+    case 'gate':
+      return {
+        srcImportRegex:
+          /from\s+['"](?:\.\.\/)+src(?:\/\/?[^'"]*)?(?:\.js)?['"]/g,
+        packageCommentRegex: new RegExp(
+          `(?:\\n\\s*\\/\\/\\s*or\\s*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import|const).*?['"]${escaped}['"].*?\\n`,
+          'g',
+        ),
+        inlineCommentRegex: new RegExp(
+          `\\s*\\/\\/\\s*(?:For an easy demonstration[^\\n]*|Import the[^\\n]*from the published version[^\\n]*|normally you should install[^\\n]*|.*${escaped}[^\\n]*)$`,
+          'gm',
+        ),
+      };
+
+    case 'kucoin':
+      return {
+        srcImportRegex:
+          /from\s+['"](?:\.\.\/)+src(?:\/\/?[^'"]*)?(?:\.(?:js|ts))?['"]/g,
+        packageCommentRegex: new RegExp(
+          `(?:\\n\\s*\\/\\/\\s*or\\s*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import|const|normally you should install).*?['"]${escaped}['"].*?\\n`,
+          'g',
+        ),
+        inlineCommentRegex: new RegExp(
+          `\\s*\\/\\/\\s*(?:from\\s*['"]${escaped}['"]|normally you should install[^\\n]*${escaped}[^\\n]*);?\\s*$`,
+          'gm',
+        ),
+        blockCommentRegex: new RegExp(
+          `\\n\\s*\\/\\*\\*\\s*\\n\\s*\\*\\s*(?:import|const).*?['"]${escaped}['"][\\s\\S]*?\\*\\/\\s*\\n`,
+          'g',
+        ),
+      };
+
+    case 'bitget':
+      return {
+        srcImportRegex:
+          /from\s+['"](?:\.\.\/)+src(?:\/\/?[^'"]*)?(?:\.js)?['"]/g,
+        packageCommentRegex: new RegExp(
+          `(?:\\n\\s*\\/\\/\\s*or\\s*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import|const).*?['"]${escaped}['"].*?\\n`,
+          'g',
+        ),
+        inlineCommentRegex: new RegExp(
+          `\\s*\\/\\/\\s*from\\s*['"]${escaped}['"];?\\s*$`,
+          'gm',
+        ),
+      };
+
+    case 'bitmart':
+      return {
+        srcImportRegex:
+          /from\s+['"](?:\.\.\/)+src(?:\/\/?[^'"]*)?(?:\.js)?['"]/g,
+        packageCommentRegex: new RegExp(
+          `(?:\\n\\s*\\/\\/\\s*or\\s*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import\\s*from\\s*npm[^\\n]*\\n\\s*)?\\/\\/\\s*(?:import|const).*?['"]${escaped}['"].*?\\n`,
+          'g',
+        ),
+        inlineCommentRegex: new RegExp(
+          `\\s*\\/\\/\\s*from\\s*['"]${escaped}['"];?\\s*$`,
+          'gm',
+        ),
+      };
+
+    case 'bybit':
+      return {
+        srcImportRegex:
+          /from\s+['"](?:\.\.\/)+src(?:\/\/?[^'"]*)?(?:\.js)?['"]/g,
+        packageCommentRegex: new RegExp(
+          `(?:\\n\\s*\\/\\/\\s*or\\s*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import|const).*?['"]${escaped}['"].*?\\n`,
+          'g',
+        ),
+        inlineCommentRegex: new RegExp(
+          `\\s*\\/\\/\\s*from\\s*['"]${escaped}['"];?\\s*$`,
+          'gm',
+        ),
+        orCommentBlockRegex: new RegExp(
+          `\\n\\s*\\/\\/\\s*or,?\\s*with the npm package\\s*\\n\\s*\\/\\*[\\s\\S]*?from\\s*['"]${escaped}['"];?\\s*\\*\\/\\s*\\n`,
+          'g',
+        ),
+      };
+
+    case 'coinbase':
+      return {
+        srcImportRegex:
+          /from\s+['"](?:\.\.\/)+src(?:\/\/?[^'"]*)?(?:\.js)?['"]/g,
+        packageCommentRegex: new RegExp(
+          `(?:\\n\\s*\\/\\/\\s*or\\s*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import|const).*?['"]${escaped}['"].*?\\n`,
+          'g',
+        ),
+        inlineCommentRegex: new RegExp(
+          `\\s*\\/\\/\\s*from\\s*['"]${escaped}['"];?\\s*$`,
+          'gm',
+        ),
+        blockCommentRegex: new RegExp(
+          `\\n\\s*\\/\\*\\*\\s*\\n\\s*\\*\\s*(?:import|const).*?['"]${escaped}['"][\\s\\S]*?\\*\\/\\s*\\n`,
+          'g',
+        ),
+      };
+
+    default:
+      // Fallback to basic patterns
+      return {
+        srcImportRegex: /from\s+['"](?:\.\.\/)+src(?:\/[^'"]*)?['"]/g,
+        packageCommentRegex: new RegExp(
+          `(?:\\n\\s*\\/\\/\\s*or\\s*\\n\\s*\\/\\/\\s*(?:import|const).*?\\n)+|\\n\\s*\\/\\/\\s*(?:\\/\\/\\s*)?(?:import|const).*?['"]${escaped}['"].*?\\n`,
+          'g',
+        ),
+        inlineCommentRegex: new RegExp(
+          `\\s*\\/\\/\\s*from\\s*['"]${escaped}['"];?\\s*$`,
+          'gm',
+        ),
+      };
+  }
 }
 
-const orCommentBlockRegex =
-  /\n\s*\/\/\s*or,?\s*with the npm package\s*\n\s*\/\*[\s\S]*?from\s*['"][^'"]*['"];?\s*\*\/\s*\n/g;
+function transformExampleContent(
+  content: string,
+  packageName: string,
+  exchange: string,
+): string {
+  const config = getExchangeTransformConfig(exchange, packageName);
 
-function getInlineCommentRegex(packageName: string): RegExp {
-  const escaped = packageName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`\\s*\\/\\/\\s*from\\s*['"]${escaped}['"];?\\s*$`, 'gm');
-}
+  // Step 1: Replace relative src imports with package import
+  let result = content.replace(config.srcImportRegex, `from '${packageName}'`);
 
-// OKX-specific: handle "If you cloned" comments
-function getClonedRepoCommentRegex(): RegExp {
-  return /\n\s*\/\/\s*If you cloned the repo[^\n]*\n(?:\s*\/\/\s*(?:or use the module|or if you're not using typescript)[^\n]*\n\s*\/\/\s*(?:import|const).*?\n)*/g;
-}
+  // Step 2: Remove inline comments on import lines
+  result = result.replace(config.inlineCommentRegex, '');
 
-function transformExampleContent(content: string, packageName: string): string {
-  let result = content.replace(srcImportRegex, `from '${packageName}'`);
+  // Step 3: Remove block comments with package imports (if applicable)
+  if (config.blockCommentRegex) {
+    result = result.replace(config.blockCommentRegex, '\n\n');
+  }
 
-  // Remove inline comments
-  result = result.replace(getInlineCommentRegex(packageName), '');
-
-  // Remove package comment lines
-  result = result.replace(getPackageCommentRegex(packageName), '\n\n');
-
-  // Remove block comments
-  result = result.replace(orCommentBlockRegex, '\n\n');
-
-  // OKX-specific: remove "If you cloned" comments
-  if (packageName === 'okx-api') {
-    result = result.replace(getClonedRepoCommentRegex(), '\n');
+  // Step 4: Remove "If you cloned the repo" comment lines (OKX-specific)
+  if (config.clonedRepoCommentRegex) {
+    result = result.replace(config.clonedRepoCommentRegex, '\n');
     result = result.replace(/^\s*\/\/\s*If you cloned the repo[^\n]*\n/gm, '');
   }
 
-  // Clean up multiple newlines
+  // Step 5: Remove any comment lines containing the package name
+  result = result.replace(config.packageCommentRegex, '\n\n');
+
+  // Step 6: Remove the "// or, with the npm package" block comment patterns (if applicable)
+  if (config.orCommentBlockRegex) {
+    result = result.replace(config.orCommentBlockRegex, '\n\n');
+  }
+
+  // Clean up any double newlines created by removals
   result = result.replace(/\n{3,}/g, '\n\n');
 
   return result;
@@ -184,6 +363,7 @@ function copyAndTransformExamples(
   config: ExchangeConfig,
   sourceDir: string,
   destDir: string,
+  exchange: string,
 ): number {
   console.log(`\n📦 Copying examples from ${config.repoName}...`);
   console.log(`   Source: ${sourceDir}`);
@@ -209,7 +389,11 @@ function copyAndTransformExamples(
     let transformedContent = content;
 
     if (['.ts', '.js', '.tsx', '.jsx'].includes(ext)) {
-      transformedContent = transformExampleContent(content, config.packageName);
+      transformedContent = transformExampleContent(
+        content,
+        config.packageName,
+        exchange,
+      );
     }
 
     fs.writeFileSync(destFile, transformedContent, 'utf-8');
@@ -327,21 +511,136 @@ function pushBranch(branchName: string, repoRoot: string): void {
   });
 }
 
-function createPullRequest(exchange: string, branchName: string): void {
+function createPullRequest(
+  exchange: string,
+  branchName: string,
+  repoRoot: string,
+): void {
   const title = `Sync ${exchange} examples from SDK`;
   const body = `This PR syncs examples from the ${exchange} SDK repository.
 
 Automatically generated by sync-examples script.`;
 
+  // Get repo info from git
+  let repoOwner = '';
+  let repoName = '';
   try {
-    // Try using gh CLI if available
+    const remoteUrl = execSync('git config --get remote.origin.url', {
+      encoding: 'utf-8',
+      cwd: repoRoot,
+    }).trim();
+    // Parse git@github.com:owner/repo.git or https://github.com/owner/repo.git
+    const match = remoteUrl.match(
+      /(?:github\.com[:/]|git@github\.com:)([^/]+)\/([^/]+?)(?:\.git)?$/,
+    );
+    if (match) {
+      repoOwner = match[1];
+      repoName = match[2];
+    }
+  } catch {
+    // Fallback if git config fails
+  }
+
+  const prUrl =
+    repoOwner && repoName
+      ? `https://github.com/${repoOwner}/${repoName}/compare/main...${branchName}?expand=1`
+      : `https://github.com/YOUR_ORG/YOUR_REPO/compare/main...${branchName}?expand=1`;
+
+  // Try using GitHub API directly if GITHUB_TOKEN is available
+  if (process.env.GITHUB_TOKEN && repoOwner && repoName) {
+    try {
+      const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/pulls`;
+      const postData = JSON.stringify({
+        title,
+        body,
+        head: branchName,
+        base: 'main',
+      });
+
+      const parsedUrl = url.parse(apiUrl);
+      const options = {
+        hostname: parsedUrl.hostname,
+        path: parsedUrl.path,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData),
+          Authorization: `token ${process.env.GITHUB_TOKEN}`,
+          'User-Agent': 'sync-examples-script',
+        },
+      };
+
+      const req = https.request(options, (res: any) => {
+        let data = '';
+        res.on('data', (chunk: any) => {
+          data += chunk;
+        });
+        res.on('end', () => {
+          if (res.statusCode === 201) {
+            const pr = JSON.parse(data);
+            console.log('\n✅ PR created successfully!');
+            console.log(`   ${pr.html_url}\n`);
+            return;
+          } else {
+            // API failed, fall through to output link
+            outputPRLink(exchange, branchName, title, prUrl);
+          }
+        });
+      });
+
+      req.on('error', () => {
+        // API failed, fall through to output link
+        outputPRLink(exchange, branchName, title, prUrl);
+      });
+
+      req.write(postData);
+      req.end();
+      return; // Exit early if API call succeeds
+    } catch {
+      // API call failed, fall through to output link
+    }
+  }
+
+  // Fallback: Try gh CLI or output link
+  try {
     execSync(`gh pr create --title "${title}" --body "${body}" --base main`, {
       stdio: 'inherit',
+      cwd: repoRoot,
+      env: { ...process.env, GH_TOKEN: process.env.GITHUB_TOKEN },
     });
+    console.log('\n✅ PR created successfully!\n');
   } catch {
-    console.log('\n⚠️  GitHub CLI not available. Please create PR manually:');
-    console.log(`   Branch: ${branchName}`);
-    console.log(`   Title: ${title}`);
+    outputPRLink(exchange, branchName, title, prUrl);
+  }
+}
+
+function outputPRLink(
+  exchange: string,
+  branchName: string,
+  title: string,
+  prUrl: string,
+): void {
+  console.log('\n⚠️  Could not create PR automatically. Create PR manually:');
+  console.log('\n🔗 PR Creation Link:');
+  console.log(`   ${prUrl}\n`);
+  console.log(`   Branch: ${branchName}`);
+  console.log(`   Title: ${title}\n`);
+
+  // Output to GitHub Actions summary if running in CI
+  if (process.env.GITHUB_STEP_SUMMARY) {
+    const summary = `
+## 🔗 Create Pull Request
+
+Click the button below to create a pull request:
+
+[**👉 Create PR: ${title}**](${prUrl})
+
+**Branch:** \`${branchName}\`  
+**Exchange:** ${exchange}
+
+---
+`;
+    fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
   }
 }
 
@@ -382,7 +681,7 @@ async function syncExchange(
     process.exit(1);
   }
 
-  copyAndTransformExamples(config, sourceDir, destDir);
+  copyAndTransformExamples(config, sourceDir, destDir, exchange);
 
   // Step 3: Run build/lint if not skipped
   if (!options.skipBuild) {
@@ -427,7 +726,7 @@ async function syncExchange(
       createBranch(branchName, repoRoot);
       commitChanges(exchange, config, repoRoot);
       pushBranch(branchName, repoRoot);
-      createPullRequest(exchange, branchName);
+      createPullRequest(exchange, branchName, repoRoot);
 
       console.log(`\n✅ PR created: ${branchName}\n`);
     } else {
