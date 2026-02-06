@@ -1,0 +1,121 @@
+name: Sync Examples from SDKs
+
+on:
+  workflow_dispatch:
+    inputs:
+      exchange:
+        description: 'Exchange to sync (binance, bitget, bitmart, bybit, coinbase, gate, kraken, kucoin, okx)'
+        required: true
+        type: choice
+        options:
+          - binance
+          - bitget
+          - bitmart
+          - bybit
+          - coinbase
+          - gate
+          - kraken
+          - kucoin
+          - okx
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout crypto-api-examples
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine exchanges to sync
+        id: determine-exchanges
+        run: |
+          echo "exchanges=${{ github.event.inputs.exchange }}" >> $GITHUB_OUTPUT
+
+      - name: Clone SDK repositories
+        run: |
+          cd ..
+          for exchange in ${{ steps.determine-exchanges.outputs.exchanges }}; do
+            case $exchange in
+              binance) REPO="binance" ;;
+              bitget) REPO="bitget-api" ;;
+              bitmart) REPO="bitmart-api" ;;
+              bybit) REPO="bybit-api" ;;
+              coinbase) REPO="coinbase-api" ;;
+              gate) REPO="gateio-api" ;;
+              kraken) REPO="kraken-api" ;;
+              kucoin) REPO="kucoin-api" ;;
+              okx) REPO="okx-api" ;;
+            esac
+            
+            if [ ! -d "$REPO" ]; then
+              echo "📥 Cloning $REPO..."
+              git clone --depth 1 "https://github.com/tiagosiebler/$REPO.git" || {
+                echo "⚠️  Failed to clone $REPO, trying with token..."
+                git clone --depth 1 "https://${{ secrets.GITHUB_TOKEN }}@github.com/tiagosiebler/$REPO.git" || {
+                  echo "❌ Failed to clone $REPO"
+                  continue
+                }
+              }
+            else
+              echo "📥 Updating $REPO..."
+              cd "$REPO"
+              git pull || git fetch origin && git reset --hard origin/main || git reset --hard origin/master
+              cd ..
+            fi
+          done
+          cd crypto-api-examples
+
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || apt-get update && apt-get install -y curl
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          apt-get update
+          apt-get install -y gh
+
+      - name: Authenticate GitHub CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Sync examples
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for exchange in ${{ steps.determine-exchanges.outputs.exchanges }}; do
+            echo "🔄 Syncing $exchange..."
+            
+            # Run sync script (it will handle PR creation)
+            npm run sync:$exchange || {
+              echo "⚠️  Failed to sync $exchange, continuing..."
+              continue
+            }
+          done
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Sync Examples Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Sync workflow completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the logs above for details." >> $GITHUB_STEP_SUMMARY

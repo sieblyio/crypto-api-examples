@@ -9,7 +9,17 @@
         "update-latest": "scripts/update-latest.sh",
         "lint": "eslint \"examples/**/*.ts\" \"scripts/**/*.ts\"",
         "lint:fix": "eslint \"examples/**/*.ts\" \"scripts/**/*.ts\" --fix",
-        "format": "prettier --write \"examples/**/*.ts\" \"scripts/**/*.ts\""
+        "format": "prettier --write \"examples/**/*.ts\" \"scripts/**/*.ts\"",
+        "sync": "ts-node --esm scripts/sync-examples.ts",
+        "sync:binance": "npm run sync binance",
+        "sync:bitget": "npm run sync bitget",
+        "sync:bitmart": "npm run sync bitmart",
+        "sync:bybit": "npm run sync bybit",
+        "sync:coinbase": "npm run sync coinbase",
+        "sync:gate": "npm run sync gate",
+        "sync:kraken": "npm run sync kraken",
+        "sync:kucoin": "npm run sync kucoin",
+        "sync:okx": "npm run sync okx"
     },
     "keywords": [],
     "author": "",

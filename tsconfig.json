@@ -6,8 +6,10 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "outDir": "dist"
+        "outDir": "dist",
+        "types": ["node"],
+        "moduleResolution": "node"
     },
-    "include": ["examples/**/*"],
+    "include": ["examples/**/*", "scripts/**/*"],
     "exclude": ["node_modules"]
 }
