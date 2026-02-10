@@ -43,15 +43,15 @@
   },
   "dependencies": {
     "@siebly/kraken-api": "^1.0.4",
-    "binance": "^3.3.1",
-    "bitget-api": "^3.1.3",
-    "bitmart-api": "^2.3.2",
-    "bybit-api": "^4.5.2",
-    "coinbase-api": "^1.1.10",
-    "gateio-api": "^1.4.1",
+    "binance": "^3.3.3",
+    "bitget-api": "^3.1.4",
+    "bitmart-api": "^2.3.3",
+    "bybit-api": "^4.5.3",
+    "coinbase-api": "^1.1.11",
+    "gateio-api": "^1.4.2",
     "https-proxy-agent": "latest",
-    "kucoin-api": "^2.4.1",
-    "okx-api": "^3.1.1",
+    "kucoin-api": "^2.5.0",
+    "okx-api": "^3.1.2",
     "socks-proxy-agent": "^8.0.5"
   }
 }

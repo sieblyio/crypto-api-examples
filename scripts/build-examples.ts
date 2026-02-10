@@ -28,26 +28,29 @@ async function buildFileTree(basePath: string): Promise<ExampleFolder> {
   const files: string[] = glob.sync(`${basePath}/**/*.ts`);
   const tree: ExampleFolder = {
     type: 'folder',
-    name: basePath,
-    path: basePath,
+    name: 'examples',
+    path: 'examples',
     children: [],
   };
 
   for (const filePath of files) {
-    const parts = filePath.split('/');
+    // Get relative path from basePath (examples directory)
+    const relativePath = path.relative(basePath, filePath);
+    const parts = relativePath.split(path.sep);
     let current = tree;
 
     // Create folder structure
-    for (let i = 1; i < parts.length - 1; i++) {
+    for (let i = 0; i < parts.length - 1; i++) {
       let folder = current.children.find(
         (child) => child.type === 'folder' && child.name === parts[i],
       ) as ExampleFolder;
 
       if (!folder) {
+        const folderPath = path.join('examples', ...parts.slice(0, i + 1));
         folder = {
           type: 'folder',
           name: parts[i],
-          path: parts.slice(0, i + 1).join('/'),
+          path: folderPath.replace(/\\/g, '/'), // Normalize to forward slashes
           children: [],
         };
         current.children.push(folder);
@@ -67,10 +70,11 @@ async function buildFileTree(basePath: string): Promise<ExampleFolder> {
         {},
       ) || {};
 
+    const fileRelativePath = path.join('examples', relativePath);
     current.children.push({
       type: 'file',
       name: parts[parts.length - 1],
-      path: filePath,
+      path: fileRelativePath.replace(/\\/g, '/'), // Normalize to forward slashes
       code: content,
       metadata: {
         title: metadata.title,
