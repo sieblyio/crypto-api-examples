@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { RestClient } from 'okx-api';
-import { OrderRequest } from 'okx-api';
+import { OrderRequest, RestClient } from 'okx-api';
 
 // read from environmental variables
 const API_KEY = process.env.API_KEY_COM;
@@ -9,8 +8,7 @@ const API_PASS = process.env.API_PASS_COM;
 
 // If running from CLI in unix, you can pass env vars as such:
 // API_KEY_COM='lkm12n3-2ba3-1mxf-fn13-lkm12n3a' API_SECRET_COM='035B2B9637E1BDFFEE2646BFBDDB8CE4' API_PASSPHRASE_COM='ComplexPa$$!23$5^' ts-node examples/rest-private-trade.ts
-
-// note the single quotes, preventing special characters such as $ from being incorrectly passed
+// note the single quotes, preventing special characters such as $ from being incorrectly parsed by the shell
 
 if (!API_KEY || !API_SECRET || !API_PASS) {
   throw new Error(
@@ -55,7 +53,7 @@ function roundDown(value: any, decimals: number) {
   );
 }
 
-/** This is a simple script wrapped in a immediately invoked function expression, designed to check for any available BTC balance and immediately sell the full amount for USDT */
+/** This is a simple script wrapped in a immediately invoked function expression, designed to check for any available BTC balance and immediately buy with 50% of the available USDT */
 (async () => {
   try {
     // // Add event listeners to log websocket events on account
