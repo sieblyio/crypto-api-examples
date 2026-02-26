@@ -1,7 +1,8 @@
 Using Binance's REST APIs in JavaScript is easy!
 
+- Install the Binance JavaScript SDK via NPM: `npm install binance`.
 - Import the MainClient (REST API wrapper for Binance's spot & margin APIs)
-- Create an instance with your API credentials.
+- Create an instance with your API credentials (different key types are automatically detected & handled).
 - Call the desired REST API methods as functions and await the promise containing the response.
 
 In this example, we:

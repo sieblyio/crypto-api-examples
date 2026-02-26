@@ -46,9 +46,9 @@ wsClient.on('reconnect', ({ wsKey }) => {
 wsClient.on('reconnected', (data) => {
   console.log('ws has reconnected ', data?.wsKey);
 });
-// wsClient.on('exception', (data) => {
-//   console.error('ws exception: ', data);
-// });
+wsClient.on('exception', (data) => {
+  console.error('ws exception: ', data);
+});
 
 /**
  * For private V5 topics, us the subscribeV5() method on the ws client or use the original subscribe() method.
@@ -59,7 +59,7 @@ wsClient.on('reconnected', (data) => {
  */
 
 wsClient.subscribeV5('position', 'linear');
-wsClient.subscribeV5(['order', 'wallet', 'greeks'], 'linear');
+wsClient.subscribeV5(['order', 'wallet'], 'linear');
 
 wsClient.subscribeV5('execution', 'linear');
 // wsClient.subscribeV5('execution.fast', 'linear');
