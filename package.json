@@ -7,8 +7,8 @@
     "buildfast": " npm run lint:fix && npm run format && npm run lint && ts-node scripts/build-examples.ts ",
     "build": "npm run update-latest && npm run buildfast",
     "update-latest": "scripts/update-latest.sh",
-    "lint": "eslint \"examples/**/*.ts\" \"scripts/**/*.ts\"",
-    "lint:fix": "eslint \"examples/**/*.ts\" \"scripts/**/*.ts\" --fix",
+    "lint": "eslint --ext .ts examples scripts",
+    "lint:fix": "eslint --ext .ts examples scripts --fix",
     "format": "prettier --write \"examples/**/*.ts\" \"scripts/**/*.ts\"",
     "sync": "tsx scripts/sync-examples.ts",
     "sync:binance": "npm run sync binance",
@@ -17,6 +17,7 @@
     "sync:bybit": "npm run sync bybit",
     "sync:coinbase": "npm run sync coinbase",
     "sync:gate": "npm run sync gate",
+    "sync:htx": "npm run sync htx",
     "sync:kraken": "npm run sync kraken",
     "sync:kucoin": "npm run sync kucoin",
     "sync:okx": "npm run sync okx"
@@ -42,16 +43,17 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@siebly/kraken-api": "^1.0.4",
-    "binance": "^3.3.3",
-    "bitget-api": "^3.1.4",
-    "bitmart-api": "^2.3.3",
-    "bybit-api": "^4.5.3",
-    "coinbase-api": "^1.1.11",
-    "gateio-api": "^1.4.2",
+    "@siebly/htx-api": "^1.0.0",
+    "@siebly/kraken-api": "^1.1.2",
+    "binance": "^3.6.1",
+    "bitget-api": "^3.2.1",
+    "bitmart-api": "^2.5.1",
+    "bybit-api": "^4.7.1",
+    "coinbase-api": "^1.2.3",
+    "gateio-api": "^1.6.1",
     "https-proxy-agent": "latest",
-    "kucoin-api": "^2.5.0",
-    "okx-api": "^3.1.2",
+    "kucoin-api": "^2.6.1",
+    "okx-api": "^3.2.1",
     "socks-proxy-agent": "^8.0.5"
   }
 }

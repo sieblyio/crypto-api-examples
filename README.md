@@ -10,6 +10,7 @@ This repository contains comprehensive example code for using the Siebly.io Cryp
 - **Bybit** - V5 API, Spot, Futures, WebSockets
 - **Coinbase** - Advanced Trade, Coinbase App, Institutional APIs
 - **Gate.io** - Spot, Futures, WebSockets
+- **HTX** - Spot, Derivatives, WebSockets, WebSocket API
 - **Kraken** - Spot, Derivatives, WebSockets
 - **Kucoin** - Spot, Futures, WebSockets (V1 & Pro V2)
 - **OKX** - Spot, Futures, WebSockets, Multiple Markets (Global/EEA/US)
@@ -65,6 +66,15 @@ examples/
 │   │   └── futures/
 │   └── Websocket/
 │       └── WS-API/
+├── HTX/
+│   ├── Spot/
+│   │   ├── Public/
+│   │   ├── Private/
+│   │   └── WebSockets/
+│   └── Derivatives/
+│       ├── Public/
+│       ├── Private/
+│       └── WebSockets/
 ├── Kraken/
 │   ├── Spot/
 │   │   ├── Public/
@@ -109,6 +119,7 @@ This will install all required SDK packages:
 - `bybit-api`
 - `coinbase-api`
 - `gateio-api`
+- `@siebly/htx-api`
 - `@siebly/kraken-api`
 - `kucoin-api`
 - `okx-api`
@@ -195,7 +206,8 @@ For detailed SDK documentation and API reference, visit:
 - [Bybit SDK](https://github.com/tiagosiebler/bybit-api)
 - [Coinbase SDK](https://github.com/tiagosiebler/coinbase-api)
 - [Gate.io SDK](https://github.com/tiagosiebler/gateio-api)
-- [Kraken SDK](https://github.com/tiagosiebler/kraken-api)
+- [HTX SDK](https://github.com/sieblyio/htx-api)
+- [Kraken SDK](https://github.com/sieblyio/kraken-api)
 - [Kucoin SDK](https://github.com/tiagosiebler/kucoin-api)
 - [OKX SDK](https://github.com/tiagosiebler/okx-api)
 

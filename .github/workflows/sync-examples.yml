@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       exchange:
-        description: 'Exchange to sync (binance, bitget, bitmart, bybit, coinbase, gate, kraken, kucoin, okx)'
+        description: 'Exchange to sync (binance, bitget, bitmart, bybit, coinbase, gate, htx, kraken, kucoin, okx)'
         required: true
         type: choice
         options:
@@ -15,6 +15,7 @@ on:
           - bybit
           - coinbase
           - gate
+          - htx
           - kraken
           - kucoin
           - okx
@@ -51,7 +52,7 @@ jobs:
         id: determine-exchanges
         run: |
           if [ "${{ github.event.inputs.exchange }}" == "all" ]; then
-            echo "exchanges=binance bitget bitmart bybit coinbase gate kraken kucoin okx" >> $GITHUB_OUTPUT
+            echo "exchanges=binance bitget bitmart bybit coinbase gate htx kraken kucoin okx" >> $GITHUB_OUTPUT
             echo "✅ Will sync all exchanges"
           else
             echo "exchanges=${{ github.event.inputs.exchange }}" >> $GITHUB_OUTPUT
@@ -69,6 +70,7 @@ jobs:
               bybit) REPO="bybit-api" ORG="tiagosiebler" ;;
               coinbase) REPO="coinbase-api" ORG="tiagosiebler" ;;
               gate) REPO="gateio-api" ORG="tiagosiebler" ;;
+              htx) REPO="htx-api" ORG="sieblyio" ;;
               kraken) REPO="kraken-api" ORG="sieblyio" ;;
               kucoin) REPO="kucoin-api" ORG="tiagosiebler" ;;
               okx) REPO="okx-api" ORG="tiagosiebler" ;;

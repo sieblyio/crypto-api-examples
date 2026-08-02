@@ -79,6 +79,13 @@ const EXCHANGE_CONFIGS: Record<string, ExchangeConfig> = {
     destFolder: 'Gate',
     excludeFolders: ['apidoc'],
   },
+  htx: {
+    repoName: 'htx-api',
+    packageName: '@siebly/htx-api',
+    destFolder: 'HTX',
+    excludeFolders: ['apidoc', 'python'],
+    repoUrl: 'https://github.com/sieblyio/htx-api.git',
+  },
   kraken: {
     repoName: 'kraken-api',
     packageName: '@siebly/kraken-api',
@@ -165,6 +172,7 @@ function getExchangeTransformConfig(
         ),
       };
 
+    case 'htx':
     case 'kraken':
       return {
         srcImportRegex:

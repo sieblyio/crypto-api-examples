@@ -7,3 +7,4 @@ npm install gateio-api@latest
 npm install kucoin-api@latest
 npm install binance@latest
 npm install @siebly/kraken-api@latest
+npm install @siebly/htx-api@latest

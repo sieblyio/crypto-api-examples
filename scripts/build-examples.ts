@@ -25,7 +25,12 @@ interface ExampleFolder {
 }
 
 async function buildFileTree(basePath: string): Promise<ExampleFolder> {
-  const files: string[] = glob.sync(`${basePath}/**/*.ts`);
+  // Relative glob from cwd - absolute paths break when the repo folder
+  // contains `[` / `]` (minimatch treats them as character classes).
+  const files: string[] = glob.sync('examples/**/*.ts', {
+    cwd: path.dirname(basePath),
+    absolute: true,
+  });
   const tree: ExampleFolder = {
     type: 'folder',
     name: 'examples',
@@ -118,8 +123,11 @@ async function checkTypeScriptErrors(): Promise<void> {
 
   // Ensure we're working from the repo root
   const repoRoot = process.cwd();
-  const examplesPattern = path.join(repoRoot, 'examples', '**', '*.ts');
-  const files = glob.sync(examplesPattern);
+  // Relative glob - absolute paths break when the repo folder contains `[` / `]`
+  const files = glob.sync('examples/**/*.ts', {
+    cwd: repoRoot,
+    absolute: true,
+  });
   console.log(`Checking ${files.length} example files...`);
 
   const configPath = ts.findConfigFile(
