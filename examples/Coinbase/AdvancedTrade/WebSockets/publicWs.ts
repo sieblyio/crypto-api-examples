@@ -177,7 +177,7 @@ async function start() {
       'advTradeMarketData',
     );
   } catch (e) {
-    console.error('Subscribe exception: ', e);
+    console.error(`Subscribe exception: `, e);
   }
 }
 

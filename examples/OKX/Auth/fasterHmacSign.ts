@@ -1,5 +1,10 @@
 import { createHmac } from 'crypto';
-import { DefaultLogger, RestClient, WebsocketClient } from 'okx-api';
+
+import {
+  DefaultLogger,
+  RestClient,
+  WebsocketClient,
+} from 'okx-api';
 
 // import { DefaultLogger, RestClient, WebsocketClient } from 'okx-api';
 

@@ -1,4 +1,8 @@
-import { DefaultLogger, WebsocketClient, WS_KEY_MAP } from 'okx-api';
+import {
+  DefaultLogger,
+  WebsocketClient,
+  WS_KEY_MAP,
+} from 'okx-api';
 
 (async () => {
   const logger = {
