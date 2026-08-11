@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { DefaultLogger, LogParams, WebsocketAPIClient } from '@siebly/htx-api';
+import {
+  DefaultLogger,
+  LogParams,
+  WebsocketAPIClient,
+} from '@siebly/htx-api';
 
 const customLogger: DefaultLogger = {
   trace: (..._params: LogParams): void => {
