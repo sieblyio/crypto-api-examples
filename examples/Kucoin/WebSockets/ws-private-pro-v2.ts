@@ -116,7 +116,7 @@ async function start() {
         {
           topic: 'orderAll',
           payload: {
-            tradeType: 'FUTURES', // SPOT / FUTURES / ISOLATED / CROSS / UNIFIED
+            tradeType: 'UNIFIED', // SPOT / FUTURES / ISOLATED / CROSS / UNIFIED
           },
         },
         // Specific order updates for a given symbol:
@@ -148,7 +148,7 @@ async function start() {
         {
           topic: 'balance',
           payload: {
-            accountType: 'TRADING', // TRADING / ISOLATED / CROSS / FUTURES / UNIFIED
+            accountType: 'SPOT', // SPOT / ISOLATED / CROSS / FUTURES / UNIFIED
           },
         },
         // Execution/trade updates:

@@ -107,10 +107,15 @@ const EXCHANGE_CONFIGS: Record<string, ExchangeConfig> = {
   },
 };
 
-// Get GitHub repo URL (assumes tiagosiebler org, can be overridden)
+// Get GitHub repo URL (assumes sieblyio org, can be overridden)
 function getRepoUrl(repoName: string, customUrl?: string): string {
   if (customUrl) return customUrl;
-  return `https://github.com/tiagosiebler/${repoName}.git`;
+  return `https://github.com/sieblyio/${repoName}.git`;
+}
+
+// Local checkout folder beside this repo (GITHUB_REPOS/[SDK]_<repoName>)
+function getLocalSdkDir(sdkRoot: string, repoName: string): string {
+  return path.join(sdkRoot, `[SDK]_${repoName}`);
 }
 
 // Exchange-specific transformation functions
@@ -714,19 +719,20 @@ async function syncExchange(
 
   // __dirname is scripts/, so repoRoot is one level up
   const repoRoot = path.join(__dirname, '..');
-  // SDK repos are siblings of crypto-api-examples
+  // SDK repos are siblings of crypto-api-examples (local folders use [SDK]_ prefix)
   const sdkRoot = path.join(repoRoot, '..');
-  const sourceDir = path.join(sdkRoot, config.repoName, 'examples');
+  const sdkRepoDir = getLocalSdkDir(sdkRoot, config.repoName);
+  const sourceDir = path.join(sdkRepoDir, 'examples');
   const destDir = path.join(repoRoot, 'examples', config.destFolder);
   const repoUrl = getRepoUrl(config.repoName, config.repoUrl);
 
   console.log(`\n🚀 Syncing ${exchange} examples`);
   console.log(`   Repo: ${config.repoName}`);
+  console.log(`   Local: ${sdkRepoDir}`);
   console.log(`   Package: ${config.packageName}`);
   console.log(`   Destination: ${config.destFolder}\n`);
 
   // Step 1: Clone or update the SDK repo
-  const sdkRepoDir = path.join(sdkRoot, config.repoName);
   cloneOrUpdateRepo(config.repoName, repoUrl, sdkRepoDir);
 
   // Step 2: Copy and transform examples

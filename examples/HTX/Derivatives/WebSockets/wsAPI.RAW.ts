@@ -10,7 +10,7 @@ import {
 
 const customLogger: DefaultLogger = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  trace: (...params: LogParams): void => {
+  trace: (..._params: LogParams): void => {
     // console.log('trace', ...params);
   },
   info: (...params: LogParams): void => {

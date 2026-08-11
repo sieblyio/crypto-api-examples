@@ -114,6 +114,14 @@ async function start() {
             symbol: 'BTC-USDT',
           },
         },
+        // Multi-symbol ticker: use `symbols` instead of `symbol`
+        {
+          topic: 'ticker',
+          payload: {
+            tradeType: 'SPOT',
+            symbols: ['ETH-USDT', 'XRP-USDT'],
+          },
+        },
         // BTCUSDT orderbook updates for spot market
         // https://www.kucoin.com/docs-new/3470221w0
         {
@@ -129,6 +137,15 @@ async function start() {
         // https://www.kucoin.com/docs-new/3470224w0
         {
           topic: 'trade',
+          payload: {
+            tradeType: 'SPOT',
+            symbol: 'BTC-USDT',
+          },
+        },
+        // UTA public Call Auction Info channel
+        // https://www.kucoin.com/docs-new/3470268w0
+        {
+          topic: 'callAuctionInfo',
           payload: {
             tradeType: 'SPOT',
             symbol: 'BTC-USDT',

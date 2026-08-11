@@ -3,6 +3,7 @@
 // or
 
 import {
+  DefaultLogger,
   isWsFormattedFuturesUserDataEvent,
   isWsFormattedSpotBalanceUpdate,
   isWsFormattedSpotOutboundAccountPosition,
@@ -129,21 +130,43 @@ function attachEventHandlers<TWSClient extends WebsocketClient>(
 }
 
 async function main() {
-  const wsClient = new WebsocketAPIClient({
-    api_key: key,
-    api_secret: secret,
-    beautify: true,
+  const ignoredTraceLogMsgs = [
+    'Sending ping',
+    'Received ping frame, sending pong frame',
+    'Received pong frame, clearing pong timer',
+  ];
 
-    // Enforce testnet ws connections, regardless of supplied wsKey:
-    // testnet: true,
+  // Optional, hook and customise logging behavior
+  const logger = {
+    ...DefaultLogger,
+    trace: (msg: string, context?: unknown) => {
+      if (ignoredTraceLogMsgs.includes(msg)) {
+        return;
+      }
+      console.log(JSON.stringify({ msg, context }));
+    },
+  };
 
-    // Note: unless you set this to false, the SDK will automatically call
-    // the `subscribeUserDataStream()` method again if reconnected (if you called it before):
-    // resubscribeUserDataStreamAfterReconnect: true,
+  const wsClient = new WebsocketAPIClient(
+    {
+      api_key: key,
+      api_secret: secret,
+      beautify: true,
 
-    // If you want your own event handlers instead of the default ones with logs, disable this setting and see the `attachEventHandlers` example below:
-    attachEventListeners: false,
-  });
+      // Enforce testnet ws connections, regardless of supplied wsKey:
+      // testnet: true,
+
+      // Note: unless you set this to false, the SDK will automatically call
+      // the `subscribeUserDataStream()` method again if reconnected (if you called it before):
+      // resubscribeUserDataStreamAfterReconnect: true,
+
+      keepMarginListenTokenRefreshed: false, // Optional, if you don't want the SDK to automatically refresh your margin listen token (if you use it for subscribing to margin user data stream)
+
+      // If you want your own event handlers instead of the default ones with logs, disable this setting and see the `attachEventHandlers` example below:
+      attachEventListeners: false,
+    },
+    logger, // Optional: inject a custom logger, especially to see trace events
+  );
 
   // Attach your own event handlers to process incoming events
   // You may want to disable the default ones to avoid unnecessary logs (via attachEventListeners:false, above)

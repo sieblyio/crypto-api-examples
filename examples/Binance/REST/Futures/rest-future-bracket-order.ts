@@ -1,4 +1,8 @@
-import { NewFuturesOrderParams, USDMClient } from 'binance';
+import {
+  FuturesNewAlgoOrderParams,
+  NewFuturesOrderParams,
+  USDMClient,
+} from 'binance';
 
 const key = process.env.API_KEY_COM || 'APIKEY';
 const secret = process.env.API_SECRET_COM || 'APISECRET';
@@ -6,65 +10,57 @@ const secret = process.env.API_SECRET_COM || 'APISECRET';
 const client = new USDMClient({
   api_key: key,
   api_secret: secret,
-  beautifyResponses: true,
+  beautifyResponses: false,
 });
 
 (async () => {
   try {
-    // TODO: check balance and do other validations
+    const symbol = process.env.BINANCE_EXAMPLE_SYMBOL || 'ETHUSDT';
+    const quantity = Number(process.env.BINANCE_EXAMPLE_QUANTITY || '0.01');
 
-    const assetPrices = await client.getMarkPrice({
-      symbol: 'ETHUSDT',
-    });
-    const markPrice: number = Number(assetPrices.markPrice);
-    const stopLossPrice = Number((markPrice * 99.9) / 100).toFixed(2);
-    const takeProfitPrice = Number((markPrice * 100.1) / 100).toFixed(2);
+    const assetPrices = await client.getMarkPrice({ symbol });
+    const markPrice = Number(assetPrices.markPrice);
+    const stopLossPrice = Number(((markPrice * 99.9) / 100).toFixed(2));
+    const takeProfitPrice = Number(((markPrice * 100.1) / 100).toFixed(2));
 
-    // create three orders
-    // 1. entry order (GTC),
-    // 2. take profit order (GTE_GTC),
-    // 3. stop loss order (GTE_GTC)
-
-    const entryOrder: NewFuturesOrderParams<string> = {
+    const entryOrder: NewFuturesOrderParams = {
       positionSide: 'BOTH',
-      quantity: '0.01',
+      quantity,
       reduceOnly: 'false',
       side: 'BUY',
-      symbol: 'ETHUSDT',
+      symbol,
       type: 'MARKET',
     };
 
-    const takeProfitOrder: NewFuturesOrderParams<string> = {
+    const takeProfitOrder: NewFuturesOrderParams = {
       positionSide: 'BOTH',
-      priceProtect: 'TRUE',
-      quantity: '0.01',
+      price: takeProfitPrice,
+      quantity,
+      reduceOnly: 'true',
       side: 'SELL',
-      stopPrice: takeProfitPrice,
-      symbol: 'ETHUSDT',
-      timeInForce: 'GTE_GTC',
-      type: 'TAKE_PROFIT_MARKET',
-      workingType: 'MARK_PRICE',
-      closePosition: 'true',
+      symbol,
+      timeInForce: 'GTX',
+      type: 'LIMIT',
     };
 
-    const stopLossOrder: NewFuturesOrderParams<string> = {
+    const stopLossOrder: FuturesNewAlgoOrderParams = {
+      algoType: 'CONDITIONAL',
       positionSide: 'BOTH',
-      priceProtect: 'TRUE',
-      quantity: '0.01',
+      priceProtect: 'true',
       side: 'SELL',
-      stopPrice: stopLossPrice,
-      symbol: 'ETHUSDT',
-      timeInForce: 'GTE_GTC',
+      triggerPrice: stopLossPrice,
+      symbol,
       type: 'STOP_MARKET',
       workingType: 'MARK_PRICE',
       closePosition: 'true',
     };
 
-    const openedOrder = await client
-      .submitMultipleOrders([entryOrder, takeProfitOrder, stopLossOrder])
-      .catch((e) => console.log(e?.body || e));
-    console.log(openedOrder);
+    const openedOrder = await client.submitNewOrder(entryOrder);
+    const takeProfitLimitOrder = await client.submitNewOrder(takeProfitOrder);
+    const stopLossAlgoOrder = await client.submitNewAlgoOrder(stopLossOrder);
+
+    console.log({ openedOrder, takeProfitLimitOrder, stopLossAlgoOrder });
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 })();

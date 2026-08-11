@@ -46,9 +46,9 @@ wsClient.on('reconnect', ({ wsKey }) => {
 wsClient.on('reconnected', (data) => {
   console.log('ws has reconnected ', data?.wsKey);
 });
-wsClient.on('exception', (data) => {
-  console.error('ws exception: ', data);
-});
+// wsClient.on('exception', (data) => {
+//   console.error('ws exception: ', data);
+// });
 
 /**
  * For private V5 topics, us the subscribeV5() method on the ws client or use the original subscribe() method.
@@ -59,11 +59,13 @@ wsClient.on('exception', (data) => {
  */
 
 wsClient.subscribeV5('position', 'linear');
-wsClient.subscribeV5(['order', 'wallet'], 'linear');
+wsClient.subscribeV5(['order', 'wallet', 'greeks'], 'linear');
 
 wsClient.subscribeV5('execution', 'linear');
 // wsClient.subscribeV5('execution.fast', 'linear');
 // wsClient.subscribeV5('execution.fast.linear', 'linear');
+// wsClient.subscribeV5('execution.fast.spot', 'spot');
+// wsClient.subscribeV5('execution.fast.option', 'option');
 
 /**
  * The following has the same effect as above, since there's only one private endpoint for V5 account topics:
